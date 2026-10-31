@@ -118,7 +118,7 @@ const runtime = `
     build(root, {}, vals, out, null);
     preact.render(out[0], mount);
     var s = comp.state;
-    var view = [s.tab, s.kbView, s.videoId, s.forumView, s.threadId, s.liliView, s.step].join('|');
+    var view = [s.tab, s.kbView, s.videoId, s.articleId, s.forumView, s.threadId, s.liliView, s.step].join('|');
     if (view !== lastView) {
       lastView = view;
       var screen = mount.querySelector('main > div');

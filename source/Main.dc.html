@@ -282,6 +282,18 @@ body{margin:0}
 
         <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px">
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+            <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Cikk neked</h2>
+            <button type="button" onClick="{{goArticles}}" style="min-height: 44px; border: none; background: none; padding: 0 4px; color: {{t.primary}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Mind</button>
+          </div>
+          <button type="button" onClick="{{openHomeArticle}}" style="width: 100%; border: none; border-radius: 12px; background: {{t.bg}}; padding: 12px 14px; text-align: left; cursor: pointer; font-family: inherit; display: flex; flex-direction: column; gap: 5px">
+            <span style="font-size: 12px; font-weight: 600; color: {{t.primary}}">{{homeArticle.stat}}</span>
+            <span style="font-size: 15px; font-weight: 600; line-height: 1.3; color: {{t.text}}">{{homeArticle.title}}</span>
+            <span style="font-size: 13px; line-height: 1.45; color: {{t.muted}}">{{homeArticle.short}}</span>
+          </button>
+        </section>
+
+        <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
             <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Friss a közösségben</h2>
             <button type="button" onClick="{{goForum}}" style="min-height: 44px; border: none; background: none; padding: 0 4px; color: {{t.primary}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Mind</button>
           </div>
@@ -451,6 +463,7 @@ body{margin:0}
         <h1 style="margin: 0; font-family: {{t.headFont}}; font-weight: {{t.headWeight}}; font-size: {{t.titleSize}}; letter-spacing: {{t.titleSpacing}}; line-height: 1.15; color: {{t.primary}}">Tudástár</h1>
         <div style="display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: {{t.track}}">
           <button type="button" onClick="{{showKbGuide}}" aria-pressed="{{segGuide.pressed}}" style="flex: 1 1 0; min-height: 44px; border: none; border-radius: 999px; background: {{segGuide.bg}}; color: {{segGuide.color}}; box-shadow: {{segGuide.shadow}}; font-family: inherit; font-size: 14px; font-weight: {{segGuide.weight}}; cursor: pointer">Útmutató</button>
+          <button type="button" onClick="{{showKbArticles}}" aria-pressed="{{segArticles.pressed}}" style="flex: 1 1 0; min-height: 44px; border: none; border-radius: 999px; background: {{segArticles.bg}}; color: {{segArticles.color}}; box-shadow: {{segArticles.shadow}}; font-family: inherit; font-size: 14px; font-weight: {{segArticles.weight}}; cursor: pointer">Cikkek</button>
           <button type="button" onClick="{{showKbVideos}}" aria-pressed="{{segVideos.pressed}}" style="flex: 1 1 0; min-height: 44px; border: none; border-radius: 999px; background: {{segVideos.bg}}; color: {{segVideos.color}}; box-shadow: {{segVideos.shadow}}; font-family: inherit; font-size: 14px; font-weight: {{segVideos.weight}}; cursor: pointer">Videók</button>
         </div>
 
@@ -507,6 +520,76 @@ body{margin:0}
               <p style="margin: 0; font-size: 13px; line-height: 1.5; color: {{t.text}}">Általános tájékoztatás, nem helyettesíti az orvosi konzultációt. Ha kérdésed van, írj az orvosodnak.</p>
               <button type="button" onClick="{{askDoctor}}" style="min-height: 48px; border: none; border-radius: {{t.btnRadius}}; background: {{t.primary}}; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Kérdezem az orvost</button>
             </section>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{isKbArticles}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 14px">
+            <sc-if value="{{isArticleList}}" hint-placeholder-val="{{true}}">
+              <div style="display: flex; flex-direction: column; gap: 14px">
+                <p style="margin: 0; font-size: 14px; line-height: 1.45; color: {{t.muted}}">Gyakori állapotok, érthetően: mennyire gyakoriak, mit jelentenek a gyerekvállalásra, és mire érdemes figyelni.</p>
+                <div style="display: flex; gap: 8px">
+                  <sc-for list="{{articleFilters}}" as="af" hint-placeholder-count="2">
+                    <button type="button" onClick="{{af.onPick}}" aria-pressed="{{af.pressed}}" style="min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid {{af.border}}; background: {{af.bg}}; color: {{af.color}}; font-family: inherit; font-size: 13px; font-weight: {{af.weight}}; cursor: pointer; white-space: nowrap">{{af.label}}</button>
+                  </sc-for>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                  <sc-for list="{{articlesShown}}" as="ar" hint-placeholder-count="4">
+                    <button type="button" onClick="{{ar.onOpen}}" style="width: 100%; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; background: {{t.surface}}; padding: 14px 16px; text-align: left; cursor: pointer; font-family: inherit; display: flex; flex-direction: column; gap: 6px; color: {{t.text}}">
+                      <span style="align-self: flex-start; padding: 3px 10px; border-radius: 999px; background: {{t.accentSoft}}; color: {{t.primary}}; font-size: 12px; font-weight: 600">{{ar.stat}}</span>
+                      <span style="font-size: 16px; font-weight: 600; line-height: 1.3">{{ar.title}}</span>
+                      <span style="font-size: 13px; line-height: 1.45; color: {{t.muted}}">{{ar.short}}</span>
+                      <span style="display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 600; color: {{t.primary}}">
+                        Elolvasom
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+                      </span>
+                    </button>
+                  </sc-for>
+                </div>
+                <sc-if value="{{noArticlesShown}}" hint-placeholder-val="{{false}}">
+                  <p style="margin: 0; font-size: 14px; color: {{t.muted}}">Ehhez az életszakaszhoz még nincs cikk. Nézd meg a többit a Mind szűrővel.</p>
+                </sc-if>
+              </div>
+            </sc-if>
+            <sc-if value="{{isArticleView}}" hint-placeholder-val="{{false}}">
+              <article style="display: flex; flex-direction: column; gap: 14px">
+                <button type="button" onClick="{{backToArticles}}" style="align-self: flex-start; min-height: 44px; border: none; background: none; padding: 0; display: flex; align-items: center; gap: 6px; color: {{t.primary}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+                  Vissza a cikkekhez
+                </button>
+                <span style="align-self: flex-start; padding: 3px 10px; border-radius: 999px; background: {{t.accentSoft}}; color: {{t.primary}}; font-size: 12px; font-weight: 600">{{art.stat}}</span>
+                <h2 style="margin: 0; font-family: {{t.headFont}}; font-weight: {{t.headWeight}}; font-size: 26px; line-height: 1.2; color: {{t.primary}}">{{art.title}}</h2>
+                <p style="margin: 0; font-size: 16px; line-height: 1.55; color: {{t.text}}">{{art.lead}}</p>
+                <sc-for list="{{artSections}}" as="sec" hint-placeholder-count="3">
+                  <section style="display: flex; flex-direction: column; gap: 6px">
+                    <h3 style="margin: 0; font-size: 16px; font-weight: 600; line-height: 1.3; color: {{t.text}}">{{sec.h}}</h3>
+                    <p style="margin: 0; font-size: 15px; line-height: 1.55; color: {{t.text}}">{{sec.p}}</p>
+                  </section>
+                </sc-for>
+                <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px">
+                  <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: {{t.text}}">Mire figyelj?</h3>
+                  <ul style="margin: 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.5; color: {{t.text}}">
+                    <sc-for list="{{artWatch}}" as="w" hint-placeholder-count="3">
+                      <li>{{w.text}}</li>
+                    </sc-for>
+                  </ul>
+                </section>
+                <section role="note" style="background: {{t.accentSoft}}; border-radius: {{t.radius}}; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+                  <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: {{t.primary}}">Mikor fordulj orvoshoz?</h3>
+                  <p style="margin: 0; font-size: 15px; line-height: 1.5; color: {{t.text}}">{{art.doctor}}</p>
+                </section>
+                <button type="button" onClick="{{askAboutArticle}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Kérdésem van a cikkhez</button>
+                <section style="display: flex; flex-direction: column; gap: 6px">
+                  <h3 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Források</h3>
+                  <ul style="margin: 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; line-height: 1.45; color: {{t.muted}}">
+                    <sc-for list="{{artSources}}" as="src" hint-placeholder-count="2">
+                      <li><a href="{{src.url}}" target="_blank" rel="noopener" style="color: {{t.primary}}">{{src.label}}</a></li>
+                    </sc-for>
+                  </ul>
+                  <p style="margin: 0; font-size: 12px; line-height: 1.45; color: {{t.muted}}">Általános tájékoztatás, nem helyettesíti az orvosi vizsgálatot. Szakmai ellenőrzés: [dátum] · Dr. Schmek Lilian Hanna</p>
+                </section>
+              </article>
+            </sc-if>
           </div>
         </sc-if>
 
@@ -1248,6 +1331,278 @@ const VIDEOS = [
   { id: 'v11', topic: 'gyn', title: 'Fogamzásgátlási módszerek áttekintése', desc: 'A gyakori módszerek előnyei és korlátai, hogy felkészülten érkezz a tanácsadásra.' }
 ];
 
+// Cikkek: gyakori állapotok, forrásokkal. A tartalmat orvosnak lektorálnia kell.
+const ARTICLES = [
+  {
+    id: 'pcos', modes: ['gyn', 'ttc', 'preg'],
+    title: 'PCOS: gyakori, kezelhető, és lehet mellette gyerek',
+    stat: 'A fogamzóképes nők 10–13%-át érinti',
+    short: 'Sok nő évekig nem tud róla. Kezeléssel a legtöbben teherbe esnek, csak a terhesség alatt kell jobban figyelni.',
+    lead: 'A policisztás ovárium szindróma (PCOS) a fogamzóképes nők egyik leggyakoribb hormonális állapota. Nem jelenti azt, hogy nem lehet gyereked: kezeléssel a legtöbb nő teherbe esik.',
+    sections: [
+      ['Mennyire gyakori?', 'A WHO szerint a fogamzóképes korú nők 10–13 százalékát érinti, és az érintettek akár 70 százaléka nem tud róla. Akkor állapítható meg, ha három jel közül legalább kettő fennáll: rendszertelen vagy elmaradó menstruáció; magasabb férfihormon-szint vagy annak jelei, például erősebb szőrnövekedés, pattanások; policisztás petefészek-kép. Előbb azonban más okokat ki kell zárni.'],
+      ['Lehet gyerekem?', 'Igen. A nemzetközi PCOS-ajánlás szerint a terhesség gyakran sikeresen elérhető, természetes úton vagy segítséggel. Ha nincs rendszeres peteérés, első lépésként gyógyszeres peteérés-serkentés jön szóba, és ha ez nem elég, további lehetőségek is vannak.'],
+      ['Mire kell figyelni terhesség alatt?', 'PCOS-szel gyakoribb a terhességi cukorbetegség, a magas vérnyomás és a preeclampsia, a koraszülés és a túlzott súlygyarapodás. Az ajánlás szerint ezért a PCOS-t jelezni kell a terhesgondozásban. Cukorterheléses vizsgálat (OGTT) javasolt már a babatervezéskor vagy az első vizsgálaton, majd a 24–28. héten is.'],
+      ['Mi segít?', 'Nincs egyetlen „PCOS-diéta”: az ajánlás szerint egyik étrendtípus sem jobb a másiknál. A lényeg a kiegyensúlyozott táplálkozás és a rendszeres mozgás. Akinél indokolt, már 5 százalékos testsúlycsökkenés is érezhető javulást hozhat, és gyakrabban helyreáll a peteérés.']
+    ],
+    watch: [
+      'Rendszeresen, 1–3 évente ellenőriztesd a vércukrodat: PCOS-szel nagyobb a 2-es típusú cukorbetegség kockázata.',
+      'Ha babát tervezel, a terhesség előtt beszéld meg orvosoddal a cukorterheléses vizsgálatot és a vérnyomásodat.',
+      'A lelki egészséged is számít: szorongás vagy lehangoltság esetén kérj segítséget, mert ez PCOS mellett gyakoribb.'
+    ],
+    doctor: 'Ha a menstruációd rendszertelen vagy hónapokig elmarad, ha erősebb a szőrnövekedésed vagy makacs a pattanásod, vagy ha 35 év alatt egy éve, 35 év felett fél éve sikertelenül próbálkoztok.',
+    sources: [
+      ['WHO: policisztás ovárium szindróma (2026)', 'https://www.who.int/news-room/fact-sheets/detail/polycystic-ovary-syndrome'],
+      ['Nemzetközi PCOS-ajánlás, Teede és mtsai, Human Reproduction 2023', 'https://eprints.soton.ac.uk/484749/1/dead156.pdf'],
+      ['NHS Wales: PCOS', 'https://111.wales.nhs.uk/encyclopaedia/p/article/polycysticovarysyndrome/'],
+      ['Samarasinghe és mtsai, Human Reproduction 2026: fogyás és peteérés', 'https://pure.ulster.ac.uk/en/publications/ovulatory-recovery-following-weight-loss-in-women-with-polycystic/']
+    ]
+  },
+  {
+    id: 'ir', modes: ['ttc', 'preg', 'gyn'],
+    title: 'Inzulinrezisztencia: nem kell tiltólista, de figyelni kell rá',
+    stat: 'PCOS mellett a nők többségénél kimutatható',
+    short: 'Nem kell szigorú diéta. A terhesség előtt és alatt viszont fontos a vércukor ellenőrzése.',
+    lead: 'Inzulinrezisztenciáról akkor beszélünk, ha a szervezet nem reagál megfelelően az inzulinra. Magyarországon sokan foglalkoznak vele, és sok az ellentmondó tanács. A jó hír: a legtöbb esetben az általános egészséges életmód a legjobb kezelés.',
+    sections: [
+      ['Mennyire gyakori?', 'PCOS-ben kulcsjellemzőnek számít. Egy vizsgálatban a normál testsúlyú PCOS-es nők 75, a túlsúlyosak 95 százalékánál mutatták ki, de a PCOS nélküli túlsúlyos nők 62 százalékánál is jelen volt.'],
+      ['Betegség vagy állapot?', 'Az inzulinrezisztencia sok állapotot kísér, és ha nem foglalkozunk vele, növeli a prediabétesz és a 2-es típusú cukorbetegség kockázatát. A nemzetközi PCOS-ajánlás a rutinszerű inzulinmérést nem javasolja: a vércukor-anyagcsere megítélésére a cukorterheléses vizsgálat (OGTT) az ajánlott. A HOMA-index határértékeiről a hazai szakmai források sem egységesek.'],
+      ['Lehet gyerekem?', 'Igen. Az inzulinrezisztencia önmagában nem akadálya a teherbeesésnek, de növelheti a terhességi cukorbetegség kockázatát. Ezért babatervezéskor és a terhesség alatt fontos a vércukor ellenőrzése.'],
+      ['Kell „IR-diéta”?', 'A Magyar Dietetikusok Országos Szövetsége szerint az IR-étrend fő elemei ugyanazok, mint amit minden egészséges embernek javasolnak. A Semmelweis Egyetem dietetikusa szerint IR mellett sincs tiltólistás gyümölcs, a mennyiség számít. Testsúlyfelesleg esetén már 5–7 százalékos fogyás is csökkenti a cukorbetegség kockázatát.']
+    ],
+    watch: [
+      'Ne kezdj szigorú, sok mindent tiltó diétába orvosi vagy dietetikusi javaslat nélkül.',
+      'A rendszeres mozgás az egyik leghatékonyabb eszköz.',
+      'Babatervezéskor és a terhesség alatt kérd a vércukor ellenőrzését.'
+    ],
+    doctor: 'Ha PCOS-ed van, ha korábban volt terhességi cukorbetegséged, ha a családodban gyakori a cukorbetegség, vagy ha babát tervezel, és tudni szeretnéd, hogyan áll a vércukrod.',
+    sources: [
+      ['NIDDK: prediabétesz és inzulinrezisztencia', 'https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/prediabetes-insulin-resistance'],
+      ['Nemzetközi PCOS-ajánlás, Teede és mtsai, Human Reproduction 2023', 'https://eprints.soton.ac.uk/484749/1/dead156.pdf'],
+      ['Stepto és mtsai, Human Reproduction 2013', 'https://vu-9.eprints-hosting.org/21733/1/Human%20Reproduction%202013%20Post-print%20.pdf'],
+      ['MDOSZ: az inzulinrezisztencia és a PCOS életmódi kezelése', 'https://mdosz.hu/inzulinrezisztencia-es-policisztasovarium-szindroma-eletmodi-kezelese/'],
+      ['Semmelweis Egyetem (2025): gyümölcs inzulinrezisztencia mellett', 'https://semmelweis.hu/mediasarok/2025/08/04/ne-feljunk-a-termeszetes-edessegektol-egyunk-gyumolcsot/'],
+      ['Winkler G., Orvosi Hetilap 2020', 'https://real.mtak.hu/151397/']
+    ]
+  },
+  {
+    id: 'endo', modes: ['gyn', 'ttc'],
+    title: 'Endometriózis: a nagyon fájdalmas menstruáció nem „normális”',
+    stat: 'Minden 10. fogamzóképes nőt érint',
+    short: 'Átlagosan évekig tart, mire kiderül. A legtöbb érintett természetes úton is teherbe eshet.',
+    lead: 'Endometriózisban a méh nyálkahártyájához hasonló szövet a méhen kívül is megjelenik, és fájdalmat okozhat. Gyakori, mégis sokszor évekig nem ismerik fel, mert a fájdalmas menstruációt sokan természetesnek tartják.',
+    sections: [
+      ['Mennyire gyakori?', 'A WHO becslése szerint világszerte a fogamzóképes korú nők kb. 10 százalékát, mintegy 190 millió nőt érint. Magyarországon a Semmelweis Egyetem 2018-as becslése szerint csaknem 200 ezer nőt. A diagnózisig átlagosan 4–12 év telik el.'],
+      ['Milyen tünetei vannak?', 'Erős menstruációs fájdalom és vérzés, tartós kismedencei fájdalom, puffadás, hányinger, fájdalmas együttlét, valamint a menstruációhoz kötődő bél- vagy vizelési panaszok. Előfordul, hogy csak a meddőség kivizsgálásakor derül ki.'],
+      ['Lehet gyerekem?', 'A legtöbb érintettnek igen. Az endometriózissal élő nők egy részénél nehezebb a teherbeesés, de egy brit betegszervezet szerint 60–70 százalékuk természetes úton is teherbe eshet, és akinek kell, annak a meddőségi kezelés is segíthet.'],
+      ['Mire kell figyelni terhesség alatt?', 'Az európai szakmai ajánlás szerint az első trimeszterben valamivel nagyobb lehet a vetélés és a méhen kívüli terhesség kockázata, ezért erről érdemes a terhesgondozás elején beszélni. Csak azért viszont nem javasolt teherbe esni, hogy a tünetek enyhüljenek.']
+    ],
+    watch: [
+      'Ha a menstruációs fájdalom miatt kimaradsz a munkából vagy a programjaidból, az nem „normális”: érdemes kivizsgáltatni.',
+      'Vezess fájdalomnaplót: segít az orvosnak a diagnózisban.',
+      'Ha babát tervezel, beszéld meg orvosoddal az időzítést és a lehetőségeket.'
+    ],
+    doctor: 'Ha tartós kismedencei fájdalmad van, ha a menstruációs fájdalom megnehezíti a mindennapjaidat, ha fáj az együttlét, ha a menstruációhoz kötődő bél- vagy vizelési panaszaid vannak, vagy ha ezek mellett nem sikerül teherbe esni.',
+    sources: [
+      ['WHO: endometriózis', 'https://www.who.int/news-room/fact-sheets/detail/endometriosis'],
+      ['Semmelweis Egyetem (2018): csaknem 200 ezer nőt érint az endometriózis', 'https://semmelweis.hu/hirek/2018/03/20/csaknem-200-ezer-not-erint-az-endometriozis-idehaza/'],
+      ['NICE NG73: endometriózis', 'https://www.nice.org.uk/guidance/NG73/chapter/context'],
+      ['ESHRE endometriózis-ajánlás (2022)', 'https://eprints.soton.ac.uk/492366/1/hoac009.pdf'],
+      ['Endometriosis UK: termékenység és terhesség', 'https://www.endometriosis-uk.org/endometriosis-fertility-and-pregnancy']
+    ]
+  },
+  {
+    id: 'infertility', modes: ['ttc', 'gyn'],
+    title: 'Ha nem jön a baba: sokkal több párt érint, mint gondolnád',
+    stat: 'Minden 6. ember érintett élete során (WHO)',
+    short: 'Nem ritka, és nem csak a nőn múlik. Mikor érdemes kivizsgálást kérni, és mire számíts.',
+    lead: 'Meddőségről akkor beszélünk, ha 12 hónapnyi rendszeres, védekezés nélküli együttlét után sem jön létre terhesség. Sokkal gyakoribb, mint gondolnánk, és sokféle segítség létezik.',
+    sections: [
+      ['Mennyire gyakori?', 'A WHO 2023-as jelentése szerint a felnőttek kb. 17,5 százaléka, nagyjából minden hatodik ember tapasztal élete során meddőséget. Ugyanakkor a 40 év alatti nők párjainak több mint 80 százalékánál egy éven belül létrejön a terhesség.'],
+      ['Nem csak a nőn múlik', 'A meddő párok nagyjából felénél részben vagy egészben férfioldali ok is szerepet játszik. Ezért a kivizsgálás mindig a pár mindkét tagjára kiterjed.'],
+      ['Mikor kérj kivizsgálást?', 'Az amerikai reprodukciós társaság (ASRM) szerint 35 év alatt egy év, 35 év felett fél év sikertelen próbálkozás után. Ismert kockázat esetén, például rendszertelen ciklus, endometriózis vagy korábbi kismedencei műtét után, nem kell kivárni ezt az időt.']
+    ],
+    watch: [
+      'A kivizsgálásra együtt menjetek: a férfi oldal vizsgálata egyszerű, és sokat számít.',
+      'Kerüljétek a dohányzást, és mindketten figyeljetek az egészséges életmódra.',
+      'A várakozás lelkileg megterhelő: kérj segítséget, ha nehéz, nem vagy egyedül vele.'
+    ],
+    doctor: 'Ha 35 év alatt egy éve, 35 év felett fél éve próbálkoztok eredmény nélkül, vagy már korábban, ha rendszertelen a ciklusod, nagyon fájdalmas a menstruációd, vagy ismert nőgyógyászati betegséged van.',
+    sources: [
+      ['WHO (2023): minden hatodik embert érint a meddőség', 'https://www.who.int/news/item/04-04-2023-1-in-6-people-globally-affected-by-infertility'],
+      ['WHO: meddőség', 'https://www.who.int/news-room/fact-sheets/detail/infertility'],
+      ['ASRM (2023): a meddőség meghatározása', 'https://prod.asrm.org/globalassets/_asrm/practice-guidance/practice-guidelines/pdf/definition-of-infertility.pdf'],
+      ['NICE NG257 (2026): termékenységi problémák', 'https://www.nice.org.uk/guidance/ng257/resources/fertility-problems-assessment-and-treatment-pdf-66144022104517'],
+      ['AUA/ASRM: férfi meddőség', 'https://auanet.org/documents/Guidelines/PDF/2024%20Guidelines/Male%20Infertility%20Unabridged%20Final.pdf']
+    ]
+  },
+  {
+    id: 'thyroid', modes: ['ttc', 'preg', 'post', 'gyn'],
+    title: 'Pajzsmirigy és babavárás',
+    stat: 'Minden 8. nőnél kialakul pajzsmirigybetegség',
+    short: 'Gyakori, jól kezelhető, és beállított kezeléssel nem akadálya a gyerekvállalásnak.',
+    lead: 'A pajzsmirigy-alulműködés és leggyakoribb oka, a Hashimoto-betegség, sokkal gyakoribb nőknél, mint férfiaknál. Jól kezelhető: a cél az, hogy a fogantatás előtt és a terhesség alatt is jól be legyen állítva.',
+    sections: [
+      ['Mennyire gyakori?', 'A Hashimoto-betegség nőknél 4–10-szer gyakoribb, mint férfiaknál, és leginkább 30 és 50 éves kor között kezdődik. Az Amerikai Pajzsmirigy Társaság szerint minden nyolcadik nőnél kialakul valamilyen pajzsmirigybetegség élete során.'],
+      ['Lehet gyerekem?', 'Igen. A kezeletlen alulműködés megnehezítheti a teherbeesést, és növelheti a vetélés és a koraszülés kockázatát. Ezért fontos, hogy a pajzsmirigy már a fogantatás előtt jól be legyen állítva, és ez kezeléssel jól elérhető.'],
+      ['Mi változik a terhesség alatt?', 'Aki már szed pajzsmirigyhormont, annál a terhesség elején gyakran emelni kell az adagot, ezért a terhesség első felében nagyjából négyhetente ellenőrzik a TSH-szintet. Szülés után a nők kb. 5–10 százalékánál átmeneti pajzsmirigygyulladás alakulhat ki, amely többnyire 12–18 hónap alatt rendeződik.']
+    ],
+    watch: [
+      'Ha pajzsmirigyhormont szedsz, a pozitív teszt után ne várj a következő vizsgálatig: még aznap jelezd orvosodnak.',
+      'Az adagot ne módosítsd magadtól, csak orvosi utasításra.',
+      'Babatervezéskor kérj TSH-vizsgálatot, ha korábban volt pajzsmirigyproblémád.',
+      'Szülés után kb. 6 héttel érdemes újra ellenőriztetni.'
+    ],
+    doctor: 'Ha tartós fáradtságot, hízást, hidegérzékenységet vagy rendszertelen ciklust tapasztalsz, illetve ha pajzsmirigybeteg vagy, és babát tervezel vagy várandós lettél.',
+    sources: [
+      ['NIDDK: Hashimoto-betegség', 'https://niddk.nih.gov/health-information/endocrine-diseases/hashimotos-disease'],
+      ['American Thyroid Association: tényadatok', 'https://www.thyroid.org/wp-content/uploads/2026/01/ATA-Thyroid-Fact-Sheet-2.pdf'],
+      ['ATA: pajzsmirigy és terhesség, 2017-es ajánlás összefoglalója', 'https://thyroid.org/patient-thyroid-information/ct-for-patients/may-2017/vol-10-issue-5-p-3-7'],
+      ['ATA: alulműködés kezelése terhesség alatt', 'https://www.thyroid.org/management-hypothyroidism-pregnancy/'],
+      ['ATA: szülés utáni pajzsmirigygyulladás', 'https://www.thyroid.org/postpartum-thyroiditis']
+    ]
+  },
+  {
+    id: 'hpv', modes: ['gyn', 'ttc', 'preg'],
+    title: 'HPV: szinte mindenkit érint, és többnyire magától elmúlik',
+    stat: 'A legtöbb nő és férfi élete során elkapja',
+    short: 'A pozitív HPV-eredmény nem rák. A rendszeres szűrés és az oltás a legjobb védelem.',
+    lead: 'A HPV-fertőzés annyira gyakori, hogy a legtöbb ember élete során átesik rajta. A fertőzések többsége tünetmentes, és két éven belül magától elmúlik.',
+    sections: [
+      ['Mennyire gyakori?', 'A WHO szerint a legtöbb nő és férfi élete során megfertőződik HPV-vel. A fertőzések többsége semmilyen tünetet nem okoz, és két éven belül kezelés nélkül meggyógyul.'],
+      ['Mi a kapcsolat a méhnyakrákkal?', 'A méhnyakrákos esetek 99 százaléka HPV-fertőzéssel függ össze, de fordítva ez nem igaz: a fertőzöttek túlnyomó többségénél nem alakul ki rák. A tartósan megmaradó fertőzés okozhat sejtelváltozást, és ezt a szűrés még a rák előtti szakaszban felismeri.'],
+      ['Lehet gyerekem?', 'Igen, a HPV önmagában nem akadálya a terhességnek, és a szűrést terhesség alatt is folytatni kell. Ha méhnyak-elváltozás miatt kúpkimetszésed (konizációd) volt, a koraszülés kockázata valamivel nagyobb, ezért ezt jelezd a terhesgondozás elején.'],
+      ['Oltás és szűrés Magyarországon', 'Az iskolai programban a 7. évfolyamos, 12. életévüket betöltött lányok 2014 óta, a fiúk a 2020/21-es tanévtől ingyen kaphatnak HPV elleni oltást. A szervezett méhnyakszűrés 25 és 65 év között háromévente javasolt.']
+    ],
+    watch: [
+      'Járj rendszeresen méhnyakszűrésre, akkor is, ha be vagy oltva.',
+      'Egy pozitív HPV-eredmény nem diagnózis: a további teendőket az orvosod beszéli meg veled.',
+      'Ha volt konizációd, jelezd a terhesgondozás kezdetén.'
+    ],
+    doctor: 'Ha esedékes vagy elmaradt a szűrésed, ha szokatlan vérzést tapasztalsz (például együttlét után), vagy ha kóros szűrési eredményt kaptál.',
+    sources: [
+      ['WHO Európa: HPV', 'https://www.who.int/europe/news-room/fact-sheets/item/human-papillomavirus-(hpv)'],
+      ['Nógrád Vármegyei Kormányhivatal: HPV elleni iskolai oltás', 'https://kormanyhivatalok.hu/kormanyhivatalok/nograd/megye/hirek/hir/hpv-okozta-betegsegek-megelozhetok-0'],
+      ['Csákvári és mtsai (2023): a méhnyakrák hazai adatai', 'https://real.mtak.hu/170055/1/assessing-the-changes-of-epidemiological-indicators-of-cervical-cancer-in-hungary-and-on-international-scale-between-2000-and-2019.pdf'],
+      ['Kyrgiou és mtsai, BMJ 2016: konizáció és koraszülés', 'https://eprints.lancs.ac.uk/id/eprint/82281']
+    ]
+  },
+  {
+    id: 'myoma', modes: ['gyn', 'ttc', 'meno'],
+    title: 'Mióma: nagyon gyakori, és többnyire nem okoz gondot',
+    stat: '50 éves korra a nők 70–80%-ánál kimutatható',
+    short: 'Sokszor csak véletlenül derül ki. A legtöbb mióma nem igényel kezelést.',
+    lead: 'A mióma a méh izomzatának jóindulatú csomója. Ultrahanggal 50 éves korra a nők nagy többségénél kimutatható, de csak egy részüknek okoz panaszt.',
+    sections: [
+      ['Mennyire gyakori?', 'Egy nagy amerikai vizsgálat szerint 50 éves korra a fehér nők közel 70, a fekete nők több mint 80 százalékánál alakul ki mióma. Panaszt a nők 20–50 százalékánál okoz.'],
+      ['Lehet gyerekem?', 'A legtöbb mióma nem igényel kezelést. A teherbeesést főleg a méh üregébe domborodó (szubmukózus) mióma nehezítheti; ennek eltávolítása javíthatja az esélyeket. A méh falában lévő miómák eltávolítása a vizsgálatok szerint nem javította a teherbeesési arányokat.'],
+      ['Mire kell figyelni terhesség alatt?', 'Miómával valamivel gyakoribb a farfekvés, a korai burokrepedés, a koraszülés és a szülés utáni vérzés, és gyakrabban kerül sor császármetszésre. Ezért ilyenkor gyakoribb ellenőrzés javasolt. A magzat növekedését a mióma a jelek szerint nem korlátozza.']
+    ],
+    watch: [
+      'A tünetmentes mióma általában csak rendszeres ultrahangos ellenőrzést igényel.',
+      'Ha erős a menstruációd, kérj vérképet: az erős vérzés vashiányhoz vezethet.',
+      'Babatervezés előtt beszéld meg orvosoddal, hol helyezkedik el a mióma.'
+    ],
+    doctor: 'Ha a menstruációd erős vagy elhúzódó, ha a ciklusok között vérzel, ha nyomást, teltségérzést vagy kismedencei fájdalmat érzel, vagy ha fáradékony, sápadt vagy, mert ez vérszegénység jele lehet.',
+    sources: [
+      ['Baird és mtsai, Am J Obstet Gynecol 2003', 'https://scholars.duke.edu/publication/769704'],
+      ['American Family Physician (2017): a mióma ellátása', 'https://www.aafp.org/afp/2017/0115/p100.pdf'],
+      ['ASRM betegtájékoztató: mióma', 'https://reproductivefacts.org/globalassets/_rf/news-and-publications/bookletsfact-sheets/english-pdf/what_are_fibroids-factsheet.pdf'],
+      ['NICHD: mióma', 'https://nichd.nih.gov/sites/default/files/2024-07/NICHD_WH_fibroids_webOP.pdf']
+    ]
+  },
+  {
+    id: 'iron', modes: ['preg', 'post', 'gyn', 'ttc'],
+    title: 'Vashiány: fáradtság, ami mögött gyakran más áll',
+    stat: 'Világszerte minden 3. nő vérszegény',
+    short: 'Fáradtság, sápadtság, hajhullás: gyakran vashiány áll mögötte, és egy vérvétellel kiderül.',
+    lead: 'A vérszegénység leggyakoribb táplálkozási oka a vashiány. Az erős menstruáció és a terhesség a két leggyakoribb kiváltó ok, ezért nőknél sokkal gyakoribb. Egyszerű vérvétellel kiderül, és jól kezelhető.',
+    sections: [
+      ['Mennyire gyakori?', 'A WHO 2023-as becslése szerint világszerte a 15–49 éves nők 30,7 százaléka, a várandósok 35,5 százaléka vérszegény. A vérszegénység nem mindig vashiány, de ez a leggyakoribb oka.'],
+      ['Milyen tünetei vannak?', 'Fáradtság, gyengeség, szédülés, álmosság, terheléskor jelentkező légszomj, szívdobogás-érzés, sápadt bőr, fejfájás és hajhullás.'],
+      ['Miért fontos terhesség alatt és után?', 'A súlyos vashiányos vérszegénység növeli a koraszülés kockázatát, és összefügg az alacsony születési súllyal és a szülés utáni depresszióval. Ezért a terhesség alatt fontos a vérkép ellenőrzése.']
+    ],
+    watch: [
+      'Ha erős a menstruációd, kérj vérképet: ez a leggyakoribb ok.',
+      'Vaskészítményt ne szedj találomra: előbb vérvétel mutassa meg, valóban vashiány áll-e a panaszok mögött.',
+      'Szülés után a tartós fáradtság nem mindig csak a kialvatlanság: érdemes ellenőriztetni.'
+    ],
+    doctor: 'Ha tartósan fáradt vagy szédülékeny vagy, ha terheléskor hamar kifulladsz, vagy ha a menstruációd nagyon erős, például éjszaka is cserélned kell, vagy nagy alvadékok távoznak.',
+    sources: [
+      ['WHO: vérszegénység nők és gyermekek körében (2023)', 'https://www.who.int/data/gho/data/themes/topics/anaemia_in_women_and_children'],
+      ['WHO: vérszegénység', 'https://www.who.int/Health-Topics/Anaemia'],
+      ['HSE (Írország): vashiányos vérszegénység', 'https://www.hse.ie/conditions/iron-deficiency-anaemia/'],
+      ['Mayo Clinic: vérszegénység terhesség alatt', 'https://mayoclinic.org/healthy-lifestyle/pregnancy-week-by-week/in-depth/anemia-during-pregnancy/art-20114455'],
+      ['NICE NG88: erős menstruációs vérzés', 'https://nice.org.uk/guidance/ng88/chapter/recommendations']
+    ]
+  },
+  {
+    id: 'ppd', modes: ['post', 'preg'],
+    title: 'Szülés utáni depresszió: gyakori, és nem a te hibád',
+    stat: 'A frissen szült nők kb. 13%-át érinti',
+    short: 'Nem gyengeség és nem rossz anyaság jele. Kezelhető, és minél előbb kérsz segítséget, annál jobb.',
+    lead: 'A szülés utáni hetekben sok nő sírékony és kimerült, ez többnyire két héten belül elmúlik. Ha a lehangoltság tartós, az már betegség lehet, amely gyakori, és jól kezelhető.',
+    sections: [
+      ['Mennyire gyakori?', 'A WHO szerint a frissen szült nők kb. 13 százalékánál, a várandósok kb. 10 százalékánál alakul ki lelki betegség, elsősorban depresszió.'],
+      ['Miben más, mint a baby blues?', 'A szülés utáni első napok sírékonysága általában két héten belül magától elmúlik. Ha a lehangoltság, a reménytelenség vagy a szorongás ennél tovább tart, vagy egyre erősebb, érdemes szakemberrel beszélni.'],
+      ['Mi segít?', 'A szülés utáni depresszió kezelhető. Az első lépés, hogy beszélj róla: az orvosoddal, a védőnővel vagy egy szakemberrel. A kezelést mindig személyre szabják, szoptatás mellett is van megoldás.']
+    ],
+    watch: [
+      'Mondd el a környezetednek, ha nem érzed jól magad: a segítségkérés nem kudarc.',
+      'Pihenj, amikor tudsz, és fogadd el a felajánlott segítséget.',
+      'Ha korábban volt depressziód, ezt már a terhesség alatt jelezd orvosodnak.'
+    ],
+    doctor: 'Ha a lehangoltság két hétnél tovább tart, ha nem tudod ellátni magad vagy a babát, vagy ha nem érzel örömet semmiben. Ha bántanád magad vagy a babát, azonnal kérj segítséget: hívd a 112-t, vagy a Lelki Elsősegély Telefonszolgálatot a 116-123 számon.',
+    sources: [
+      ['WHO: az anyák lelki egészsége', 'https://www.who.int/teams/mental-health-and-substance-use/promotion-prevention/maternal-mental-health'],
+      ['Telefonos Lelki Elsősegély Szolgálat, 116-123', 'https://findahelpline.com/organizations/telefonos-lelki-elsosegely-szolgalat']
+    ]
+  },
+  {
+    id: 'pelvic', modes: ['post', 'meno', 'gyn'],
+    title: 'Vizeletcsepegés szülés után: gyakori, és lehet rajta segíteni',
+    stat: 'A szült nők kb. negyedét érinti',
+    short: 'Nem kell szégyellni, és nem kell beletörődni: a medencefenék erősítése sokat segíthet.',
+    lead: 'Köhögéskor, nevetéskor vagy ugráskor elcseppenő vizelet a szülés után nagyon gyakori. Sokan szégyellik, ezért nem beszélnek róla, pedig jó eséllyel javítható.',
+    sections: [
+      ['Mennyire gyakori?', 'Egy 2023-as összesítő elemzés szerint a szülés után a nők kb. 26 százalékánál fordul elő vizeletinkontinencia.'],
+      ['Mi segít?', 'A medencefenék izmainak célzott erősítése sokat javíthat, különösen ha gyógytornász mutatja meg a helyes technikát. A legtöbb nőnek ez az első lépés, és sokaknál elég is.'],
+      ['Elmúlik magától?', 'Sokaknál a szülés utáni hónapokban javul, de ha nem, nem kell beletörődni. Érdemes szólni róla a gyermekágyi kontrollon.']
+    ],
+    watch: [
+      'Szólj róla a gyermekágyi kontrollon, akkor is, ha kínos.',
+      'A medencefenék-tornát érdemes gyógytornásszal elkezdeni, hogy jól csináld.',
+      'Ne igyál kevesebbet a csepegés miatt: ez inkább ront a helyzeten.'
+    ],
+    doctor: 'Ha a csepegés a szülés után hónapokkal sem javul, ha erős vizelési ingert, fájdalmat vagy égő érzést tapasztalsz, vagy ha a hüvelyben nyomást, „leereszkedést” érzel.',
+    sources: [
+      ['Dai és mtsai, BMC Pregnancy and Childbirth 2023', 'https://ouci.dntb.gov.ua/works/42QE1qW7']
+    ]
+  },
+  {
+    id: 'perimeno', modes: ['meno', 'gyn'],
+    title: 'Perimenopauza: nem képzelődés, és nem kell kibírni',
+    stat: 'Minden 2. nőnél panaszokkal jár',
+    short: 'Hőhullám, alvászavar, hangulatváltozás: évekkel a menopauza előtt elkezdődhet, és kezelhető.',
+    lead: 'A perimenopauza a menopauzát megelőző átmeneti időszak. Évekig tarthat, és a panaszok sokszor már a 40-es években megjelennek, amikor még rendszeres lehet a menstruáció.',
+    sections: [
+      ['Mennyire gyakori?', 'Egy ausztrál egészségügyi tájékoztató szerint nagyjából minden második nőnek enyhe vagy közepes, minden negyediknek pedig a mindennapokat is megnehezítő panaszai vannak. A menopauza átlagosan 51 éves korban következik be, a perimenopauza átlagosan 4–6 évig tart.'],
+      ['Milyen panaszokkal járhat?', 'Rendszertelen ciklus, hőhullám, éjszakai izzadás, alvászavar, hangulatingadozás, koncentrációs nehézség. Nem mindenkinél jelentkezik mind, és erősségük is nagyon eltérő.'],
+      ['Mi segít?', 'A panaszok enyhítésére hormonális és nem hormonális lehetőségek is vannak. Hogy neked mi megfelelő, azt orvosoddal közösen érdemes eldönteni.']
+    ],
+    watch: [
+      'A perimenopauzában is lehet teherbe esni: a fogamzásgátlásról beszélj orvosoddal.',
+      'A menopauza utáni bármilyen hüvelyi vérzést ki kell vizsgálni.',
+      'A szűréseket (méhnyak, emlő) ebben az időszakban se hagyd ki.'
+    ],
+    doctor: 'Ha a panaszok rontják az életminőségedet, ha a vérzésed nagyon erős vagy rendszertelenné válik, vagy ha a menopauza után vérzést tapasztalsz.',
+    sources: [
+      ['Ausztrál egészségügyi tájékoztató: perimenopauza és menopauza', 'https://www.health.gov.au/sites/default/files/2026-05/fact-sheet-about-perimenopause-and-menopause_0.pdf']
+    ]
+  }
+];
+const HOME_ARTICLE = { gyn: 'pcos', ttc: 'pcos', preg: 'ir', post: 'ppd', meno: 'perimeno' };
+
 // Fórum: minden életszakasznak saját tere van.
 const SPACES = { preg: 'Várandósság', ttc: 'Babát tervezünk', post: 'Szülés után', gyn: 'Női egészség', meno: 'Változókor' };
 const SPACE_ORDER = ['preg', 'ttc', 'post', 'gyn', 'meno'];
@@ -1327,6 +1682,8 @@ class Component extends DCLogic {
       openFaq: null,
       videoFilter: 'mine',
       videoId: null,
+      articleFilter: 'mine',
+      articleId: null,
       watched: {},
       forumView: 'list',
       forumFilter: 'preg',
@@ -1479,6 +1836,7 @@ class Component extends DCLogic {
         consents: Object.assign({}, st.consents, { personal: true }),
         notif: changed ? Object.assign({}, st.notif, { stage: false }) : st.notif,
         topic: MODES[k].topic, openFaq: null, videoFilter: 'mine', videoId: null,
+        articleFilter: 'mine', articleId: null,
         forumFilter: MODES[k].space, forumView: 'list', newSpace: MODES[k].space,
         step: 'service', serviceId: null, slot: null
       });
@@ -1588,6 +1946,17 @@ class Component extends DCLogic {
       .map((x) => Object.assign({}, x, { tagLabel: GUIDE[x.topic].chip, watched: !!s.watched[x.id], onOpen: () => openVideo(x.id) }));
     const curVideo = VIDEOS.find((x) => x.id === s.videoId) || VIDEOS[2];
     const homeVideo = VIDEOS.find((x) => x.id === M.video) || VIDEOS[0];
+
+    // Tudástár: cikkek
+    const openArticle = (id) => this.setState({ tab: 'kb', kbView: 'articles', articleId: id, themeOpen: false, modeOpen: false });
+    const articleFilters = [['mine', 'Neked ajánlott'], ['all', 'Mind']].map((a) => Object.assign({ label: a[1] }, chip(s.articleFilter === a[0]), {
+      onPick: () => set({ articleFilter: a[0] })
+    }));
+    const articlesShown = ARTICLES
+      .filter((a) => s.articleFilter === 'all' || a.modes.indexOf(mode) >= 0)
+      .map((a) => ({ id: a.id, title: a.title, short: a.short, stat: a.stat, onOpen: () => openArticle(a.id) }));
+    const curArticle = ARTICLES.find((a) => a.id === s.articleId) || ARTICLES[0];
+    const homeArticle = ARTICLES.find((a) => a.id === HOME_ARTICLE[mode]) || ARTICLES[0];
 
     // Közösség
     const myNick = 'Napraforgó' + (s.showStage && M.nick ? ' · ' + M.nick : '');
@@ -1842,6 +2211,20 @@ class Component extends DCLogic {
       isVideoList: !s.videoId, isVideoPlayer: !!s.videoId,
       video: Object.assign({}, curVideo, { tagLabel: GUIDE[curVideo.topic].chip }),
       backToVideos: () => set({ videoId: null }),
+      segArticles: seg(s.kbView === 'articles'),
+      showKbArticles: () => set({ kbView: 'articles', articleId: null }),
+      isKbArticles: s.kbView === 'articles',
+      isArticleList: !s.articleId, isArticleView: !!s.articleId,
+      articleFilters: articleFilters, articlesShown: articlesShown, noArticlesShown: articlesShown.length === 0,
+      art: { title: curArticle.title, stat: curArticle.stat, lead: curArticle.lead, doctor: curArticle.doctor },
+      artSections: curArticle.sections.map((x) => ({ h: x[0], p: x[1] })),
+      artWatch: curArticle.watch.map((x) => ({ text: x })),
+      artSources: curArticle.sources.map((x) => ({ label: x[0], url: x[1] })),
+      backToArticles: () => set({ articleId: null }),
+      askAboutArticle: go('msgs', { unread: false, draft: 'Kérdésem lenne a(z) „' + curArticle.title + '” cikkel kapcsolatban: ' }),
+      homeArticle: { title: homeArticle.title, stat: homeArticle.stat, short: homeArticle.short },
+      openHomeArticle: () => openArticle(homeArticle.id),
+      goArticles: go('kb', { kbView: 'articles', articleId: null }),
       askAboutVideo: go('msgs', { unread: false, draft: 'Kérdésem lenne a(z) „' + curVideo.title + '” videóval kapcsolatban: ' }),
 
       myNick: myNick,
