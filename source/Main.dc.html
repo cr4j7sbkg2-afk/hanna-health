@@ -1,0 +1,1908 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<title>Hanna Health – MVP app</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&amp;family=Gilda+Display&amp;family=Karla:wght@400;500;600;700&amp;family=Fraunces:wght@300;400;500&amp;family=Jost:wght@300;400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; background: {{t.bg}}; color: {{t.text}}; font-family: {{t.bodyFont}}; font-size: 15px">
+
+  <header style="position: relative; z-index: 5; height: 64px; flex-shrink: 0; box-sizing: border-box; padding: 0 10px 0 20px; display: flex; align-items: center; justify-content: space-between; background: {{t.surface}}; border-bottom: 1px solid {{t.border}}">
+    <button type="button" onClick="{{goHome}}" aria-label="Hanna Health – kezdőlap" style="min-height: 44px; border: none; background: none; padding: 0; display: flex; align-items: center; gap: 10px; cursor: pointer">
+      <sc-if value="{{t.isHold}}" hint-placeholder-val="{{true}}">
+        <svg width="42" height="28" viewBox="0 0 120 80" aria-hidden="true">
+          <path d="M30 16A24 24 0 0 0 30 64A31 31 0 0 1 30 16Z" fill="#26294F"></path>
+          <circle cx="60" cy="40" r="17" fill="#C9772E"></circle>
+          <path d="M90 16A24 24 0 0 1 90 64A31 31 0 0 0 90 16Z" fill="#26294F"></path>
+        </svg>
+      </sc-if>
+      <sc-if value="{{t.isGran}}" hint-placeholder-val="{{false}}">
+        <svg width="26" height="29" viewBox="0 0 160 180" aria-hidden="true">
+          <g fill="#6A1F33">
+            <circle cx="80" cy="110" r="56"></circle>
+            <polygon points="64,66 57,30 70,44 80,24 90,44 103,30 96,66"></polygon>
+          </g>
+          <ellipse cx="80" cy="114" rx="11" ry="15" fill="#E9B8B0"></ellipse>
+        </svg>
+      </sc-if>
+      <sc-if value="{{t.isBol}}" hint-placeholder-val="{{false}}">
+        <svg width="56" height="28" viewBox="0 0 240 120" aria-hidden="true">
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="11">
+            <path d="M24 18V102M56 18V102M24 60H56" stroke="#4A1F45"></path>
+            <path d="M78 30C78 104 120 104 120 62C120 104 162 104 162 30" stroke="#C96F78"></path>
+            <path d="M184 18V102M216 18V102M184 60H216" stroke="#4A1F45"></path>
+          </g>
+          <circle cx="120" cy="34" r="12" fill="#4A1F45"></circle>
+        </svg>
+      </sc-if>
+      <span style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px">
+        <span style="font-family: {{t.wmFont}}; font-size: {{t.wmSize}}; letter-spacing: {{t.wmSpacing}}; font-weight: 400; line-height: 1; color: {{t.primary}}">{{t.wm}}</span>
+        <span style="font-size: 7.5px; font-weight: 600; letter-spacing: 0.4em; line-height: 1; color: {{t.primary}}">FOR WOMEN</span>
+      </span>
+    </button>
+    <div style="display: flex; align-items: center; gap: 2px">
+      <button type="button" onClick="{{goMsgs}}" aria-label="{{msgAria}}" style="position: relative; width: 44px; height: 44px; border-radius: 50%; border: none; background: {{msgBtnBg}}; color: {{t.primary}}; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v12H3zM3 7l9 6 9-6"></path></svg>
+        <sc-if value="{{hasUnread}}" hint-placeholder-val="{{true}}">
+          <span aria-hidden="true" style="position: absolute; top: 9px; right: 8px; width: 10px; height: 10px; box-sizing: border-box; border-radius: 50%; background: {{t.dot}}; border: 2px solid {{t.surface}}"></span>
+        </sc-if>
+      </button>
+      <button type="button" onClick="{{toggleTheme}}" aria-label="Arculat váltása" aria-expanded="{{themeExpanded}}" style="width: 44px; height: 44px; border-radius: 50%; border: none; background: {{themeBtnBg}}; color: {{t.primary}}; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-.9-.7-1.3-.7-2.1 0-.9.7-1.6 1.6-1.6H17a4 4 0 0 0 4-4c0-4.9-4-8.7-9-8.7z"></path><path d="M7.5 11h.01M10 7.5h.01M14.5 7.5h.01" stroke-width="2.6"></path></svg>
+      </button>
+    </div>
+    <sc-if value="{{themeOpen}}" hint-placeholder-val="{{false}}">
+      <div role="group" aria-label="Arculat" style="position: absolute; top: 60px; right: 10px; width: 256px; box-sizing: border-box; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 16px; box-shadow: 0 14px 36px rgba(20, 20, 30, 0.18); padding: 8px; display: flex; flex-direction: column; gap: 4px">
+        <span style="padding: 6px 10px 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: {{t.muted}}">Arculat · demó</span>
+        <button type="button" onClick="{{pickHold}}" aria-pressed="{{opt.hold.pressed}}" style="min-height: 56px; border: none; border-radius: 12px; background: {{opt.hold.bg}}; display: flex; align-items: center; gap: 12px; padding: 6px 10px; cursor: pointer; font-family: inherit; text-align: left">
+          <span style="width: 40px; flex-shrink: 0; display: flex; justify-content: center">
+            <svg width="36" height="24" viewBox="0 0 120 80" aria-hidden="true">
+              <path d="M30 16A24 24 0 0 0 30 64A31 31 0 0 1 30 16Z" fill="#26294F"></path>
+              <circle cx="60" cy="40" r="17" fill="#C9772E"></circle>
+              <path d="M90 16A24 24 0 0 1 90 64A31 31 0 0 0 90 16Z" fill="#26294F"></path>
+            </svg>
+          </span>
+          <span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-family: 'Josefin Sans', sans-serif; font-size: 15px; color: #26294F">Holdciklus</span>
+            <span style="font-size: 12px; color: {{t.muted}}">Éjkék · borostyán</span>
+          </span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.primary}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; visibility: {{opt.hold.check}}"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+        </button>
+        <button type="button" onClick="{{pickGran}}" aria-pressed="{{opt.gran.pressed}}" style="min-height: 56px; border: none; border-radius: 12px; background: {{opt.gran.bg}}; display: flex; align-items: center; gap: 12px; padding: 6px 10px; cursor: pointer; font-family: inherit; text-align: left">
+          <span style="width: 40px; flex-shrink: 0; display: flex; justify-content: center">
+            <svg width="22" height="25" viewBox="0 0 160 180" aria-hidden="true">
+              <g fill="#6A1F33">
+                <circle cx="80" cy="110" r="56"></circle>
+                <polygon points="64,66 57,30 70,44 80,24 90,44 103,30 96,66"></polygon>
+              </g>
+              <ellipse cx="80" cy="114" rx="11" ry="15" fill="#E9B8B0"></ellipse>
+            </svg>
+          </span>
+          <span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-family: 'Gilda Display', serif; font-size: 16px; color: #6A1F33">Gránátalma</span>
+            <span style="font-size: 12px; color: {{t.muted}}">Gránát · púder</span>
+          </span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.primary}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; visibility: {{opt.gran.check}}"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+        </button>
+        <button type="button" onClick="{{pickBol}}" aria-pressed="{{opt.bol.pressed}}" style="min-height: 56px; border: none; border-radius: 12px; background: {{opt.bol.bg}}; display: flex; align-items: center; gap: 12px; padding: 6px 10px; cursor: pointer; font-family: inherit; text-align: left">
+          <span style="width: 40px; flex-shrink: 0; display: flex; justify-content: center">
+            <svg width="40" height="20" viewBox="0 0 240 120" aria-hidden="true">
+              <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="12">
+                <path d="M24 18V102M56 18V102M24 60H56" stroke="#4A1F45"></path>
+                <path d="M78 30C78 104 120 104 120 62C120 104 162 104 162 30" stroke="#C96F78"></path>
+                <path d="M184 18V102M216 18V102M184 60H216" stroke="#4A1F45"></path>
+              </g>
+              <circle cx="120" cy="34" r="13" fill="#4A1F45"></circle>
+            </svg>
+          </span>
+          <span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-family: 'Fraunces', serif; font-size: 16px; color: #4A1F45">Bölcső</span>
+            <span style="font-size: 12px; color: {{t.muted}}">Szilva · rózsa</span>
+          </span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.primary}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; visibility: {{opt.bol.check}}"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+        </button>
+      </div>
+    </sc-if>
+  </header>
+
+  <main style="height: 708px; flex-shrink: 0">
+
+    <sc-if value="{{isHome}}" hint-placeholder-val="{{true}}">
+      <div style="height: 708px; overflow-y: auto; box-sizing: border-box; padding: 22px 20px 28px; display: flex; flex-direction: column; gap: 18px">
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <h1 style="margin: 0; font-family: {{t.headFont}}; font-weight: {{t.headWeight}}; font-size: {{t.titleSize}}; letter-spacing: {{t.titleSpacing}}; line-height: 1.15; color: {{t.primary}}">{{greeting}}</h1>
+          <button type="button" onClick="{{toggleMode}}" aria-expanded="{{modeExpanded}}" style="align-self: flex-start; min-height: 44px; padding: 0 12px 0 16px; border-radius: 999px; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.primary}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px">
+            <span style="font-weight: 500; color: {{t.muted}}">Életszakaszom:</span>
+            <span>{{modeLabel}}</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: rotate({{modeRot}}); transition: transform 0.2s"><path d="M6 9l6 6 6-6"></path></svg>
+          </button>
+          <sc-if value="{{modeChanged}}" hint-placeholder-val="{{false}}">
+            <div role="status" style="padding: 12px 14px; border-radius: 12px; background: {{t.accentSoft}}; display: flex; flex-direction: column; gap: 4px; font-size: 13px; line-height: 1.45; color: {{t.text}}">
+              <span>{{switchNote}}</span>
+              <sc-if value="{{switchFromPreg}}" hint-placeholder-val="{{false}}">
+                <button type="button" onClick="{{goMsgs}}" style="align-self: flex-start; min-height: 44px; border: none; background: none; padding: 0; color: {{t.primary}}; font-family: inherit; font-size: 14px; font-weight: 600; text-decoration: underline; cursor: pointer">Üzenet az orvosnak</button>
+              </sc-if>
+            </div>
+          </sc-if>
+          <sc-if value="{{modeOpen}}" hint-placeholder-val="{{false}}">
+            <section aria-label="Életszakasz kiválasztása" style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 16px; display: flex; flex-direction: column; gap: 8px">
+              <span style="font-family: {{t.headFont}}; font-size: 20px; line-height: 1.25; color: {{t.primary}}">Miben segíthetünk most?</span>
+              <p style="margin: 0 0 4px; font-size: 13px; line-height: 1.45; color: {{t.muted}}">Ez csak azt állítja be, mit mutat neked az app. Bármikor átállíthatod, indoklás nélkül. Egészségügyi adatnak számít, ezért marketingre soha nem használjuk.</p>
+              <sc-for list="{{modes}}" as="md" hint-placeholder-count="5">
+                <button type="button" onClick="{{md.onPick}}" aria-pressed="{{md.pressed}}" style="width: 100%; min-height: 60px; border: 1px solid {{md.border}}; border-radius: 14px; background: {{md.bg}}; padding: 10px 12px 10px 14px; display: flex; align-items: center; gap: 12px; text-align: left; font-family: inherit; cursor: pointer">
+                  <span style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px">
+                    <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">{{md.label}}</span>
+                    <span style="font-size: 13px; color: {{t.muted}}">{{md.desc}}</span>
+                  </span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.primary}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; visibility: {{md.check}}"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+                </button>
+              </sc-for>
+            </section>
+          </sc-if>
+        </div>
+
+        <section aria-label="{{hero.kicker}}" style="background: {{t.primary}}; border-radius: {{t.radius}}; padding: 20px; display: flex; flex-direction: column; gap: 16px; color: #FFFFFF">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+            <div style="min-width: 0; display: flex; flex-direction: column; gap: 6px">
+              <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: {{t.heroAccent}}">{{hero.kicker}}</span>
+              <span style="font-family: {{t.headFont}}; font-size: 40px; line-height: 1; color: #FFFFFF">{{hero.big}}</span>
+              <span style="font-size: 14px; line-height: 1.4; color: {{t.heroMuted}}">{{hero.sub}}</span>
+            </div>
+            <sc-if value="{{t.isHold}}" hint-placeholder-val="{{true}}">
+              <svg width="84" height="56" viewBox="0 0 120 80" aria-hidden="true" style="flex-shrink: 0">
+                <path d="M30 16A24 24 0 0 0 30 64A31 31 0 0 1 30 16Z" fill="#F5F5F9"></path>
+                <circle cx="60" cy="40" r="17" fill="#F2C9A1"></circle>
+                <path d="M90 16A24 24 0 0 1 90 64A31 31 0 0 0 90 16Z" fill="#F5F5F9"></path>
+              </svg>
+            </sc-if>
+            <sc-if value="{{t.isGran}}" hint-placeholder-val="{{false}}">
+              <svg width="52" height="58" viewBox="0 0 160 180" aria-hidden="true" style="flex-shrink: 0">
+                <g fill="#F7F1EF">
+                  <circle cx="80" cy="110" r="56"></circle>
+                  <polygon points="64,66 57,30 70,44 80,24 90,44 103,30 96,66"></polygon>
+                </g>
+                <ellipse cx="80" cy="114" rx="11" ry="15" fill="#6A1F33"></ellipse>
+              </svg>
+            </sc-if>
+            <sc-if value="{{t.isBol}}" hint-placeholder-val="{{false}}">
+              <svg width="96" height="48" viewBox="0 0 240 120" aria-hidden="true" style="flex-shrink: 0">
+                <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="10">
+                  <path d="M24 18V102M56 18V102M24 60H56" stroke="#FBF7F8"></path>
+                  <path d="M78 30C78 104 120 104 120 62C120 104 162 104 162 30" stroke="#E7A9A0"></path>
+                  <path d="M184 18V102M216 18V102M184 60H216" stroke="#FBF7F8"></path>
+                </g>
+                <circle cx="120" cy="34" r="11" fill="#FBF7F8"></circle>
+              </svg>
+            </sc-if>
+          </div>
+          <sc-if value="{{hero.showProgress}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div aria-hidden="true" style="height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.22); overflow: hidden">
+                <div style="width: {{hero.pct}}; height: 6px; border-radius: 3px; background: {{t.heroAccent}}"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: {{t.heroMuted}}">
+                <span>{{hero.footL}}</span>
+                <span>{{hero.footR}}</span>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{hero.noProgress}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 12px; color: {{t.heroMuted}}">{{hero.footL}}</span>
+          </sc-if>
+          <sc-if value="{{hero.hasCta}}" hint-placeholder-val="{{false}}">
+            <button type="button" onClick="{{hero.onCta}}" style="min-height: 46px; border: none; border-radius: {{t.btnRadius}}; background: {{t.heroAccent}}; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">{{hero.cta}}</button>
+          </sc-if>
+        </section>
+
+        <sc-if value="{{isTtc}}" hint-placeholder-val="{{false}}">
+          <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 4px">
+            <h2 style="margin: 0 0 6px; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Felkészülési lista</h2>
+            <sc-for list="{{checks}}" as="ck" hint-placeholder-count="5">
+              <button type="button" onClick="{{ck.onToggle}}" aria-pressed="{{ck.pressed}}" style="width: 100%; min-height: 48px; border: none; background: transparent; padding: 6px 0; display: flex; align-items: center; gap: 12px; text-align: left; font-family: inherit; cursor: pointer">
+                <span style="width: 24px; height: 24px; flex-shrink: 0; box-sizing: border-box; border-radius: 7px; border: 2px solid {{t.primary}}; background: {{ck.boxBg}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="visibility: {{ck.vis}}"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+                </span>
+                <span style="font-size: 14px; line-height: 1.35; color: {{t.text}}">{{ck.label}}</span>
+              </button>
+            </sc-for>
+            <p style="margin: 6px 0 0; font-size: 12px; line-height: 1.45; color: {{t.muted}}">Általános lista. Hogy neked mi szükséges, azt az orvosoddal érdemes egyeztetni.</p>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{hasNext}}" hint-placeholder-val="{{true}}">
+          <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 16px; display: flex; flex-direction: column; gap: 14px">
+            <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Következő időpont</h2>
+            <div style="display: flex; gap: 14px; align-items: center">
+              <div style="width: 52px; height: 52px; flex-shrink: 0; border-radius: 14px; background: {{t.accentSoft}}; color: {{t.primary}}; display: flex; align-items: center; justify-content: center">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"></path></svg>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+                <span style="font-size: 16px; font-weight: 600; color: {{t.text}}">{{next.service}}</span>
+                <span style="font-size: 14px; color: {{t.muted}}">{{next.when}} · {{next.time}}</span>
+                <span style="font-size: 13px; color: {{t.muted}}">Dr. Schmek Lilian Hanna</span>
+              </div>
+            </div>
+            <button type="button" onClick="{{goBooking}}" style="min-height: 46px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Időpontjaim kezelése</button>
+          </section>
+        </sc-if>
+        <sc-if value="{{noNext}}" hint-placeholder-val="{{false}}">
+          <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+            <span style="font-size: 15px; color: {{t.text}}">Nincs közelgő időpontod.</span>
+            <button type="button" onClick="{{goBookingNew}}" style="min-height: 48px; border: none; border-radius: {{t.btnRadius}}; background: {{t.primary}}; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Időpontot foglalok</button>
+          </section>
+        </sc-if>
+
+        <div style="display: flex; gap: 8px">
+          <button type="button" onClick="{{goBookingNew}}" style="flex: 1 1 0; min-height: 96px; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; background: {{t.surface}}; color: {{t.primary}}; font-family: inherit; font-size: 13px; font-weight: 600; line-height: 1.25; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 10px 6px">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4M12 13v4M10 15h4"></path></svg>
+            <span>Új időpont</span>
+          </button>
+          <button type="button" onClick="{{goMsgs}}" style="flex: 1 1 0; min-height: 96px; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; background: {{t.surface}}; color: {{t.primary}}; font-family: inherit; font-size: 13px; font-weight: 600; line-height: 1.25; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 10px 6px">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v12H3zM3 7l9 6 9-6"></path></svg>
+            <span>Üzenet az orvosnak</span>
+          </button>
+          <button type="button" onClick="{{goLiliDocs}}" style="flex: 1 1 0; min-height: 96px; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; background: {{t.surface}}; color: {{t.primary}}; font-family: inherit; font-size: 13px; font-weight: 600; line-height: 1.25; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 10px 6px">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5M4 15v5h16v-5"></path></svg>
+            <span>Lelet feltöltése</span>
+          </button>
+        </div>
+
+        <section style="background: {{t.accentSoft}}; border-radius: {{t.radius}}; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; align-items: center; gap: 8px; color: {{t.primary}}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.6 1 2.5h6c0-.9.3-1.8 1-2.5A6 6 0 0 0 12 3z"></path></svg>
+            <span style="font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase">{{homeTip.kicker}}</span>
+          </div>
+          <span style="font-family: {{t.headFont}}; font-size: 21px; line-height: 1.25; color: {{t.primary}}">{{homeTip.title}}</span>
+          <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.text}}">{{homeTip.text}}</p>
+          <button type="button" onClick="{{goHomeTopic}}" style="align-self: flex-start; min-height: 44px; border: none; background: none; padding: 0; color: {{t.primary}}; font-family: inherit; font-size: 14px; font-weight: 600; text-decoration: underline; cursor: pointer">{{homeTip.more}}</button>
+        </section>
+
+        <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; overflow: hidden">
+          <button type="button" onClick="{{openHomeVideo}}" style="width: 100%; border: none; background: transparent; padding: 0; text-align: left; cursor: pointer; font-family: inherit; display: flex; align-items: stretch">
+            <span style="width: 108px; min-height: 104px; flex-shrink: 0; background: {{t.primary}}; display: flex; align-items: center; justify-content: center">
+              <span style="width: 42px; height: 42px; border-radius: 50%; background: rgba(255, 255, 255, 0.18); color: #FFFFFF; display: flex; align-items: center; justify-content: center">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"></path></svg>
+              </span>
+            </span>
+            <span style="padding: 14px 16px; display: flex; flex-direction: column; gap: 5px; color: {{t.text}}">
+              <span style="font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Ajánlott videó</span>
+              <span style="font-size: 15px; font-weight: 600; line-height: 1.3">{{homeVideo.title}}</span>
+              <span style="font-size: 12px; color: {{t.muted}}">Dr. Schmek Lilian Hanna · [hossz]</span>
+            </span>
+          </button>
+        </section>
+
+        <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+            <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Friss a közösségben</h2>
+            <button type="button" onClick="{{goForum}}" style="min-height: 44px; border: none; background: none; padding: 0 4px; color: {{t.primary}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Mind</button>
+          </div>
+          <button type="button" onClick="{{openHomeThread}}" style="width: 100%; border: none; border-radius: 12px; background: {{t.bg}}; padding: 12px 14px; text-align: left; cursor: pointer; font-family: inherit; display: flex; flex-direction: column; gap: 5px">
+            <span style="font-size: 12px; color: {{t.muted}}">{{homeThread.tag}} · {{homeThread.authorLabel}}</span>
+            <span style="font-size: 15px; font-weight: 600; line-height: 1.3; color: {{t.text}}">{{homeThread.title}}</span>
+            <span style="font-size: 13px; font-weight: 600; color: {{t.primary}}">{{homeThread.replyLabel}}</span>
+          </button>
+        </section>
+
+        <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+          <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Rendelő</h2>
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: {{t.text}}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.primary}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11zM12 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"></path></svg>
+            <span>[Rendelő címe]</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: {{t.text}}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.primary}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2"></path></svg>
+            <span>Rendelési idő: [napok és órák]</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: {{t.text}}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.primary}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"></path></svg>
+            <span>[Telefonszám]</span>
+          </div>
+          <div style="height: 1px; background: {{t.border}}"></div>
+          <div style="display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.45; color: {{t.text}}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.primary}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M12 8v5M12 16.5v.5M10.3 3.9 2.6 17a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg>
+            <span>Sürgős esetben ne az alkalmazásban írj: hívd a 112-t, vagy menj a legközelebbi ügyeletre.</span>
+          </div>
+        </section>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isBooking}}" hint-placeholder-val="{{false}}">
+      <div style="height: 708px; overflow-y: auto; box-sizing: border-box; padding: 22px 20px 28px; display: flex; flex-direction: column; gap: 22px">
+        <h1 style="margin: 0; font-family: {{t.headFont}}; font-weight: {{t.headWeight}}; font-size: {{t.titleSize}}; letter-spacing: {{t.titleSpacing}}; line-height: 1.15; color: {{t.primary}}">Időpont</h1>
+
+        <section style="display: flex; flex-direction: column; gap: 10px">
+          <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Közelgő időpontjaim</h2>
+          <sc-if value="{{hasAppts}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-direction: column; gap: 10px">
+              <sc-for list="{{appts}}" as="a" hint-placeholder-count="1">
+                <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 12px 12px 12px 16px; display: flex; align-items: center; gap: 12px">
+                  <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+                    <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">{{a.service}}</span>
+                    <span style="font-size: 13px; color: {{t.muted}}">{{a.when}} · {{a.time}}</span>
+                  </div>
+                  <button type="button" onClick="{{a.onCancel}}" style="min-height: 44px; flex-shrink: 0; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.muted}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Lemondás</button>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{noAppts}}" hint-placeholder-val="{{false}}">
+            <p style="margin: 0; font-size: 14px; color: {{t.muted}}">Jelenleg nincs lefoglalt időpontod.</p>
+          </sc-if>
+        </section>
+
+        <section style="display: flex; flex-direction: column; gap: 14px">
+          <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Új időpont foglalása</h2>
+          <sc-if value="{{showStepper}}" hint-placeholder-val="{{true}}">
+            <ol style="list-style: none; margin: 0; padding: 0; display: flex; gap: 6px">
+              <sc-for list="{{steps}}" as="st" hint-placeholder-count="3">
+                <li style="flex: 1 1 0; display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: {{st.weight}}; color: {{st.labelColor}}">
+                  <span style="width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%; background: {{st.numBg}}; color: {{st.numColor}}; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600">{{st.n}}</span>
+                  <span>{{st.label}}</span>
+                </li>
+              </sc-for>
+            </ol>
+          </sc-if>
+
+          <sc-if value="{{isStepService}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-direction: column; gap: 10px">
+              <sc-for list="{{services}}" as="x" hint-placeholder-count="9">
+                <button type="button" onClick="{{x.onPick}}" style="width: 100%; min-height: 64px; text-align: left; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; background: {{t.surface}}; padding: 12px 14px 12px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-family: inherit; color: {{t.text}}">
+                  <span style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px">
+                    <span style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px">
+                      <span style="font-size: 15px; font-weight: 600">{{x.name}}</span>
+                      <sc-if value="{{x.rec}}" hint-placeholder-val="{{false}}">
+                        <span style="padding: 2px 8px; border-radius: 999px; background: {{t.accentSoft}}; color: {{t.primary}}; font-size: 11px; font-weight: 600">Neked ajánlott</span>
+                      </sc-if>
+                    </span>
+                    <span style="font-size: 13px; color: {{t.muted}}">{{x.desc}}</span>
+                  </span>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.primary}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M9 6l6 6-6 6"></path></svg>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{isStepSlot}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 14px">
+              <div style="display: flex; align-items: center; gap: 10px">
+                <button type="button" onClick="{{backToService}}" aria-label="Vissza a vizsgálatokhoz" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.primary}}; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+                </button>
+                <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+                  <span style="font-size: 12px; color: {{t.muted}}">Kiválasztott vizsgálat</span>
+                  <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">{{svcName}}</span>
+                </div>
+              </div>
+              <span style="font-size: 14px; font-weight: 600; color: {{t.text}}">November</span>
+              <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px">
+                <sc-for list="{{days}}" as="dy" hint-placeholder-count="6">
+                  <button type="button" onClick="{{dy.onPick}}" aria-label="{{dy.label}}" aria-pressed="{{dy.pressed}}" style="flex-shrink: 0; width: 54px; height: 68px; border-radius: 16px; border: 1px solid {{dy.border}}; background: {{dy.bg}}; color: {{dy.color}}; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 0">
+                    <span style="font-size: 12px; font-weight: 500">{{dy.dow}}</span>
+                    <span style="font-size: 20px; font-weight: {{dy.weight}}">{{dy.num}}</span>
+                  </button>
+                </sc-for>
+              </div>
+              <span style="font-size: 14px; color: {{t.muted}}">{{dayLabel}} · szabad időpontok</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px">
+                <sc-for list="{{slots}}" as="sl" hint-placeholder-count="4">
+                  <button type="button" onClick="{{sl.onPick}}" aria-pressed="{{sl.pressed}}" style="width: calc((100% - 16px) / 3); height: 46px; border-radius: 12px; border: 1px solid {{sl.border}}; background: {{sl.bg}}; color: {{sl.color}}; font-family: inherit; font-size: 15px; font-weight: {{sl.weight}}; cursor: pointer; padding: 0">{{sl.time}}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{noSlotsLeft}}" hint-placeholder-val="{{false}}">
+                <p style="margin: 0; font-size: 14px; color: {{t.muted}}">Erre a napra már nincs szabad időpont. Válassz másik napot.</p>
+              </sc-if>
+              <button type="button" onClick="{{toConfirm}}" disabled="{{noSlot}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{nextBg}}; color: {{nextColor}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{nextCursor}}; padding: 0 20px">Tovább</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{isStepConfirm}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 14px">
+              <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+                <div style="display: flex; justify-content: space-between; gap: 16px; font-size: 14px">
+                  <span style="color: {{t.muted}}">Vizsgálat</span>
+                  <span style="font-weight: 600; text-align: right; color: {{t.text}}">{{svcName}}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; gap: 16px; font-size: 14px">
+                  <span style="color: {{t.muted}}">Időpont</span>
+                  <span style="font-weight: 600; text-align: right; color: {{t.text}}">{{dayLabel}} · {{slotLabel}}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; gap: 16px; font-size: 14px">
+                  <span style="color: {{t.muted}}">Orvos</span>
+                  <span style="font-weight: 600; text-align: right; color: {{t.text}}">Dr. Schmek Lilian Hanna</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; gap: 16px; font-size: 14px">
+                  <span style="color: {{t.muted}}">Díj</span>
+                  <span style="font-weight: 600; text-align: right; color: {{t.text}}">[ár]</span>
+                </div>
+              </div>
+              <p style="margin: 0; padding: 14px 16px; border-radius: {{t.radius}}; background: {{t.accentSoft}}; font-size: 14px; line-height: 1.5; color: {{t.text}}">Hozd magaddal a TAJ-kártyádat, a személyi igazolványodat és a korábbi leleteidet. A leleteket a Mappádba előre is feltöltheted.</p>
+              <button type="button" onClick="{{confirmBooking}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{t.primary}}; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Foglalás megerősítése</button>
+              <button type="button" onClick="{{backToSlot}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Vissza</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{isStepDone}}" hint-placeholder-val="{{false}}">
+            <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 24px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+              <div style="width: 56px; height: 56px; border-radius: 50%; background: {{t.accentSoft}}; color: {{t.primary}}; display: flex; align-items: center; justify-content: center">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+              </div>
+              <span style="font-family: {{t.headFont}}; font-size: 26px; line-height: 1.2; color: {{t.primary}}">Lefoglaltuk!</span>
+              <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">{{lb.service}}</span>
+              <span style="font-size: 14px; color: {{t.muted}}">{{lb.when}} · {{lb.time}}</span>
+              <p style="margin: 0; font-size: 13px; line-height: 1.5; color: {{t.muted}}">Az időpontod megjelent a közelgő időpontjaid között.</p>
+              <button type="button" onClick="{{newBooking}}" style="margin-top: 6px; min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 24px">Új foglalás</button>
+            </div>
+          </sc-if>
+        </section>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isKb}}" hint-placeholder-val="{{false}}">
+      <div style="height: 708px; overflow-y: auto; box-sizing: border-box; padding: 22px 20px 28px; display: flex; flex-direction: column; gap: 18px">
+        <h1 style="margin: 0; font-family: {{t.headFont}}; font-weight: {{t.headWeight}}; font-size: {{t.titleSize}}; letter-spacing: {{t.titleSpacing}}; line-height: 1.15; color: {{t.primary}}">Tudástár</h1>
+        <div style="display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: {{t.track}}">
+          <button type="button" onClick="{{showKbGuide}}" aria-pressed="{{segGuide.pressed}}" style="flex: 1 1 0; min-height: 44px; border: none; border-radius: 999px; background: {{segGuide.bg}}; color: {{segGuide.color}}; box-shadow: {{segGuide.shadow}}; font-family: inherit; font-size: 14px; font-weight: {{segGuide.weight}}; cursor: pointer">Útmutató</button>
+          <button type="button" onClick="{{showKbVideos}}" aria-pressed="{{segVideos.pressed}}" style="flex: 1 1 0; min-height: 44px; border: none; border-radius: 999px; background: {{segVideos.bg}}; color: {{segVideos.color}}; box-shadow: {{segVideos.shadow}}; font-family: inherit; font-size: 14px; font-weight: {{segVideos.weight}}; cursor: pointer">Videók</button>
+        </div>
+
+        <sc-if value="{{isKbGuide}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 20px">
+            <div style="display: flex; gap: 8px; overflow-x: auto; margin: 0 -20px; padding: 0 20px 4px">
+              <sc-for list="{{topicChips}}" as="tc" hint-placeholder-count="7">
+                <button type="button" onClick="{{tc.onPick}}" aria-pressed="{{tc.pressed}}" style="flex-shrink: 0; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid {{tc.border}}; background: {{tc.bg}}; color: {{tc.color}}; font-family: inherit; font-size: 14px; font-weight: {{tc.weight}}; cursor: pointer; white-space: nowrap">{{tc.label}}</button>
+              </sc-for>
+            </div>
+
+            <section style="background: {{t.primary}}; border-radius: {{t.radius}}; padding: 18px; display: flex; flex-direction: column; gap: 8px; color: #FFFFFF">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px">
+                <span style="font-family: {{t.headFont}}; font-size: 26px; line-height: 1.15; color: #FFFFFF">{{g.title}}</span>
+                <sc-if value="{{isMyTopic}}" hint-placeholder-val="{{true}}">
+                  <span style="flex-shrink: 0; padding: 5px 10px; border-radius: 999px; background: {{t.heroAccent}}; color: {{t.primary}}; font-size: 12px; font-weight: 600">{{topicBadge}}</span>
+                </sc-if>
+              </div>
+              <span style="font-size: 13px; color: {{t.heroMuted}}">{{g.range}}</span>
+              <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #FFFFFF">{{g.intro}}</p>
+            </section>
+
+            <section style="display: flex; flex-direction: column; gap: 10px">
+              <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Tudtad-e?</h2>
+              <sc-for list="{{tips}}" as="tp" hint-placeholder-count="4">
+                <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start">
+                  <div style="width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%; background: {{t.accentSoft}}; color: {{t.primary}}; display: flex; align-items: center; justify-content: center">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.6 1 2.5h6c0-.9.3-1.8 1-2.5A6 6 0 0 0 12 3z"></path></svg>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+                    <span style="font-size: 15px; font-weight: 600; line-height: 1.3; color: {{t.text}}">{{tp.title}}</span>
+                    <span style="font-size: 14px; line-height: 1.5; color: {{t.muted}}">{{tp.text}}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </section>
+
+            <section style="display: flex; flex-direction: column; gap: 8px">
+              <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Gyakori kérdések</h2>
+              <sc-for list="{{faqs}}" as="f" hint-placeholder-count="4">
+                <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; overflow: hidden">
+                  <button type="button" onClick="{{f.toggle}}" aria-expanded="{{f.expanded}}" style="width: 100%; min-height: 54px; border: none; background: transparent; padding: 14px 16px; display: flex; align-items: center; gap: 12px; text-align: left; font-family: inherit; font-size: 15px; font-weight: 600; line-height: 1.35; color: {{t.text}}; cursor: pointer">
+                    <span style="flex-grow: 1">{{f.q}}</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.primary}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; transform: rotate({{f.rot}}); transition: transform 0.2s"><path d="M6 9l6 6 6-6"></path></svg>
+                  </button>
+                  <sc-if value="{{f.open}}" hint-placeholder-val="{{false}}">
+                    <p style="margin: 0; padding: 0 16px 16px; font-size: 14px; line-height: 1.55; color: {{t.text}}">{{f.a}}</p>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </section>
+
+            <section style="background: {{t.accentSoft}}; border-radius: {{t.radius}}; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+              <p style="margin: 0; font-size: 13px; line-height: 1.5; color: {{t.text}}">Általános tájékoztatás, nem helyettesíti az orvosi konzultációt. Ha kérdésed van, írj az orvosodnak.</p>
+              <button type="button" onClick="{{askDoctor}}" style="min-height: 48px; border: none; border-radius: {{t.btnRadius}}; background: {{t.primary}}; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Kérdezem az orvost</button>
+            </section>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{isKbVideos}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 16px">
+            <sc-if value="{{isVideoList}}" hint-placeholder-val="{{true}}">
+              <div style="display: flex; flex-direction: column; gap: 14px">
+                <p style="margin: 0; font-size: 14px; line-height: 1.45; color: {{t.muted}}">Rövid oktatóvideók a rendelőtől, minden életszakaszhoz.</p>
+                <div style="display: flex; gap: 8px; overflow-x: auto; margin: 0 -20px; padding: 0 20px 4px">
+                  <sc-for list="{{videoFilters}}" as="vf" hint-placeholder-count="9">
+                    <button type="button" onClick="{{vf.onPick}}" aria-pressed="{{vf.pressed}}" style="flex-shrink: 0; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid {{vf.border}}; background: {{vf.bg}}; color: {{vf.color}}; font-family: inherit; font-size: 13px; font-weight: {{vf.weight}}; cursor: pointer; white-space: nowrap">{{vf.label}}</button>
+                  </sc-for>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                  <sc-for list="{{videosShown}}" as="vd" hint-placeholder-count="4">
+                    <button type="button" onClick="{{vd.onOpen}}" style="width: 100%; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; background: {{t.surface}}; padding: 0; overflow: hidden; text-align: left; cursor: pointer; font-family: inherit; display: flex; align-items: stretch">
+                      <span style="width: 104px; min-height: 96px; flex-shrink: 0; background: {{t.primary}}; display: flex; align-items: center; justify-content: center">
+                        <span style="width: 38px; height: 38px; border-radius: 50%; background: rgba(255, 255, 255, 0.18); color: #FFFFFF; display: flex; align-items: center; justify-content: center">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"></path></svg>
+                        </span>
+                      </span>
+                      <span style="flex-grow: 1; min-width: 0; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; color: {{t.text}}">
+                        <span style="font-size: 12px; color: {{t.muted}}">{{vd.tagLabel}}</span>
+                        <span style="font-size: 15px; font-weight: 600; line-height: 1.3">{{vd.title}}</span>
+                        <span style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: {{t.muted}}">
+                          <span>[hossz]</span>
+                          <sc-if value="{{vd.watched}}" hint-placeholder-val="{{false}}">
+                            <span style="display: flex; align-items: center; gap: 4px; color: {{t.primary}}; font-weight: 600">
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+                              Megnézve
+                            </span>
+                          </sc-if>
+                        </span>
+                      </span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{isVideoPlayer}}" hint-placeholder-val="{{false}}">
+              <div style="display: flex; flex-direction: column; gap: 14px">
+                <button type="button" onClick="{{backToVideos}}" style="align-self: flex-start; min-height: 44px; border: none; background: none; padding: 0; display: flex; align-items: center; gap: 6px; color: {{t.primary}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+                  Vissza a videókhoz
+                </button>
+                <div aria-label="Videólejátszó helye" role="img" style="width: 100%; height: 197px; border-radius: {{t.radius}}; background: #16161F; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px">
+                  <span style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255, 255, 255, 0.92); color: #16161F; display: flex; align-items: center; justify-content: center">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"></path></svg>
+                  </span>
+                  <span style="font-size: 12px; color: rgba(255, 255, 255, 0.78)">Videó helye · [hossz]</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px">
+                  <span style="font-size: 12px; color: {{t.muted}}">{{video.tagLabel}} · Dr. Schmek Lilian Hanna</span>
+                  <h2 style="margin: 0; font-family: {{t.headFont}}; font-weight: {{t.headWeight}}; font-size: 24px; line-height: 1.2; color: {{t.primary}}">{{video.title}}</h2>
+                  <p style="margin: 0; font-size: 15px; line-height: 1.5; color: {{t.text}}">{{video.desc}}</p>
+                </div>
+                <button type="button" onClick="{{askAboutVideo}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Kérdésem van a videóhoz</button>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isForum}}" hint-placeholder-val="{{false}}">
+      <div style="height: 708px; overflow-y: auto; box-sizing: border-box; padding: 22px 20px 28px; display: flex; flex-direction: column; gap: 16px">
+
+        <sc-if value="{{isForumList}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 16px">
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <h1 style="margin: 0; font-family: {{t.headFont}}; font-weight: {{t.headWeight}}; font-size: {{t.titleSize}}; letter-spacing: {{t.titleSpacing}}; line-height: 1.15; color: {{t.primary}}">Közösség</h1>
+              <p style="margin: 0; font-size: 14px; line-height: 1.45; color: {{t.muted}}">Névtelen kérdések és válaszok, nőktől nőknek.</p>
+            </div>
+            <div role="note" style="padding: 12px 14px; border-radius: 12px; background: {{t.accentSoft}}; display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.45; color: {{t.text}}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.primary}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6z"></path></svg>
+              <span>A neved senki nem látja: itt <strong>{{myNick}}</strong> néven jelensz meg. Minden életszakasznak saját tere van, a fórumot a rendelő moderálja. Orvosi kérdéssel fordulj az orvosodhoz.</span>
+            </div>
+            <sc-if value="{{forumJoined}}" hint-placeholder-val="{{true}}">
+              <div style="display: flex; flex-direction: column; gap: 10px">
+                <button type="button" onClick="{{newQuestion}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{t.primary}}; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Új kérdés feltevése</button>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 4px 4px 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}">
+                  <span style="font-size: 13px; line-height: 1.4; color: {{t.text}}">Életszakasz mutatása a becenevem mellett</span>
+                  <button type="button" role="switch" aria-checked="{{stageSw.checked}}" aria-label="Életszakasz mutatása a becenevem mellett" onClick="{{toggleStage}}" style="width: 56px; height: 44px; flex-shrink: 0; border: none; background: none; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center">
+                    <span style="width: 46px; height: 28px; box-sizing: border-box; border-radius: 14px; border: 2px solid {{stageSw.border}}; background: {{stageSw.track}}; padding: 0 3px; display: flex; align-items: center; justify-content: {{stageSw.justify}}">
+                      <span style="width: 18px; height: 18px; border-radius: 50%; background: {{stageSw.knob}}"></span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{notJoined}}" hint-placeholder-val="{{false}}">
+              <section aria-label="Csatlakozás a közösséghez" style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+                <span style="font-family: {{t.headFont}}; font-size: 20px; line-height: 1.25; color: {{t.primary}}">Csatlakozás a közösséghez</span>
+                <p style="margin: 0; font-size: 13px; line-height: 1.45; color: {{t.muted}}">Olvasni csatlakozás nélkül is tudsz. Kérdezni és válaszolni a házirend elfogadása után lehet.</p>
+                <ul style="margin: 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 1.45; color: {{t.text}}">
+                  <li>Névtelen maradsz. Mások személyes adatait se oszd meg.</li>
+                  <li>Tapasztalatot osztunk meg, nem orvosi tanácsot: diagnózist vagy gyógyszeradagot ne javasolj.</li>
+                  <li>Tisztelettel írunk egymásnak. A jelzett hozzászólásokat a moderátor átnézi.</li>
+                </ul>
+                <sc-for list="{{joinChecks}}" as="jc" hint-placeholder-count="2">
+                  <button type="button" onClick="{{jc.onToggle}}" aria-pressed="{{jc.pressed}}" style="width: 100%; min-height: 48px; border: none; background: transparent; padding: 4px 0; display: flex; align-items: center; gap: 12px; text-align: left; font-family: inherit; cursor: pointer">
+                    <span style="width: 24px; height: 24px; flex-shrink: 0; box-sizing: border-box; border-radius: 7px; border: 2px solid {{t.primary}}; background: {{jc.boxBg}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="visibility: {{jc.vis}}"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+                    </span>
+                    <span style="font-size: 14px; line-height: 1.35; color: {{t.text}}">{{jc.label}}</span>
+                  </button>
+                </sc-for>
+                <button type="button" onClick="{{joinForum}}" disabled="{{cantJoin}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{joinBg}}; color: {{joinColor}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Csatlakozom</button>
+              </section>
+            </sc-if>
+            <div role="note" style="padding: 12px 14px; border-radius: 12px; border: 1px solid {{t.border}}; background: {{t.surface}}; display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.45; color: {{t.text}}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.primary}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"></path></svg>
+              <span>Ha most nagyon nehéz: a Lelki Elsősegély Telefonszolgálat a <strong>116-123</strong> számon ingyenesen, éjjel-nappal hívható. Életveszélyben hívd a 112-t.</span>
+            </div>
+            <div style="display: flex; gap: 8px; overflow-x: auto; margin: 0 -20px; padding: 0 20px 4px">
+              <sc-for list="{{forumFilters}}" as="ff" hint-placeholder-count="6">
+                <button type="button" onClick="{{ff.onPick}}" aria-pressed="{{ff.pressed}}" style="flex-shrink: 0; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid {{ff.border}}; background: {{ff.bg}}; color: {{ff.color}}; font-family: inherit; font-size: 13px; font-weight: {{ff.weight}}; cursor: pointer; white-space: nowrap">{{ff.label}}</button>
+              </sc-for>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px">
+              <sc-for list="{{threadsShown}}" as="th" hint-placeholder-count="4">
+                <button type="button" onClick="{{th.onOpen}}" style="width: 100%; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; background: {{t.surface}}; padding: 14px 16px; text-align: left; cursor: pointer; font-family: inherit; display: flex; flex-direction: column; gap: 6px; color: {{t.text}}">
+                  <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: {{t.muted}}">
+                    <span style="padding: 2px 8px; border-radius: 999px; background: {{t.accentSoft}}; color: {{t.primary}}; font-weight: 600">{{th.tag}}</span>
+                    <span>{{th.time}}</span>
+                  </span>
+                  <span style="font-size: 15px; font-weight: 600; line-height: 1.3">{{th.title}}</span>
+                  <sc-if value="{{th.hasBody}}" hint-placeholder-val="{{true}}">
+                    <span style="font-size: 13px; line-height: 1.45; color: {{t.muted}}">{{th.excerpt}}</span>
+                  </sc-if>
+                  <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: {{t.muted}}">
+                    <span>{{th.authorLabel}}</span>
+                    <span style="color: {{t.primary}}; font-weight: 600">{{th.replyLabel}}</span>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+            <sc-if value="{{noThreadsShown}}" hint-placeholder-val="{{false}}">
+              <p style="margin: 0; font-size: 14px; color: {{t.muted}}">Ebben a térben még nincs kérdés. Legyél te az első!</p>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{isForumThread}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 14px">
+            <button type="button" onClick="{{backToForum}}" style="align-self: flex-start; min-height: 44px; border: none; background: none; padding: 0; display: flex; align-items: center; gap: 6px; color: {{t.primary}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+              Vissza a közösséghez
+            </button>
+            <article style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+              <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: {{t.muted}}">
+                <span style="padding: 2px 8px; border-radius: 999px; background: {{t.accentSoft}}; color: {{t.primary}}; font-weight: 600">{{cur.tag}}</span>
+                <span>{{cur.time}}</span>
+              </span>
+              <h1 style="margin: 0; font-family: {{t.headFont}}; font-weight: {{t.headWeight}}; font-size: 22px; line-height: 1.25; color: {{t.primary}}">{{cur.title}}</h1>
+              <sc-if value="{{cur.hasBody}}" hint-placeholder-val="{{true}}">
+                <p style="margin: 0; font-size: 15px; line-height: 1.5; color: {{t.text}}">{{cur.body}}</p>
+              </sc-if>
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+                <span style="font-size: 13px; color: {{t.muted}}">{{cur.authorLabel}}</span>
+                <sc-if value="{{cur.canReport}}" hint-placeholder-val="{{true}}">
+                  <button type="button" onClick="{{cur.onReport}}" style="min-height: 44px; border: none; background: none; padding: 0 4px; color: {{t.muted}}; font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4h11l-1.5 4L16 12H5"></path></svg>
+                    Jelentés
+                  </button>
+                </sc-if>
+                <sc-if value="{{cur.reported}}" hint-placeholder-val="{{false}}">
+                  <span style="font-size: 12px; color: {{t.muted}}">Jelentve a moderátornak</span>
+                </sc-if>
+              </div>
+            </article>
+            <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">{{cur.replyLabel}}</h2>
+            <div style="display: flex; flex-direction: column; gap: 10px">
+              <sc-for list="{{replies}}" as="rp" hint-placeholder-count="2">
+                <div style="background: {{rp.bg}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px">
+                  <span style="display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: {{t.muted}}">
+                    <span style="font-weight: 600">{{rp.authorLabel}}</span>
+                    <span>{{rp.time}}</span>
+                  </span>
+                  <p style="margin: 0; font-size: 15px; line-height: 1.5; color: {{t.text}}">{{rp.text}}</p>
+                  <sc-if value="{{rp.canReport}}" hint-placeholder-val="{{true}}">
+                    <button type="button" onClick="{{rp.onReport}}" style="align-self: flex-end; min-height: 44px; border: none; background: none; padding: 0 4px; color: {{t.muted}}; font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer">Jelentés</button>
+                  </sc-if>
+                  <sc-if value="{{rp.reported}}" hint-placeholder-val="{{false}}">
+                    <span style="align-self: flex-end; font-size: 12px; color: {{t.muted}}">Jelentve a moderátornak</span>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{forumJoined}}" hint-placeholder-val="{{true}}">
+            <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+              <label for="hh-reply" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Válaszolj névtelenül</label>
+              <textarea id="hh-reply" rows="3" value="{{replyDraft}}" onChange="{{onReplyDraft}}" placeholder="Írd meg a tapasztalatodat…" style="box-sizing: border-box; width: 100%; padding: 10px 12px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.bg}}; color: {{t.text}}; font-family: inherit; font-size: 15px; line-height: 1.45; resize: none"></textarea>
+              <button type="button" onClick="{{sendReply}}" disabled="{{cantReply}}" style="min-height: 48px; border: none; border-radius: {{t.btnRadius}}; background: {{replyBg}}; color: {{replyColor}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Válasz küldése</button>
+            </div>
+            </sc-if>
+            <sc-if value="{{notJoined}}" hint-placeholder-val="{{false}}">
+              <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+                <span style="font-size: 14px; line-height: 1.45; color: {{t.text}}">A válaszoláshoz előbb csatlakozz a közösséghez.</span>
+                <button type="button" onClick="{{backToForum}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Csatlakozás</button>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{isForumNew}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 14px">
+            <button type="button" onClick="{{backToForum}}" style="align-self: flex-start; min-height: 44px; border: none; background: none; padding: 0; display: flex; align-items: center; gap: 6px; color: {{t.primary}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+              Mégse
+            </button>
+            <h1 style="margin: 0; font-family: {{t.headFont}}; font-weight: {{t.headWeight}}; font-size: {{t.titleSize}}; letter-spacing: {{t.titleSpacing}}; line-height: 1.15; color: {{t.primary}}">Új kérdés</h1>
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <label for="hh-qtitle" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Kérdésed röviden</label>
+              <input id="hh-qtitle" type="text" value="{{newTitle}}" onChange="{{onNewTitle}}" placeholder="Pl. Nektek mi segített a hányinger ellen?" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px">
+              <label for="hh-qbody" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Részletek (nem kötelező)</label>
+              <textarea id="hh-qbody" rows="5" value="{{newBody}}" onChange="{{onNewBody}}" placeholder="Írd le, mire vagy kíváncsi. Személyes adatot ne ossz meg." style="box-sizing: border-box; width: 100%; padding: 10px 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px; line-height: 1.45; resize: none"></textarea>
+            </div>
+            <span style="font-size: 13px; font-weight: 600; color: {{t.text}}">Melyik térbe?</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px">
+              <sc-for list="{{newSpaces}}" as="nt" hint-placeholder-count="5">
+                <button type="button" onClick="{{nt.onPick}}" aria-pressed="{{nt.pressed}}" style="min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid {{nt.border}}; background: {{nt.bg}}; color: {{nt.color}}; font-family: inherit; font-size: 13px; font-weight: {{nt.weight}}; cursor: pointer">{{nt.label}}</button>
+              </sc-for>
+            </div>
+            <p style="margin: 0; font-size: 13px; line-height: 1.45; color: {{t.muted}}">A kérdésed <strong>{{myNick}}</strong> néven jelenik meg, a nevedet senki nem látja.</p>
+            <button type="button" onClick="{{publishQuestion}}" disabled="{{cantPublish}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{publishBg}}; color: {{publishColor}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Közzététel névtelenül</button>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isLili}}" hint-placeholder-val="{{false}}">
+      <div style="height: 708px; overflow-y: auto; box-sizing: border-box; padding: 22px 20px 28px; display: flex; flex-direction: column; gap: 18px">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <h1 style="margin: 0; font-family: {{t.headFont}}; font-weight: {{t.headWeight}}; font-size: {{t.titleSize}}; letter-spacing: {{t.titleSpacing}}; line-height: 1.15; color: {{t.primary}}">Mappám</h1>
+          <p style="margin: 0; font-size: 14px; line-height: 1.45; color: {{t.muted}}">Dokumentumaid, hozzáféréseid és adataid egy helyen. A tiéd, viszed magaddal, és te döntöd el, ki mit lát belőle. A liliApp működteti.</p>
+        </div>
+        <div style="display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: {{t.track}}">
+          <button type="button" onClick="{{showLiliDocs}}" aria-pressed="{{segLDocs.pressed}}" style="flex: 1 1 0; min-height: 44px; border: none; border-radius: 999px; background: {{segLDocs.bg}}; color: {{segLDocs.color}}; box-shadow: {{segLDocs.shadow}}; font-family: inherit; font-size: 13px; font-weight: {{segLDocs.weight}}; cursor: pointer; padding: 0 4px">Dokumentumok</button>
+          <button type="button" onClick="{{showLiliAccess}}" aria-pressed="{{segLAccess.pressed}}" style="flex: 1 1 0; min-height: 44px; border: none; border-radius: 999px; background: {{segLAccess.bg}}; color: {{segLAccess.color}}; box-shadow: {{segLAccess.shadow}}; font-family: inherit; font-size: 13px; font-weight: {{segLAccess.weight}}; cursor: pointer; padding: 0 4px">Hozzáférések</button>
+          <button type="button" onClick="{{showLiliData}}" aria-pressed="{{segLData.pressed}}" style="flex: 1 1 0; min-height: 44px; border: none; border-radius: 999px; background: {{segLData.bg}}; color: {{segLData.color}}; box-shadow: {{segLData.shadow}}; font-family: inherit; font-size: 13px; font-weight: {{segLData.weight}}; cursor: pointer; padding: 0 4px">Adataim</button>
+        </div>
+
+        <sc-if value="{{isLiliDocs}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 16px">
+            <section style="position: relative; border: 1.5px dashed {{t.primary}}; border-radius: {{t.radius}}; background: {{t.surface}}; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+              <div style="display: flex; align-items: center; gap: 12px">
+                <div style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: {{t.accentSoft}}; color: {{t.primary}}; display: flex; align-items: center; justify-content: center">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5M4 15v5h16v-5"></path></svg>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 2px">
+                  <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">Új dokumentum feltöltése</span>
+                  <span style="font-size: 13px; color: {{t.muted}}">Lelet, ultrahangkép, szűrési eredmény · PDF, JPG, PNG</span>
+                </div>
+              </div>
+              <span style="font-size: 13px; color: {{t.muted}}">Kategória</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px">
+                <sc-for list="{{upCats}}" as="uc" hint-placeholder-count="5">
+                  <button type="button" onClick="{{uc.onPick}}" aria-pressed="{{uc.pressed}}" style="min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid {{uc.border}}; background: {{uc.bg}}; color: {{uc.color}}; font-family: inherit; font-size: 13px; font-weight: {{uc.weight}}; cursor: pointer">{{uc.label}}</button>
+                </sc-for>
+              </div>
+              <input id="hh-upload" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/*" onChange="{{onFile}}" style="position: absolute; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; overflow: hidden">
+              <label for="hh-upload" style="min-height: 48px; display: flex; align-items: center; justify-content: center; border-radius: {{t.btnRadius}}; background: {{t.primary}}; color: #FFFFFF; font-size: 15px; font-weight: 600; cursor: pointer">Fájl kiválasztása</label>
+              <sc-if value="{{hasLastUpload}}" hint-placeholder-val="{{false}}">
+                <p style="margin: 0; display: flex; align-items: center; gap: 6px; font-size: 13px; color: {{t.primary}}">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+                  <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">Feltöltve: {{lastUpload}}</span>
+                </p>
+              </sc-if>
+            </section>
+
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Dokumentumaim</h2>
+              <span style="font-size: 13px; color: {{t.muted}}">{{docSummary}}</span>
+            </div>
+            <div style="display: flex; gap: 8px; overflow-x: auto; margin: 0 -20px; padding: 0 20px 4px">
+              <sc-for list="{{docFilters}}" as="df" hint-placeholder-count="6">
+                <button type="button" onClick="{{df.onPick}}" aria-pressed="{{df.pressed}}" style="flex-shrink: 0; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid {{df.border}}; background: {{df.bg}}; color: {{df.color}}; font-family: inherit; font-size: 13px; font-weight: {{df.weight}}; cursor: pointer; white-space: nowrap">{{df.label}}</button>
+              </sc-for>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px">
+              <sc-for list="{{docsShown}}" as="d" hint-placeholder-count="4">
+                <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 12px 12px 12px 14px; display: flex; align-items: center; gap: 12px">
+                  <div style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 10px; background: {{t.accentSoft}}; color: {{t.primary}}; display: flex; align-items: center; justify-content: center">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4"></path></svg>
+                  </div>
+                  <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+                    <span style="font-size: 14px; font-weight: 600; color: {{t.text}}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{d.name}}</span>
+                    <span style="font-size: 12px; color: {{t.muted}}">{{d.meta}}</span>
+                  </div>
+                  <button type="button" onClick="{{d.onToggle}}" aria-pressed="{{d.sharePressed}}" style="flex-shrink: 0; min-height: 44px; padding: 0 10px; border-radius: 999px; border: 1px solid {{d.shareBorder}}; background: {{d.shareBg}}; color: {{d.shareColor}}; font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; white-space: nowrap">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{d.shareIcon}}"></path></svg>
+                    <span>{{d.shareLabel}}</span>
+                  </button>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{noDocsShown}}" hint-placeholder-val="{{false}}">
+              <p style="margin: 0; font-size: 14px; color: {{t.muted}}">Ebben a kategóriában még nincs dokumentum.</p>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{isLiliAccess}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 14px">
+            <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Ki láthatja a dokumentumaidat?</h2>
+            <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+              <div style="display: flex; align-items: center; gap: 12px">
+                <div aria-hidden="true" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: {{t.primary}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600">SL</div>
+                <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+                  <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">Dr. Schmek Lilian Hanna</span>
+                  <span style="font-size: 13px; color: {{t.muted}}">Hanna Health · {{hannaAccess}}</span>
+                </div>
+              </div>
+              <sc-if value="{{hasHannaAccess}}" hint-placeholder-val="{{true}}">
+                <button type="button" onClick="{{revokeHanna}}" style="min-height: 46px; border: 1px solid {{t.border}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.text}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; padding: 0 16px">Minden hozzáférés visszavonása</button>
+              </sc-if>
+              <sc-if value="{{noHannaAccess}}" hint-placeholder-val="{{false}}">
+                <p style="margin: 0; font-size: 13px; line-height: 1.45; color: {{t.muted}}">Dokumentumonként adhatsz hozzáférést a Dokumentumok fülön.</p>
+              </sc-if>
+            </section>
+            <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+              <div style="display: flex; flex-direction: column; gap: 4px">
+                <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">Másik orvos vagy kórház</span>
+                <span style="font-size: 13px; line-height: 1.45; color: {{t.muted}}">Ideiglenes, csak olvasási hozzáférés kóddal, például a választott szülészetnek vagy egy másik szakorvosnak.</span>
+              </div>
+              <sc-if value="{{noCode}}" hint-placeholder-val="{{true}}">
+                <button type="button" onClick="{{createCode}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Megosztási kód létrehozása</button>
+              </sc-if>
+              <sc-if value="{{hasCode}}" hint-placeholder-val="{{false}}">
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                  <div style="padding: 14px; border-radius: 12px; background: {{t.accentSoft}}; display: flex; flex-direction: column; align-items: center; gap: 4px">
+                    <span style="font-size: 12px; color: {{t.text}}">Megosztási kód</span>
+                    <span style="font-size: 26px; font-weight: 600; letter-spacing: 0.12em; color: {{t.primary}}">{{shareCode}}</span>
+                    <span style="font-size: 12px; color: {{t.text}}">Lejár 7 nap múlva · minden dokumentumod, csak olvasásra</span>
+                  </div>
+                  <button type="button" onClick="{{revokeCode}}" style="min-height: 46px; border: 1px solid {{t.border}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.text}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; padding: 0 16px">Kód visszavonása</button>
+                </div>
+              </sc-if>
+            </section>
+            <div role="note" style="padding: 12px 14px; border-radius: 12px; background: {{t.accentSoft}}; display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.45; color: {{t.text}}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.primary}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v6M12 7.5v.5"></path></svg>
+              <span>A Mappád kiegészíti az EESZT-t, nem helyettesíti: a szolgáltatók által feltöltött hivatalos dokumentumaid az EgészségAblakban is elérhetők.</span>
+            </div>
+            <h2 style="margin: 4px 0 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Hozzáférési napló</h2>
+            <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 4px 16px; display: flex; flex-direction: column">
+              <sc-for list="{{accessLog}}" as="lg" hint-placeholder-count="3">
+                <div style="padding: 12px 0; border-top: 1px solid {{lg.divider}}; display: flex; flex-direction: column; gap: 3px">
+                  <span style="font-size: 14px; line-height: 1.4; color: {{t.text}}">{{lg.text}}</span>
+                  <span style="font-size: 12px; color: {{t.muted}}">{{lg.time}}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{isLiliData}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; flex-direction: column; gap: 14px">
+            <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 12px 12px 12px 16px; display: flex; align-items: center; gap: 12px">
+              <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                <span style="font-size: 12px; color: {{t.muted}}">Életszakaszom</span>
+                <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">{{modeLabel}}</span>
+              </div>
+              <button type="button" onClick="{{openModeFromData}}" style="min-height: 44px; flex-shrink: 0; padding: 0 14px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Módosítás</button>
+            </section>
+            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.text}}">Az itt megadott adatokat az orvosod a vizsgálatra készülve láthatja. Bármikor módosíthatod őket.</p>
+            <sc-for list="{{fields}}" as="fl" hint-placeholder-count="8">
+              <div style="display: flex; flex-direction: column; gap: 6px">
+                <label for="{{fl.id}}" style="font-size: 13px; font-weight: 600; color: {{t.text}}">{{fl.label}}</label>
+                <input id="{{fl.id}}" type="text" value="{{fl.value}}" onChange="{{fl.onChange}}" placeholder="{{fl.ph}}" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px">
+              </div>
+            </sc-for>
+            <button type="button" onClick="{{saveProfile}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{t.primary}}; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Mentés</button>
+            <sc-if value="{{saved}}" hint-placeholder-val="{{false}}">
+              <p style="margin: 0; display: flex; align-items: center; gap: 6px; font-size: 13px; color: {{t.primary}}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+                <span>Elmentve</span>
+              </p>
+            </sc-if>
+
+            <h2 style="margin: 12px 0 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Értesítések</h2>
+            <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 2px 6px 2px 16px; display: flex; flex-direction: column">
+              <sc-for list="{{notifRows}}" as="nr" hint-placeholder-count="3">
+                <div style="padding: 10px 0; border-top: 1px solid {{nr.divider}}; display: flex; align-items: center; gap: 10px">
+                  <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                    <span style="font-size: 14px; font-weight: 600; color: {{t.text}}">{{nr.label}}</span>
+                    <span style="font-size: 12px; line-height: 1.4; color: {{t.muted}}">{{nr.desc}}</span>
+                  </div>
+                  <button type="button" role="switch" aria-checked="{{nr.checked}}" aria-label="{{nr.label}}" onClick="{{nr.onToggle}}" style="width: 56px; height: 44px; flex-shrink: 0; border: none; background: none; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center">
+                    <span style="width: 46px; height: 28px; box-sizing: border-box; border-radius: 14px; border: 2px solid {{nr.border}}; background: {{nr.track}}; padding: 0 3px; display: flex; align-items: center; justify-content: {{nr.justify}}">
+                      <span style="width: 18px; height: 18px; border-radius: 50%; background: {{nr.knob}}"></span>
+                    </span>
+                  </button>
+                </div>
+              </sc-for>
+            </div>
+            <p style="margin: 0; font-size: 12px; line-height: 1.45; color: {{t.muted}}">Életszakasz váltásakor az előzőhöz kötött emlékeztetők azonnal leállnak.</p>
+
+            <h2 style="margin: 12px 0 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Adatvédelem</h2>
+            <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 2px 6px 2px 16px; display: flex; flex-direction: column">
+              <sc-for list="{{consentRows}}" as="cr" hint-placeholder-count="5">
+                <div style="padding: 10px 0; border-top: 1px solid {{cr.divider}}; display: flex; align-items: center; gap: 10px">
+                  <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                    <span style="font-size: 14px; font-weight: 600; color: {{t.text}}">{{cr.label}}</span>
+                    <span style="font-size: 12px; line-height: 1.4; color: {{t.muted}}">{{cr.desc}}</span>
+                  </div>
+                  <sc-if value="{{cr.required}}" hint-placeholder-val="{{false}}">
+                    <span style="flex-shrink: 0; margin-right: 6px; padding: 4px 10px; border-radius: 999px; background: {{t.accentSoft}}; color: {{t.primary}}; font-size: 12px; font-weight: 600">Szükséges</span>
+                  </sc-if>
+                  <sc-if value="{{cr.optional}}" hint-placeholder-val="{{true}}">
+                    <button type="button" role="switch" aria-checked="{{cr.checked}}" aria-label="{{cr.label}}" onClick="{{cr.onToggle}}" style="width: 56px; height: 44px; flex-shrink: 0; border: none; background: none; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center">
+                      <span style="width: 46px; height: 28px; box-sizing: border-box; border-radius: 14px; border: 2px solid {{cr.border}}; background: {{cr.track}}; padding: 0 3px; display: flex; align-items: center; justify-content: {{cr.justify}}">
+                        <span style="width: 18px; height: 18px; border-radius: 50%; background: {{cr.knob}}"></span>
+                      </span>
+                    </button>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <button type="button" onClick="{{requestExport}}" style="flex: 1 1 0; min-height: 46px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; padding: 0 12px">Adataim letöltése</button>
+              <button type="button" onClick="{{askDelete}}" style="flex: 1 1 0; min-height: 46px; border: 1px solid {{t.border}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.text}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; padding: 0 12px">Fiókom törlése</button>
+            </div>
+            <sc-if value="{{exportRequested}}" hint-placeholder-val="{{false}}">
+              <p role="status" style="margin: 0; font-size: 13px; line-height: 1.45; color: {{t.primary}}">Kérésed rögzítettük: a letöltési csomagot [X] napon belül e-mailben küldjük.</p>
+            </sc-if>
+            <sc-if value="{{deleteConfirm}}" hint-placeholder-val="{{false}}">
+              <section aria-label="Fiók törlése" style="border: 1px solid {{t.primary}}; border-radius: {{t.radius}}; background: {{t.surface}}; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+                <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">Biztosan törlöd a fiókodat?</span>
+                <p style="margin: 0; font-size: 13px; line-height: 1.5; color: {{t.text}}">A Mappádba feltöltött dokumentumaid is törlődnek, ezért előtte töltsd le őket. A rendelő által vezetett egészségügyi dokumentációt a jogszabályban előírt ideig megőrizzük.</p>
+                <div style="display: flex; gap: 8px">
+                  <button type="button" onClick="{{confirmDelete}}" style="flex: 1 1 0; min-height: 46px; border: none; border-radius: {{t.btnRadius}}; background: {{t.primary}}; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; padding: 0 12px">Törlés kérése</button>
+                  <button type="button" onClick="{{cancelDelete}}" style="flex: 1 1 0; min-height: 46px; border: 1px solid {{t.border}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.text}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; padding: 0 12px">Mégse</button>
+                </div>
+              </section>
+            </sc-if>
+            <sc-if value="{{deleteDone}}" hint-placeholder-val="{{false}}">
+              <p role="status" style="margin: 0; font-size: 13px; line-height: 1.45; color: {{t.primary}}">Törlési kérésed rögzítettük, [X] napon belül végrehajtjuk.</p>
+            </sc-if>
+            <p style="margin: 0; font-size: 12px; line-height: 1.45; color: {{t.muted}}">Részletek: [adatkezelési tájékoztató]</p>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isMsgs}}" hint-placeholder-val="{{false}}">
+      <div style="height: 708px; display: flex; flex-direction: column">
+        <div style="flex-shrink: 0; padding: 12px 20px; display: flex; align-items: center; gap: 12px; background: {{t.surface}}; border-bottom: 1px solid {{t.border}}">
+          <div aria-hidden="true" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: {{t.primary}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600">SL</div>
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <h1 style="margin: 0; font-size: 15px; font-weight: 600; color: {{t.text}}">Dr. Schmek Lilian Hanna</h1>
+            <span style="font-size: 12px; color: {{t.muted}}">Nőgyógyászat · magzati medicina</span>
+          </div>
+        </div>
+        <div role="note" style="flex-shrink: 0; margin: 12px 16px 0; padding: 10px 12px; border-radius: 12px; background: {{t.accentSoft}}; display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.45; color: {{t.text}}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.primary}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; margin-top: 1px"><path d="M12 8v5M12 16.5v.5M10.3 3.9 2.6 17a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg>
+          <span>Az üzenetek nem sürgős esetekre valók: sürgős esetben hívd a 112-t. Munkanapokon [X] órán belül válaszolunk.</span>
+        </div>
+        <div style="flex: 1 1 0; min-height: 0; overflow-y: auto; display: flex; flex-direction: column-reverse; padding: 12px 16px">
+          <div style="display: flex; flex-direction: column; gap: 12px">
+            <sc-for list="{{msgs}}" as="m" hint-placeholder-count="3">
+              <div style="display: flex; justify-content: {{m.justify}}">
+                <div style="max-width: 82%; display: flex; flex-direction: column; gap: 4px">
+                  <div style="background: {{m.bg}}; color: {{m.color}}; border: 1px solid {{m.border}}; border-radius: {{m.radius}}; padding: 10px 14px; font-size: 15px; line-height: 1.45; display: flex; flex-direction: column; gap: 8px">
+                    <sc-if value="{{m.hasText}}" hint-placeholder-val="{{true}}">
+                      <span>{{m.text}}</span>
+                    </sc-if>
+                    <sc-if value="{{m.hasAttach}}" hint-placeholder-val="{{false}}">
+                      <span style="display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 10px; background: {{m.attachBg}}; font-size: 13px; font-weight: 600">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M6 3h8l4 4v14H6zM14 3v4h4"></path></svg>
+                        <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{m.attach}}</span>
+                      </span>
+                    </sc-if>
+                  </div>
+                  <span style="font-size: 11px; color: {{t.muted}}; text-align: {{m.metaAlign}}">{{m.meta}}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="flex-shrink: 0; border-top: 1px solid {{t.border}}; background: {{t.surface}}; padding: 10px 16px 12px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; gap: 8px; overflow-x: auto">
+            <sc-for list="{{quick}}" as="q" hint-placeholder-count="3">
+              <button type="button" onClick="{{q.onPick}}" style="flex-shrink: 0; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid {{t.border}}; background: {{t.bg}}; color: {{t.primary}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap">{{q.label}}</button>
+            </sc-for>
+          </div>
+          <sc-if value="{{attachOpen}}" hint-placeholder-val="{{false}}">
+            <div style="border: 1px solid {{t.border}}; border-radius: 12px; max-height: 168px; overflow-y: auto; display: flex; flex-direction: column">
+              <span style="padding: 8px 12px; font-size: 12px; font-weight: 600; color: {{t.muted}}">Csatolás a Mappádból</span>
+              <sc-for list="{{attachList}}" as="al" hint-placeholder-count="3">
+                <button type="button" onClick="{{al.onPick}}" style="width: 100%; min-height: 48px; border: none; border-top: 1px solid {{t.border}}; background: transparent; padding: 8px 12px; text-align: left; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; gap: 2px">
+                  <span style="width: 100%; font-size: 14px; font-weight: 600; color: {{t.text}}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{al.name}}</span>
+                  <span style="font-size: 12px; color: {{t.muted}}">{{al.meta}}</span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{hasAttach}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; align-items: center; gap: 8px; padding: 0 4px 0 12px; border-radius: 12px; background: {{t.accentSoft}}; color: {{t.primary}}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0"><path d="M6 3h8l4 4v14H6zM14 3v4h4"></path></svg>
+              <span style="flex-grow: 1; min-width: 0; font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{attach}}</span>
+              <button type="button" onClick="{{removeAttach}}" aria-label="Csatolmány eltávolítása" style="width: 44px; height: 44px; flex-shrink: 0; border: none; background: transparent; color: {{t.primary}}; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+              </button>
+            </div>
+          </sc-if>
+          <div style="display: flex; align-items: center; gap: 8px">
+            <button type="button" onClick="{{toggleAttach}}" aria-label="Dokumentum csatolása a Mappádból" aria-expanded="{{attachExpanded}}" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.primary}}; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15.5 7.5 8.6 14.4a1.9 1.9 0 0 0 2.7 2.7l7-7a3.8 3.8 0 0 0-5.4-5.4l-7.2 7.2a5.7 5.7 0 0 0 8.1 8.1L19 14"></path></svg>
+            </button>
+            <input id="hh-draft" type="text" aria-label="Üzenet az orvosnak" value="{{draft}}" onChange="{{onDraft}}" onKeyDown="{{onDraftKey}}" placeholder="Írj üzenetet…" style="flex-grow: 1; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 16px; border: 1px solid {{t.border}}; border-radius: 999px; background: {{t.bg}}; color: {{t.text}}; font-family: inherit; font-size: 15px">
+            <button type="button" onClick="{{send}}" disabled="{{cantSend}}" aria-label="Küldés" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; border: none; background: {{sendBg}}; color: {{sendColor}}; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 20 4l-6 16-3-7z"></path></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </main>
+
+  <nav aria-label="Fő menü" style="height: 72px; flex-shrink: 0; box-sizing: border-box; display: flex; background: {{t.surface}}; border-top: 1px solid {{t.border}}">
+    <button type="button" onClick="{{goHome}}" style="flex: 1 1 0; position: relative; border: none; background: none; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: {{nav.home.color}}; font-family: inherit; font-size: 11px; font-weight: {{nav.home.weight}}">
+      <span aria-hidden="true" style="position: absolute; top: 0; left: 26%; right: 26%; height: 3px; border-radius: 0 0 3px 3px; background: {{nav.home.bar}}"></span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"></path></svg>
+      <span>Kezdőlap</span>
+    </button>
+    <button type="button" onClick="{{goBooking}}" style="flex: 1 1 0; position: relative; border: none; background: none; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: {{nav.booking.color}}; font-family: inherit; font-size: 11px; font-weight: {{nav.booking.weight}}">
+      <span aria-hidden="true" style="position: absolute; top: 0; left: 26%; right: 26%; height: 3px; border-radius: 0 0 3px 3px; background: {{nav.booking.bar}}"></span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"></path></svg>
+      <span>Időpont</span>
+    </button>
+    <button type="button" onClick="{{goKb}}" style="flex: 1 1 0; position: relative; border: none; background: none; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: {{nav.kb.color}}; font-family: inherit; font-size: 11px; font-weight: {{nav.kb.weight}}">
+      <span aria-hidden="true" style="position: absolute; top: 0; left: 26%; right: 26%; height: 3px; border-radius: 0 0 3px 3px; background: {{nav.kb.bar}}"></span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h13v15H6a2 2 0 0 0-2 2V5a2 2 0 0 1 2-2zM4 20a2 2 0 0 0 2 1h13v-3"></path></svg>
+      <span>Tudástár</span>
+    </button>
+    <button type="button" onClick="{{goForum}}" style="flex: 1 1 0; position: relative; border: none; background: none; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: {{nav.forum.color}}; font-family: inherit; font-size: 11px; font-weight: {{nav.forum.weight}}">
+      <span aria-hidden="true" style="position: absolute; top: 0; left: 26%; right: 26%; height: 3px; border-radius: 0 0 3px 3px; background: {{nav.forum.bar}}"></span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h12v8H7l-4 3zM9 16a2 2 0 0 0 2 2h6l4 3V10a2 2 0 0 0-2-2h-2"></path></svg>
+      <span>Közösség</span>
+    </button>
+    <button type="button" onClick="{{goLili}}" style="flex: 1 1 0; position: relative; border: none; background: none; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: {{nav.lili.color}}; font-family: inherit; font-size: 11px; font-weight: {{nav.lili.weight}}">
+      <span aria-hidden="true" style="position: absolute; top: 0; left: 26%; right: 26%; height: 3px; border-radius: 0 0 3px 3px; background: {{nav.lili.bar}}"></span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+      <span>Mappám</span>
+    </button>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["holdciklus","granatalma","bolcso"],"default":"holdciklus","section":"Arculat"},"$preview":{"width":390,"height":844}}'>
+const ICONS = {
+  eye: 'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12zM12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z',
+  lock: 'M6 11h12v9H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3'
+};
+
+const THEMES = {
+  holdciklus: {
+    isHold: true, isGran: false, isBol: false,
+    primary: '#26294F', heroAccent: '#F2C9A1', heroMuted: '#DADBEA', accentSoft: '#F6EADF', dot: '#C9772E',
+    bg: '#F5F5F9', surface: '#FFFFFF', text: '#1B1D38', muted: '#55576B', border: '#DEDFEA', track: '#E4E5EE',
+    headFont: "'Josefin Sans', sans-serif", bodyFont: "'Josefin Sans', sans-serif", headWeight: '300',
+    titleSize: '30px', titleSpacing: '0.01em', sectionSpacing: '0.18em', radius: '18px', btnRadius: '999px',
+    wm: 'HANNA HEALTH', wmFont: "'Josefin Sans', sans-serif", wmSize: '14px', wmSpacing: '0.24em'
+  },
+  granatalma: {
+    isHold: false, isGran: true, isBol: false,
+    primary: '#6A1F33', heroAccent: '#E9B8B0', heroMuted: '#F0D9D5', accentSoft: '#F5E4E0', dot: '#B5475B',
+    bg: '#F7F1EF', surface: '#FFFFFF', text: '#2A1518', muted: '#5E5456', border: '#EBDFDC', track: '#EADBD7',
+    headFont: "'Gilda Display', serif", bodyFont: "'Karla', sans-serif", headWeight: '400',
+    titleSize: '30px', titleSpacing: '0', sectionSpacing: '0.14em', radius: '14px', btnRadius: '10px',
+    wm: 'Hanna Health', wmFont: "'Gilda Display', serif", wmSize: '21px', wmSpacing: '0.01em'
+  },
+  bolcso: {
+    isHold: false, isGran: false, isBol: true,
+    primary: '#4A1F45', heroAccent: '#E7A9A0', heroMuted: '#F3E4E6', accentSoft: '#F6E7EA', dot: '#C96F78',
+    bg: '#FBF7F8', surface: '#FFFFFF', text: '#2B1A29', muted: '#5E5A60', border: '#EADDE0', track: '#EEE2E5',
+    headFont: "'Fraunces', serif", bodyFont: "'Jost', sans-serif", headWeight: '400',
+    titleSize: '30px', titleSpacing: '-0.01em', sectionSpacing: '0.16em', radius: '24px', btnRadius: '999px',
+    wm: 'Hanna Health', wmFont: "'Fraunces', serif", wmSize: '20px', wmSpacing: '0'
+  }
+};
+
+// Életszakasz-módok: a nő maga választja, a közös mag (időpont, üzenet, liliApp) mindenkinek ugyanaz.
+const MODES = {
+  gyn: { label: 'Nőgyógyászati gondozás', desc: 'Szűrések, panaszok, fogamzásgátlás', topic: 'gyn', guideTopics: ['gyn'], videoTopics: ['gyn'], space: 'gyn', services: ['s4', 's3', 's5'], nick: '', video: 'v7', notif: ['Szűrési esedékesség', 'Szólunk, ha esedékes a méhnyakszűrésed.'] },
+  ttc: { label: 'Babát tervezek', desc: 'Felkészülés a várandósságra', topic: 'ttc', guideTopics: ['ttc'], videoTopics: ['ttc', 'gyn'], space: 'ttc', services: ['s7', 's3', 's4'], nick: 'babát tervez', video: 'v8', notif: ['Felkészülési emlékeztetők', 'A felkészülési lista lépései és a tanácsadás ideje.'] },
+  preg: { label: 'Várandós vagyok', desc: 'Terhesgondozás hétről hétre', topic: 'p2', guideTopics: ['p1', 'p2', 'p3'], videoTopics: ['p1', 'p2', 'p3'], space: 'preg', services: ['s1', 's2', 's6'], nick: '24. hét', video: 'v3', notif: ['Terhességi emlékeztetők', 'Heti összefoglaló és a vizsgálatok határideje, például a cukorterhelésé.'] },
+  post: { label: 'Szülés után', desc: 'Gyermekágy és az első hónapok', topic: 'post', guideTopics: ['post'], videoTopics: ['post', 'gyn'], space: 'post', services: ['s8', 's5', 's6'], nick: '4 hetes baba', video: 'v9', notif: ['Gyermekágyi kontroll', 'Emlékeztető a szülés utáni kontrollvizsgálatra.'] },
+  meno: { label: 'Változókor', desc: 'Perimenopauza és menopauza', topic: 'meno', guideTopics: ['meno'], videoTopics: ['meno', 'gyn'], space: 'meno', services: ['s9', 's3', 's4'], nick: '', video: 'v10', notif: ['Szűrési esedékesség', 'Emlőszűrés és méhnyakszűrés esedékessége.'] }
+};
+const MODE_ORDER = ['gyn', 'ttc', 'preg', 'post', 'meno'];
+
+const SERVICES = [
+  { id: 's1', name: 'Terhesgondozási vizsgálat', desc: 'Rendszeres várandósgondozás' },
+  { id: 's2', name: 'Genetikai ultrahang', desc: 'Első és második trimeszteri szűrő ultrahang' },
+  { id: 's3', name: 'Nőgyógyászati vizsgálat', desc: 'Általános szakorvosi vizsgálat' },
+  { id: 's4', name: 'Méhnyakszűrés (citológia)', desc: 'Szűrővizsgálat a méhnyak elváltozásaira' },
+  { id: 's5', name: 'Fogamzásgátlási tanácsadás', desc: 'A számodra megfelelő módszer kiválasztása' },
+  { id: 's6', name: 'Leletmegbeszélés', desc: 'Eredmények átbeszélése, kontroll' },
+  { id: 's7', name: 'Fogamzás előtti tanácsadás', desc: 'Felkészülés a várandósságra, vizsgálatok és oltások átnézése' },
+  { id: 's8', name: 'Gyermekágyi kontroll', desc: 'Nőgyógyászati vizsgálat kb. 6 héttel a szülés után' },
+  { id: 's9', name: 'Változókori konzultáció', desc: 'Panaszok, szűrések és kezelési lehetőségek' }
+];
+
+const DAYS = [
+  { id: 'd1', dow: 'H', num: '2', label: 'November 2., hétfő', short: 'nov. 2., hétfő', ord: 1102, slots: ['8:30', '9:00', '10:30', '13:00', '14:30'] },
+  { id: 'd2', dow: 'K', num: '3', label: 'November 3., kedd', short: 'nov. 3., kedd', ord: 1103, slots: ['9:30', '11:00', '15:00', '16:30'] },
+  { id: 'd3', dow: 'Sze', num: '4', label: 'November 4., szerda', short: 'nov. 4., szerda', ord: 1104, slots: ['8:00', '8:30', '12:00'] },
+  { id: 'd4', dow: 'Cs', num: '5', label: 'November 5., csütörtök', short: 'nov. 5., csütörtök', ord: 1105, slots: ['10:00', '10:30', '11:00', '14:00', '14:30', '15:00'] },
+  { id: 'd5', dow: 'P', num: '6', label: 'November 6., péntek', short: 'nov. 6., péntek', ord: 1106, slots: ['8:30', '9:00'] },
+  { id: 'd6', dow: 'H', num: '9', label: 'November 9., hétfő', short: 'nov. 9., hétfő', ord: 1109, slots: ['9:00', '13:30', '15:30', '16:00'] }
+];
+
+const TOPIC_ORDER = ['ttc', 'p1', 'p2', 'p3', 'post', 'gyn', 'meno'];
+
+const GUIDE = {
+  ttc: {
+    chip: 'Babatervezés', title: 'Babatervezés', range: 'A fogantatás előtt',
+    intro: 'A felkészülés már a fogantatás előtt elkezdődik: néhány vizsgálat és döntés sokat számít az első hetekben.',
+    tips: [
+      ['Folsav már a tervezéskor', 'A folsav szedését már a fogantatás előtt érdemes elkezdeni, mert csökkenti a velőcső-záródási rendellenességek kockázatát. A megfelelő adagot beszéld meg orvosoddal.'],
+      ['Fogamzás előtti vizsgálat', 'Egy nőgyógyászati vizsgálat és a szükséges laborvizsgálatok segítenek időben felismerni, amire a terhesség előtt figyelni kell.'],
+      ['Védőoltások ellenőrzése', 'Érdemes ellenőrizni a rubeola és a bárányhimlő elleni védettséget, mert ezek az oltások terhesség alatt nem adhatók. Az oltás utáni várakozási időről orvosod tájékoztat.'],
+      ['Szedett gyógyszerek', 'Ha rendszeresen szedsz gyógyszert, a tervezés előtt beszéld meg orvosoddal. Magadtól ne hagyd abba.']
+    ],
+    faq: [
+      ['Mennyi idő alatt szokás teherbe esni?', 'Sok pár az első évben teherbe esik. Ha 35 év alatt egy év, 35 év felett hat hónap rendszeres próbálkozás után sem jön a baba, érdemes kivizsgálást kérni.'],
+      ['Kell követnem a ciklusomat?', 'Nem kötelező, de segíthet megismerni a termékeny napokat. Ha a ciklusod nagyon rendszertelen, jelezd orvosodnak.'],
+      ['Min érdemes változtatnom?', 'A dohányzás és az alkohol elhagyása, a kiegyensúlyozott étkezés és a rendszeres mozgás már a tervezés idején is sokat számít.']
+    ]
+  },
+  p1: {
+    chip: '1. trimeszter', title: '1. trimeszter', range: '1–13. hét',
+    intro: 'A szervek kialakulásának időszaka. Ilyenkor zajlanak az első szűrővizsgálatok is.',
+    tips: [
+      ['Folsav már a fogantatás előtt', 'A folsav a fogantatás előtti hetekben és az első trimeszterben a legfontosabb: csökkenti a velőcső-záródási rendellenességek kockázatát. Az adagot beszéld meg orvosoddal.'],
+      ['Első genetikai ultrahang: 11–14. hét', 'Ekkor mérik többek között a tarkóredő vastagságát. Vérvizsgálattal kiegészítve ez a kombinált teszt, amely a leggyakoribb kromoszóma-rendellenességek kockázatát becsüli.'],
+      ['NIPT a 10. héttől', 'Az anyai vérből végzett, nem invazív magzati DNS-vizsgálat a 10. héttől elvégezhető. Szűrővizsgálat, nem diagnózis: eltérő eredmény esetén további vizsgálat szükséges.'],
+      ['Biztonságos étkezés', 'A nyers vagy nem átsütött hús, a nyers tojás és a pasztőrözetlen tejtermékek kerülése csökkenti a toxoplazma- és a listeriafertőzés kockázatát.']
+    ],
+    faq: [
+      ['Mikor jöjjek az első vizsgálatra?', 'Pozitív teszt után érdemes időpontot kérni. Az első terhesgondozási vizsgálat ideálisan a 12. hét előtt történik, hogy a korai szűrések időben elkészülhessenek.'],
+      ['Normális, hogy ennyire hányingerem van?', 'A terhességi hányinger gyakori, és sokaknál a 12–16. hét körül enyhül. Ha semmit nem tudsz magadban tartani, vagy fogysz, jelezd orvosodnak.'],
+      ['Ihatok kávét?', 'Mérsékelten igen, de a koffeinbevitelt érdemes korlátozni. Az alkoholra viszont nincs biztonságos mennyiség a terhesség alatt.'],
+      ['Mikor forduljak azonnal orvoshoz?', 'Erős hasi fájdalom, vérzés vagy ájulásérzés esetén ne várj: hívd a 112-t, vagy menj a legközelebbi ügyeletre.']
+    ]
+  },
+  p2: {
+    chip: '2. trimeszter', title: '2. trimeszter', range: '14–27. hét',
+    intro: 'Sokan ezt tartják a legkönnyebb időszaknak. Ilyenkor érezhetők az első magzatmozgások.',
+    tips: [
+      ['Cukorterhelés: 24–28. hét', 'A terhességi cukorbetegség gyakran tünetmentes, ezért fontos a szűrés. A vizsgálatra éhgyomorra kell érkezni, a pontos előkészítést orvosod adja meg.'],
+      ['Második genetikai ultrahang: 18–22. hét', 'Ilyenkor részletesen átvizsgálják a magzat szerveit, a méhlepényt és a magzatvíz mennyiségét.'],
+      ['Az első mozgások', 'Első terhességben a magzatmozgás jellemzően a 18–20. hét körül érezhető, ismételt terhességben gyakran korábban.'],
+      ['Rh-negatív vércsoport', 'Ha Rh-negatív vagy, orvosod megbeszéli veled az anti-D profilaxis szükségességét és időzítését.']
+    ],
+    faq: [
+      ['Utazhatok repülővel?', 'Szövődménymentes terhességben általában igen. A késői hetekben a légitársaságok korlátozhatják az utazást, ezért indulás előtt beszéld meg orvosoddal.'],
+      ['Mennyit hízhatok?', 'Ez a terhesség előtti testsúlyodtól függ, ezért egyénileg érdemes megbeszélni orvosoddal.'],
+      ['Normális, ha néha megkeményedik a hasam?', 'Az alkalmanként jelentkező, fájdalmatlan keményedés (jóslófájás) normális lehet. Ha rendszeressé vagy fájdalmassá válik a 37. hét előtt, vagy vérzéssel jár, azonnal jelentkezz.'],
+      ['Sportolhatok?', 'Szövődménymentes terhességben a rendszeres, mérsékelt mozgás kifejezetten ajánlott. Kerüld az eséssel, ütközéssel járó sportokat, és beszéld meg orvosoddal, mi biztonságos neked.']
+    ]
+  },
+  p3: {
+    chip: '3. trimeszter', title: '3. trimeszter', range: '28–40. hét',
+    intro: 'A felkészülés időszaka: gyakoribbak a vizsgálatok, és egyre fontosabb figyelni a baba mozgását.',
+    tips: [
+      ['Figyeld a mozgásokat', 'Ismerd meg a babád megszokott mozgásmintáját. Ha a mozgások csökkennek vagy megváltoznak, ne várj másnapig: még aznap jelentkezz.'],
+      ['Oldalt fekve elalvás', 'A 28. héttől oldalt fekve érdemes elaludni, mert a hanyatt fekvés terhelheti a nagy ereket. Hogy bal vagy jobb oldalon, az kevésbé lényeges.'],
+      ['GBS-szűrés: 35–37. hét', 'A B csoportú streptococcus-szűrés megmutatja, szükség van-e antibiotikumra a szülés alatt.'],
+      ['CTG a terhesség végén', 'Az utolsó hetekben rendszeres CTG-vizsgálat követi a baba szívműködését és a méhtevékenységet.']
+    ],
+    faq: [
+      ['Mikor induljak a kórházba?', 'Ha a fájások rendszeressé válnak, elfolyik a magzatvíz, vérzést tapasztalsz, vagy kevesebbet mozog a baba. Az indulásról előre egyeztess orvosoddal és a választott szülészettel.'],
+      ['Mit vigyek a szülésre?', 'Személyi igazolványt, TAJ-kártyát, a várandósgondozási könyvet és a leleteidet, valamint a választott kórház listája szerinti holmikat.'],
+      ['Mikor forduljak azonnal orvoshoz?', 'Hüvelyi vérzés, magzatvízfolyás, erős fejfájás vagy látászavar, hirtelen arc- vagy kézduzzanat, illetve csökkent magzatmozgás esetén azonnal jelentkezz. Sürgős esetben hívd a 112-t.']
+    ]
+  },
+  post: {
+    chip: 'Szülés után', title: 'Szülés után', range: 'A gyermekágy és az első hónapok',
+    intro: 'A szülés utáni hetekben a tested és a lelked is alkalmazkodik. Ebben az időszakban rád is ugyanúgy figyelni kell, mint a babára.',
+    tips: [
+      ['Gyermekágyi kontroll', 'A szülés után kb. 6 héttel javasolt nőgyógyászati kontrollvizsgálat. Ilyenkor a fogamzásgátlásról is érdemes beszélni.'],
+      ['A szülés utáni vérzés', 'A gyermekágyi folyás hetekig tarthat, és fokozatosan halványul. Ha hirtelen erősödik, nagy alvadékok távoznak, vagy lázas leszel, azonnal jelentkezz.'],
+      ['Lelki változások', 'Az első napokban gyakori a sírékonyság, ami általában két héten belül elmúlik. Ha a lehangoltság tartós, vagy nehéz ellátnod magad és a babát, kérj segítséget: ez kezelhető állapot.'],
+      ['Medencefenék', 'A medencefenék-torna segíthet a vizelettartási panaszok megelőzésében. Hogy mikor kezdheted, beszéld meg orvosoddal vagy gyógytornásszal.']
+    ],
+    faq: [
+      ['Teherbe eshetek szoptatás alatt?', 'Igen. A szoptatás önmagában nem megbízható fogamzásgátlás, a számodra megfelelő módszert beszéld meg orvosoddal.'],
+      ['Mikor kezdhetek újra sportolni?', 'Fokozatosan, a gyermekágyi kontroll után és orvosi jóváhagyással. A séta általában korábban is jót tesz.'],
+      ['Mikor forduljak azonnal orvoshoz?', 'Erős vérzés, láz, erős hasi fájdalom, vádlifájdalom vagy -duzzanat, mellkasi fájdalom vagy nehézlégzés esetén azonnal. Sürgős esetben hívd a 112-t.']
+    ]
+  },
+  gyn: {
+    chip: 'Nőgyógyászat', title: 'Nőgyógyászat', range: 'Minden életszakaszban',
+    intro: 'Szűrések, megelőzés és rendszeres vizsgálatok.',
+    tips: [
+      ['Méhnyakszűrés', 'A hazai szervezett szűrőprogram 25 és 65 év között háromévente javasolja a méhnyakszűrést. Orvosod ennél gyakoribb vizsgálatot is javasolhat.'],
+      ['Emlőszűrés', 'A szervezett mammográfiás szűrés 45 és 65 év között kétévente hív be. Ha elváltozást tapasztalsz, ne várd meg a meghívót.'],
+      ['HPV elleni védőoltás', 'A HPV elleni védőoltás a méhnyakrák megelőzésének fontos eszköze. Hogy neked ajánlott-e, beszéld meg orvosoddal.']
+    ],
+    faq: [
+      ['Hogyan készüljek a vizsgálatra?', 'A vizsgálat előtti 48 órában lehetőleg ne legyen hüvelyi kezelés, irrigálás vagy együttlét. Menstruáció alatt a méhnyakszűrés kevésbé megbízható, ilyenkor érdemes időpontot módosítani.'],
+      ['Mit hozzak magammal?', 'TAJ-kártyát, személyi igazolványt, a korábbi leleteidet és a szedett gyógyszereid listáját. A leleteket előre is feltöltheted a Mappádba.'],
+      ['Hogyan mondhatom le az időpontomat?', 'Az Időpont menüben bármikor. Kérjük, legalább [X] órával előtte jelezd.'],
+      ['Mennyi idő alatt válaszol az orvos?', 'Munkanapokon általában [X] órán belül. Az üzenetküldés nem sürgős esetekre való: sürgős esetben hívd a 112-t.']
+    ]
+  },
+  meno: {
+    chip: 'Változókor', title: 'Változókor', range: 'Jellemzően a 40-es évektől',
+    intro: 'A változókor évekig tartó átmenet. A panaszok sokfélék, és a legtöbbjükre van megoldás.',
+    tips: [
+      ['Mi a perimenopauza?', 'A menopauzát megelőző években gyakori a rendszertelen ciklus, a hőhullám, az alvászavar és a hangulatingadozás.'],
+      ['A tünetek kezelhetők', 'A panaszok enyhítésére hormonális és nem hormonális lehetőségek is vannak. Hogy neked mi megfelelő, azt orvosoddal közösen érdemes eldönteni.'],
+      ['Csontok egészsége', 'Az ösztrogénszint csökkenésével nő a csontritkulás kockázata. A rendszeres mozgás és a megfelelő kalcium- és D-vitamin-bevitel segít, a részleteket beszéld meg orvosoddal.'],
+      ['Szűrések továbbra is', 'A mammográfiás szűrés 45 és 65 év között kétévente, a méhnyakszűrés 65 éves korig háromévente javasolt.']
+    ],
+    faq: [
+      ['Kell még fogamzásgátlás?', 'Igen, a változókorban is lehetséges teherbe esni, amíg a menstruáció teljesen meg nem szűnik. Hogy meddig szükséges, beszéld meg orvosoddal.'],
+      ['Normális a vérzés a menopauza után?', 'Nem. A menopauza utáni bármilyen hüvelyi vérzést ki kell vizsgálni, ezért kérj időpontot.'],
+      ['Kihez fordulhatok a panaszaimmal?', 'Nőgyógyászodhoz: a hőhullámokról, az alvászavarról vagy a hangulatváltozásról is nyugodtan beszélhetsz vele.']
+    ]
+  }
+};
+
+const VIDEOS = [
+  { id: 'v1', topic: 'p1', title: 'Mire számíts az első terhesgondozáson?', desc: 'Milyen vizsgálatok várnak rád az első alkalommal, és mit érdemes magaddal hozni.' },
+  { id: 'v2', topic: 'p1', title: 'Genetikai ultrahang és NIPT: mi a különbség?', desc: 'A szűrővizsgálatok célja, időzítése, és hogy mit jelent egy eltérő eredmény.' },
+  { id: 'v3', topic: 'p2', title: 'Cukorterheléses vizsgálat lépésről lépésre', desc: 'Hogyan készülj, mi történik a vizsgálat napján, és mikor kapod meg az eredményt.' },
+  { id: 'v4', topic: 'p2', title: 'Mit néz az orvos a második genetikai ultrahangon?', desc: 'A 18–22. heti részletes vizsgálat menete, érthetően elmagyarázva.' },
+  { id: 'v5', topic: 'p3', title: 'A magzatmozgások figyelése', desc: 'Hogyan ismerd meg a babád mozgásmintáját, és mikor jelentkezz azonnal.' },
+  { id: 'v6', topic: 'p3', title: 'Készülés a szülésre', desc: 'Mikor indulj, mit vigyél, és mire figyelj az utolsó hetekben.' },
+  { id: 'v7', topic: 'gyn', title: 'Méhnyakszűrés: mi történik a vizsgálaton?', desc: 'A citológiai vizsgálat menete és az előkészület.' },
+  { id: 'v8', topic: 'ttc', title: 'Fogamzás előtti felkészülés: mire figyelj?', desc: 'A tervezés előtti vizsgálatok, a folsav és a védőoltások, röviden.' },
+  { id: 'v9', topic: 'post', title: 'Az első hetek a szülés után', desc: 'Gyermekágyi vérzés, kontrollvizsgálat, és mikor kérj azonnal segítséget.' },
+  { id: 'v10', topic: 'meno', title: 'Változókor: tünetek és kezelési lehetőségek', desc: 'Mi zajlik a szervezetben, és milyen lehetőségek enyhíthetik a panaszokat.' },
+  { id: 'v11', topic: 'gyn', title: 'Fogamzásgátlási módszerek áttekintése', desc: 'A gyakori módszerek előnyei és korlátai, hogy felkészülten érkezz a tanácsadásra.' }
+];
+
+// Fórum: minden életszakasznak saját tere van.
+const SPACES = { preg: 'Várandósság', ttc: 'Babát tervezünk', post: 'Szülés után', gyn: 'Női egészség', meno: 'Változókor' };
+const SPACE_ORDER = ['preg', 'ttc', 'post', 'gyn', 'meno'];
+
+const CHECKS = [
+  { id: 'c1', label: 'Folsav szedésének megkezdése' },
+  { id: 'c2', label: 'Fogamzás előtti nőgyógyászati vizsgálat' },
+  { id: 'c3', label: 'Naprakész méhnyakszűrés' },
+  { id: 'c4', label: 'Rubeola- és bárányhimlő-védettség ellenőrzése' },
+  { id: 'c5', label: 'Szedett gyógyszerek átnézése orvossal' }
+];
+
+const CATS = ['Labor', 'Ultrahang', 'Szűrés', 'Kiskönyv', 'Egyéb'];
+
+const FIELDS = [
+  { key: 'name', label: 'Teljes név', ph: 'Vezetéknév Keresztnév' },
+  { key: 'birth', label: 'Születési dátum', ph: 'ÉÉÉÉ. HH. NN.' },
+  { key: 'taj', label: 'TAJ-szám', ph: '000 000 000' },
+  { key: 'phone', label: 'Telefonszám', ph: '+36' },
+  { key: 'blood', label: 'Vércsoport', ph: 'pl. A Rh+' },
+  { key: 'allergy', label: 'Allergiák', ph: 'Ha nincs, hagyd üresen' },
+  { key: 'meds', label: 'Szedett gyógyszerek', ph: 'Név és adagolás' }
+];
+const MODE_FIELD = {
+  preg: { key: 'edd', label: 'Várható szülés napja', ph: 'ÉÉÉÉ. HH. NN.' },
+  post: { key: 'delivered', label: 'Szülés dátuma', ph: 'ÉÉÉÉ. HH. NN.' },
+  ttc: { key: 'lmp', label: 'Utolsó menstruáció első napja', ph: 'ÉÉÉÉ. HH. NN.' },
+  meno: { key: 'lastPeriod', label: 'Utolsó menstruáció (ha tudod)', ph: 'ÉÉÉÉ. HH.' }
+};
+
+const QUICK = [
+  ['Kérdés a leletemről', 'Kérdésem lenne a legutóbb feltöltött leletemmel kapcsolatban: '],
+  ['Időpontmódosítás', 'Szeretném módosítani a következő időpontomat. '],
+  ['Receptigény', 'Szeretném kérni a következő gyógyszer felírását: ']
+];
+
+function todayLabel() {
+  const d = new Date();
+  const pad = (n) => (n < 10 ? '0' : '') + n;
+  return d.getFullYear() + '. ' + pad(d.getMonth() + 1) + '. ' + pad(d.getDate()) + '.';
+}
+
+function threadView(th) {
+  const n = th.replies.length;
+  return Object.assign({}, th, {
+    tag: SPACES[th.space],
+    hasBody: !!th.body,
+    excerpt: th.body.length > 96 ? th.body.slice(0, 93).trim() + '…' : th.body,
+    authorLabel: th.mine ? th.author + ' (te)' : th.author,
+    replyLabel: n === 0 ? 'Még nincs válasz' : n + ' válasz'
+  });
+}
+
+class Component extends DCLogic {
+  constructor(...args) {
+    super(...args);
+    this.state = {
+      variant: null,
+      themeOpen: false,
+      mode: 'preg',
+      modeOpen: false,
+      modeChanged: false,
+      switchFromPreg: false,
+      checks: { c1: true, c2: true, c3: true },
+      forumJoined: false,
+      joinAge: false,
+      joinRules: false,
+      showStage: false,
+      notif: { appt: true, stage: true, forum: false },
+      consents: { personal: true, news: false, stats: false },
+      exportRequested: false,
+      deleteStep: null,
+      tab: 'home',
+      unread: true,
+      kbView: 'guide',
+      topic: 'p2',
+      openFaq: null,
+      videoFilter: 'mine',
+      videoId: null,
+      watched: {},
+      forumView: 'list',
+      forumFilter: 'preg',
+      threadId: null,
+      replyDraft: '',
+      newTitle: '',
+      newBody: '',
+      newSpace: 'preg',
+      reported: {},
+      threads: [
+        {
+          id: 't1', space: 'preg', title: 'Nektek is ennyire fárasztó a 2. trimeszter?',
+          body: 'Azt hallottam, hogy ez a legkönnyebb szakasz, de én még mindig délután két órát alszom. Nálatok mikor jött vissza az energia?',
+          author: 'Pitypang · 21. hét', time: '2 órája', mine: false,
+          replies: [
+            { id: 'r1', author: 'Levendula · 26. hét', text: 'Nálam a 18. hét körül lett jobb, addig ugyanígy voltam. A rövid séták sokat segítettek.', time: '1 órája', mine: false },
+            { id: 'r2', author: 'Csillag · 23. hét', text: 'Én is sokat alszom. Ha nagyon szokatlan, szerintem érdemes megemlíteni a következő vizsgálaton.', time: '40 perce', mine: false }
+          ]
+        },
+        {
+          id: 't5', space: 'ttc', title: 'Hogyan bírjátok a várakozást két ciklus között?',
+          body: 'Fél éve tervezünk, és minden hónapban egyre nehezebb kivárni. Nektek mi segít lelkileg?',
+          author: 'Fűzfa · fél éve tervezünk', time: '5 órája', mine: false,
+          replies: [
+            { id: 'r6', author: 'Gyopár · egy éve tervezünk', text: 'Nekem az segített, hogy megbeszéltük a párommal: nem minden beszélgetésünk szól erről. És jó tudni, hogy nem vagyok egyedül.', time: '3 órája', mine: false }
+          ]
+        },
+        {
+          id: 't2', space: 'preg', title: 'Kórházi táska: mi kellett tényleg?',
+          body: 'Jövő hónapban már be akarom pakolni. Mit vittetek, amit tényleg használtatok, és mi volt felesleges?',
+          author: 'Mák · 34. hét', time: 'tegnap', mine: false,
+          replies: [
+            { id: 'r3', author: 'Hóvirág · 2 hónapos baba', text: 'Hosszú töltőkábel, saját párna és papucs. A sok ruha felesleges volt.', time: 'tegnap', mine: false },
+            { id: 'r4', author: 'Bodza · 37. hét', text: 'Én a kórház listáját nyomtattam ki, és csak azt pakoltam be.', time: 'ma', mine: false }
+          ]
+        },
+        {
+          id: 't6', space: 'post', title: 'Mikor lett nálatok kiszámíthatóbb az alvás?',
+          body: 'A kislányom 7 hetes, és még nagyon kaotikusak az éjszakák. Nálatok mikor változott?',
+          author: 'Hóvirág · 2 hónapos baba', time: 'tegnap', mine: false,
+          replies: [
+            { id: 'r7', author: 'Pipacs · 4 hónapos baba', text: 'Nálunk 3 hónap körül kezdett összeállni. Addig sokat segített, ha napközben én is próbáltam pihenni.', time: 'tegnap', mine: false }
+          ]
+        },
+        {
+          id: 't7', space: 'gyn', title: 'Első méhnyakszűrés: mire számítsak?',
+          body: 'Most leszek 25, és jön az első szűrésem. Fáj? Mennyi ideig tart?',
+          author: 'Boróka', time: '2 napja', mine: false,
+          replies: [
+            { id: 'r8', author: 'Áfonya', text: 'Pár perc az egész, inkább kellemetlen, mint fájdalmas. Szólj nyugodtan, ha izgulsz, nekem sokat segített.', time: '2 napja', mine: false }
+          ]
+        },
+        {
+          id: 't3', space: 'preg', title: 'Izgulok a 12. heti ultrahang előtt',
+          body: 'Jövő héten lesz az első genetikai ultrahangom. Nektek hogy telt, mennyi ideig tartott?',
+          author: 'Kamilla · 11. hét', time: '3 napja', mine: false,
+          replies: [
+            { id: 'r5', author: 'Pitypang · 21. hét', text: 'Nálam kb. fél óra volt, és közben mindent elmagyaráztak. Nagyon jó érzés volt látni a babát.', time: '3 napja', mine: false }
+          ]
+        },
+        {
+          id: 't8', space: 'meno', title: 'Hőhullámok éjszaka: nektek mi segít?',
+          body: 'Mostanában többször felébredek rá. Az orvosommal is beszélni fogok, de kíváncsi vagyok a tapasztalataitokra.',
+          author: 'Kankalin', time: '3 napja', mine: false,
+          replies: [
+            { id: 'r9', author: 'Rozmaring', text: 'Nekem a réteges takarózás és a hűvösebb hálószoba segített. A kezelési lehetőségekről pedig megérte beszélni az orvossal.', time: '2 napja', mine: false }
+          ]
+        },
+        {
+          id: 't4', space: 'preg', title: 'Hordozó vagy babakocsi először?',
+          body: 'Most kezdünk vásárolni. Ti mivel kezdtétek?',
+          author: 'Zsálya · 30. hét', time: '4 napja', mine: false, replies: []
+        }
+      ],
+      step: 'service',
+      serviceId: null,
+      dayId: 'd1',
+      slot: null,
+      lastBooked: null,
+      appts: [
+        { id: 'a1', service: 'Terhesgondozási vizsgálat', when: 'nov. 12., csütörtök', time: '10:30', dayId: 'd12', ord: 1112.063 }
+      ],
+      liliView: 'docs',
+      docs: [
+        { id: 'f1', name: 'Vérkép.pdf', cat: 'Labor', date: '2026. 10. 02.', shared: true },
+        { id: 'f2', name: 'Várandósgondozási könyv – 2. oldal.jpg', cat: 'Kiskönyv', date: '2026. 09. 20.', shared: false },
+        { id: 'f3', name: '12. heti genetikai ultrahang.pdf', cat: 'Ultrahang', date: '2026. 08. 14.', shared: true },
+        { id: 'f4', name: 'Kombinált teszt – laborlelet.pdf', cat: 'Labor', date: '2026. 08. 14.', shared: true }
+      ],
+      docFilter: 'Mind',
+      upCat: 'Labor',
+      lastUpload: '',
+      shareCode: null,
+      accessLog: [
+        { text: 'Dr. Schmek Lilian Hanna megnyitotta: Vérkép.pdf', time: 'okt. 28., 14:05' },
+        { text: 'Dr. Schmek Lilian Hanna megnyitotta: 12. heti genetikai ultrahang.pdf', time: 'aug. 16., 9:40' },
+        { text: 'Megosztottad: Kombinált teszt – laborlelet.pdf', time: 'aug. 14., 18:22' }
+      ],
+      msgs: [
+        { id: 'm1', from: 'doc', text: 'Kedves Anna! Megnéztem a feltöltött vérképedet, az eredményeid rendben vannak. A következő vizsgálaton átbeszéljük a cukorterheléses vizsgálatot.', attach: null, time: 'okt. 28., 14:12' },
+        { id: 'm2', from: 'me', text: 'Köszönöm szépen! Éhgyomorra kell majd érkeznem?', attach: null, time: 'okt. 28., 15:40' },
+        { id: 'm3', from: 'doc', text: 'Igen, éhgyomorra. A pontos előkészítést a vizsgálat előtt elküldöm itt az alkalmazásban.', attach: null, time: 'okt. 29., 9:05' }
+      ],
+      draft: '',
+      attach: null,
+      attachOpen: false,
+      profile: { name: 'Demó Anna', birth: '', taj: '', phone: '', blood: '', edd: '2027. 02. 19.', delivered: '2026. 10. 02.', lmp: '', lastPeriod: '', allergy: '', meds: '' },
+      saved: false
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const v = THEMES[s.variant] ? s.variant : (THEMES[this.props.variant] ? this.props.variant : 'holdciklus');
+    const t = THEMES[v];
+    const personal = !!s.consents.personal;
+    const mode = personal && MODES[s.mode] ? s.mode : 'gyn';
+    const M = MODES[mode];
+    const set = (patch) => this.setState(patch);
+    const go = (tab, extra) => () => set(Object.assign({ tab: tab, themeOpen: false, modeOpen: false }, extra || {}));
+    const chip = (on) => (on
+      ? { bg: t.primary, color: '#FFFFFF', border: t.primary, weight: '600', pressed: 'true' }
+      : { bg: t.surface, color: t.text, border: t.border, weight: '500', pressed: 'false' });
+    const tabStyle = (id) => (s.tab === id
+      ? { color: t.primary, weight: '600', bar: t.primary }
+      : { color: t.muted, weight: '500', bar: 'transparent' });
+    const seg = (on) => (on
+      ? { bg: t.surface, color: t.primary, weight: '600', shadow: '0 1px 3px rgba(0, 0, 0, 0.12)', pressed: 'true' }
+      : { bg: 'transparent', color: t.muted, weight: '500', shadow: 'none', pressed: 'false' });
+    const opt = (key) => ({
+      bg: v === key ? t.accentSoft : 'transparent',
+      pressed: v === key ? 'true' : 'false',
+      check: v === key ? 'visible' : 'hidden'
+    });
+    const addLog = (st, text) => [{ text: text, time: 'most' }].concat(st.accessLog);
+    const firstOf = (list, preferred) => preferred.concat(list.filter((k) => preferred.indexOf(k) < 0));
+
+    const parts = (s.profile.name || '').trim().split(/\s+/).filter(Boolean);
+    const firstName = parts.length ? parts[parts.length - 1] : '';
+
+    // Életszakasz
+    // A választás egyben a személyre szabás bekapcsolása; váltáskor az előző életszakasz emlékeztetői leállnak.
+    const pickMode = (k) => {
+      const st = this.state;
+      const prev = st.consents.personal ? st.mode : null;
+      const changed = k !== prev;
+      this.setState({
+        mode: k, modeOpen: false, modeChanged: changed,
+        switchFromPreg: changed && prev === 'preg' && k !== 'post',
+        consents: Object.assign({}, st.consents, { personal: true }),
+        notif: changed ? Object.assign({}, st.notif, { stage: false }) : st.notif,
+        topic: MODES[k].topic, openFaq: null, videoFilter: 'mine', videoId: null,
+        forumFilter: MODES[k].space, forumView: 'list', newSpace: MODES[k].space,
+        step: 'service', serviceId: null, slot: null
+      });
+    };
+    const modes = MODE_ORDER.map((k) => {
+      const sel = personal && k === mode;
+      return {
+        label: MODES[k].label, desc: MODES[k].desc,
+        bg: sel ? t.accentSoft : t.surface,
+        border: sel ? t.primary : t.border,
+        pressed: sel ? 'true' : 'false',
+        check: sel ? 'visible' : 'hidden',
+        onPick: () => pickMode(k)
+      };
+    });
+    const bookService = (id) => this.setState({ tab: 'booking', step: 'slot', serviceId: id, slot: null, themeOpen: false, modeOpen: false });
+    const checks = CHECKS.map((c) => {
+      const on = !!s.checks[c.id];
+      return {
+        label: c.label, pressed: on ? 'true' : 'false', boxBg: on ? t.primary : 'transparent', vis: on ? 'visible' : 'hidden',
+        onToggle: () => this.setState({ checks: Object.assign({}, this.state.checks, { [c.id]: !this.state.checks[c.id] }) })
+      };
+    });
+    const done = CHECKS.filter((c) => s.checks[c.id]).length;
+    const HEROES = {
+      preg: { kicker: 'Terhességem', big: '24. hét', sub: '2. trimeszter · még kb. 16 hét', pct: '60%', footL: 'Várható szülés: ' + (s.profile.edd || '–'), footR: '24 / 40 hét' },
+      post: { kicker: 'Szülés után', big: '4. hét', sub: 'Gyermekágyi időszak', pct: '67%', footL: 'Gyermekágyi kontroll: kb. a 6. héten', footR: '4 / 6 hét', cta: 'Kontrollt foglalok', svc: 's8' },
+      ttc: { kicker: 'Babát tervezek', big: done + ' / 5', sub: 'lépés kész a felkészülésből', pct: (done * 20) + '%', footL: 'A lépéseket lent pipálhatod ki', footR: '', cta: 'Tanácsadást foglalok', svc: 's7' },
+      gyn: { kicker: 'Egészségem', big: 'Szűrések', sub: 'Méhnyakszűrés háromévente, 25 és 65 év között', footL: 'Utolsó méhnyakszűrésed: [dátum]', cta: 'Méhnyakszűrésre jelentkezem', svc: 's4' },
+      meno: { kicker: 'Változókor', big: 'Szűrések', sub: 'Emlőszűrés kétévente, 45 és 65 év között', footL: 'Utolsó mammográfiád: [dátum]', cta: 'Konzultációt kérek', svc: 's9' }
+    };
+    const h0 = HEROES[mode];
+    const hero = Object.assign({ footR: '', cta: '' }, h0, {
+      pct: h0.pct || '0%', showProgress: !!h0.pct, noProgress: !h0.pct, hasCta: !!h0.cta,
+      onCta: () => { if (h0.svc) bookService(h0.svc); }
+    });
+
+    // Időpont
+    const sorted = s.appts.slice().sort((a, b) => a.ord - b.ord);
+    const appts = sorted.map((a) => Object.assign({}, a, {
+      onCancel: () => this.setState({ appts: this.state.appts.filter((x) => x.id !== a.id) })
+    }));
+    const next = sorted[0] || { service: '', when: '', time: '' };
+    const booked = {};
+    s.appts.forEach((a) => { booked[a.dayId + '|' + a.time] = true; });
+    const svc = SERVICES.find((x) => x.id === s.serviceId) || { name: '', desc: '' };
+    const day = DAYS.find((d) => d.id === s.dayId) || DAYS[0];
+    const svcOrder = firstOf(SERVICES.map((x) => x.id), M.services);
+    const services = svcOrder.map((id) => {
+      const x = SERVICES.find((y) => y.id === id);
+      return Object.assign({}, x, { rec: M.services.indexOf(id) >= 0, onPick: () => set({ serviceId: x.id, step: 'slot', slot: null }) });
+    });
+    const days = DAYS.map((d) => Object.assign({}, d, chip(d.id === day.id), {
+      onPick: () => set({ dayId: d.id, slot: null })
+    }));
+    const slots = day.slots
+      .filter((tm) => !booked[day.id + '|' + tm])
+      .map((tm) => Object.assign({ time: tm }, chip(tm === s.slot), { onPick: () => set({ slot: tm }) }));
+    const steps = [['service', 'Vizsgálat'], ['slot', 'Időpont'], ['confirm', 'Megerősítés']].map((st, i) => {
+      const on = s.step === st[0];
+      return {
+        n: String(i + 1), label: st[1],
+        numBg: on ? t.primary : t.track, numColor: on ? '#FFFFFF' : t.muted,
+        labelColor: on ? t.primary : t.muted, weight: on ? '600' : '500'
+      };
+    });
+    const confirmBooking = () => {
+      const st = this.state;
+      if (!st.serviceId || !st.slot) return;
+      const hm = st.slot.split(':').map(Number);
+      const appt = {
+        id: 'a' + Date.now(), service: svc.name, when: day.short, time: st.slot,
+        dayId: day.id, ord: day.ord + (hm[0] * 60 + hm[1]) / 10000
+      };
+      this.setState({ appts: st.appts.concat([appt]), step: 'done', lastBooked: appt });
+    };
+
+    // Tudástár: útmutató
+    const topic = GUIDE[s.topic] ? s.topic : M.topic;
+    const g = GUIDE[topic];
+    const topicChips = firstOf(TOPIC_ORDER, M.guideTopics).map((k) => Object.assign({ label: GUIDE[k].chip }, chip(k === topic), {
+      onPick: () => set({ topic: k, openFaq: null })
+    }));
+    const tips = g.tips.map((x) => ({ title: x[0], text: x[1] }));
+    const faqs = g.faq.map((x, i) => {
+      const id = topic + '-' + i;
+      const open = s.openFaq === id;
+      return {
+        q: x[0], a: x[1], open: open, rot: open ? '180deg' : '0deg', expanded: open ? 'true' : 'false',
+        toggle: () => set({ openFaq: open ? null : id })
+      };
+    });
+    const homeG = GUIDE[M.topic];
+
+    // Tudástár: videók
+    const openVideo = (id) => this.setState({
+      tab: 'kb', kbView: 'videos', videoId: id, themeOpen: false, modeOpen: false,
+      watched: Object.assign({}, this.state.watched, { [id]: true })
+    });
+    const videoFilters = ['mine', 'all'].concat(firstOf(TOPIC_ORDER, M.videoTopics)).map((k) => Object.assign(
+      { label: k === 'mine' ? 'Neked ajánlott' : (k === 'all' ? 'Mind' : GUIDE[k].chip) },
+      chip(s.videoFilter === k),
+      { onPick: () => set({ videoFilter: k }) }
+    ));
+    const videosShown = VIDEOS
+      .filter((x) => s.videoFilter === 'all' || (s.videoFilter === 'mine' ? M.videoTopics.indexOf(x.topic) >= 0 : x.topic === s.videoFilter))
+      .map((x) => Object.assign({}, x, { tagLabel: GUIDE[x.topic].chip, watched: !!s.watched[x.id], onOpen: () => openVideo(x.id) }));
+    const curVideo = VIDEOS.find((x) => x.id === s.videoId) || VIDEOS[2];
+    const homeVideo = VIDEOS.find((x) => x.id === M.video) || VIDEOS[0];
+
+    // Közösség
+    const myNick = 'Napraforgó' + (s.showStage && M.nick ? ' · ' + M.nick : '');
+    const canJoin = !!(s.joinAge && s.joinRules);
+    const joinChecks = [['joinAge', 'Elmúltam 18 éves'], ['joinRules', 'Elfogadom a közösség házirendjét']].map((j) => {
+      const on = !!s[j[0]];
+      return {
+        label: j[1], pressed: on ? 'true' : 'false', boxBg: on ? t.primary : 'transparent', vis: on ? 'visible' : 'hidden',
+        onToggle: () => this.setState({ [j[0]]: !this.state[j[0]] })
+      };
+    });
+    const forumFilters = firstOf(SPACE_ORDER, [M.space]).concat(['all']).map((k) => Object.assign(
+      { label: k === 'all' ? 'Minden tér' : SPACES[k] },
+      chip(s.forumFilter === k),
+      { onPick: () => set({ forumFilter: k }) }
+    ));
+    const openThread = (id) => this.setState({ tab: 'forum', forumView: 'thread', threadId: id, replyDraft: '', themeOpen: false, modeOpen: false });
+    const threadsShown = s.threads
+      .filter((th) => s.forumFilter === 'all' || th.space === s.forumFilter)
+      .map((th) => Object.assign(threadView(th), { onOpen: () => openThread(th.id) }));
+    const curRaw = s.threads.find((x) => x.id === s.threadId) || s.threads[0];
+    const report = (id) => () => this.setState({ reported: Object.assign({}, this.state.reported, { [id]: true }) });
+    const cur = Object.assign(threadView(curRaw), {
+      reported: !!s.reported[curRaw.id], canReport: !curRaw.mine && !s.reported[curRaw.id], onReport: report(curRaw.id)
+    });
+    const replies = curRaw.replies.map((r) => Object.assign({}, r, {
+      authorLabel: r.mine ? r.author + ' (te)' : r.author,
+      bg: r.mine ? t.accentSoft : t.surface,
+      reported: !!s.reported[r.id], canReport: !r.mine && !s.reported[r.id], onReport: report(r.id)
+    }));
+    const replyDraft = s.replyDraft || '';
+    const canReply = !!replyDraft.trim();
+    const sendReply = () => {
+      const st = this.state;
+      const text = (st.replyDraft || '').trim();
+      if (!text || !st.forumJoined) return;
+      const tid = st.threadId || st.threads[0].id;
+      const threads = st.threads.map((x) => (x.id === tid
+        ? Object.assign({}, x, { replies: x.replies.concat([{ id: 'r' + Date.now(), author: myNick, text: text, time: 'most', mine: true }]) })
+        : x));
+      this.setState({ threads: threads, replyDraft: '' });
+    };
+    const newSpaces = firstOf(SPACE_ORDER, [M.space]).map((k) => Object.assign({ label: SPACES[k] }, chip(s.newSpace === k), { onPick: () => set({ newSpace: k }) }));
+    const canPublish = !!(s.newTitle || '').trim();
+    const publishQuestion = () => {
+      const st = this.state;
+      const title = (st.newTitle || '').trim();
+      if (!title || !st.forumJoined) return;
+      const th = { id: 't' + Date.now(), space: SPACES[st.newSpace] ? st.newSpace : M.space, title: title, body: (st.newBody || '').trim(), author: myNick, time: 'most', mine: true, replies: [] };
+      this.setState({ threads: [th].concat(st.threads), forumView: 'thread', threadId: th.id, forumFilter: th.space, replyDraft: '', newTitle: '', newBody: '' });
+    };
+    const homeThreadRaw = s.threads.find((th) => th.space === M.space) || s.threads[0];
+    const homeThread = threadView(homeThreadRaw);
+
+    // liliApp
+    const docFilters = ['Mind'].concat(CATS).map((c) => Object.assign({ label: c }, chip(c === s.docFilter), {
+      onPick: () => set({ docFilter: c })
+    }));
+    const upCats = CATS.map((c) => Object.assign({ label: c }, chip(c === s.upCat), { onPick: () => set({ upCat: c }) }));
+    const docsShown = s.docs
+      .filter((d) => s.docFilter === 'Mind' || d.cat === s.docFilter)
+      .map((d) => Object.assign({}, d, {
+        meta: d.cat + ' · ' + d.date,
+        shareLabel: d.shared ? 'Orvos látja' : 'Csak én látom',
+        shareIcon: d.shared ? ICONS.eye : ICONS.lock,
+        shareColor: d.shared ? t.primary : t.muted,
+        shareBg: d.shared ? t.accentSoft : 'transparent',
+        shareBorder: d.shared ? t.accentSoft : t.border,
+        sharePressed: d.shared ? 'true' : 'false',
+        onToggle: () => {
+          const st = this.state;
+          const d0 = st.docs.find((x) => x.id === d.id);
+          if (!d0) return;
+          this.setState({
+            docs: st.docs.map((x) => (x.id === d.id ? Object.assign({}, x, { shared: !x.shared }) : x)),
+            accessLog: addLog(st, (d0.shared ? 'Visszavontad: ' : 'Megosztottad: ') + d0.name)
+          });
+        }
+      }));
+    const sharedCount = s.docs.filter((d) => d.shared).length;
+    const onFile = (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      const st = this.state;
+      const doc = { id: 'f' + Date.now(), name: f.name, cat: st.upCat, date: todayLabel(), shared: false };
+      this.setState({ docs: [doc].concat(st.docs), docFilter: 'Mind', lastUpload: f.name, accessLog: addLog(st, 'Feltöltötted: ' + f.name) });
+      e.target.value = '';
+    };
+    const accessLog = s.accessLog.map((x, i) => Object.assign({}, x, { divider: i === 0 ? 'transparent' : t.border }));
+    const fieldDefs = MODE_FIELD[mode] ? FIELDS.slice(0, 5).concat([MODE_FIELD[mode]], FIELDS.slice(5)) : FIELDS;
+    const fields = fieldDefs.map((f) => ({
+      id: 'hh-' + f.key, label: f.label, ph: f.ph, value: s.profile[f.key] || '',
+      onChange: (e) => {
+        const patch = {};
+        patch[f.key] = e.target.value;
+        this.setState({ profile: Object.assign({}, this.state.profile, patch), saved: false });
+      }
+    }));
+
+    // Üzenetek
+    const msgs = s.msgs.map((m) => {
+      const me = m.from === 'me';
+      return Object.assign({}, m, {
+        justify: me ? 'flex-end' : 'flex-start',
+        bg: me ? t.primary : t.surface,
+        color: me ? '#FFFFFF' : t.text,
+        border: me ? t.primary : t.border,
+        radius: me ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+        metaAlign: me ? 'right' : 'left',
+        meta: me ? m.time + ' · Elküldve' : 'Dr. Schmek Lilian Hanna · ' + m.time,
+        hasText: !!m.text,
+        hasAttach: !!m.attach,
+        attach: m.attach || '',
+        attachBg: me ? 'rgba(255, 255, 255, 0.16)' : t.accentSoft
+      });
+    });
+    const quick = QUICK.map((q) => ({ label: q[0], onPick: () => set({ draft: q[1] }) }));
+    const attachList = s.docs.map((d) => ({
+      name: d.name, meta: d.cat + ' · ' + d.date,
+      onPick: () => set({ attach: d.name, attachOpen: false })
+    }));
+    const draft = s.draft || '';
+    const canSend = !!(draft.trim() || s.attach);
+    const send = () => {
+      const st = this.state;
+      const text = (st.draft || '').trim();
+      if (!text && !st.attach) return;
+      this.setState({
+        msgs: st.msgs.concat([{ id: 'm' + Date.now(), from: 'me', text: text, attach: st.attach, time: 'most' }]),
+        draft: '', attach: null, attachOpen: false
+      });
+    };
+
+    // Beállítások: kapcsolók, értesítések, adatvédelem
+    const sw = (on) => (on
+      ? { checked: 'true', border: t.primary, track: t.primary, knob: '#FFFFFF', justify: 'flex-end' }
+      : { checked: 'false', border: t.muted, track: t.surface, knob: t.muted, justify: 'flex-start' });
+    const toggleIn = (key, field) => () => {
+      const cur = this.state[key];
+      this.setState({ [key]: Object.assign({}, cur, { [field]: !cur[field] }) });
+    };
+    const notifRows = [
+      ['appt', 'Időpont-emlékeztető', '24 órával a vizsgálat előtt.'],
+      ['stage', M.notif[0], M.notif[1]],
+      ['forum', 'Válasz a fórumon', 'Ha valaki válaszol a kérdésedre.']
+    ].map((n, i) => Object.assign({
+      label: n[1], desc: n[2], divider: i === 0 ? 'transparent' : t.border, onToggle: toggleIn('notif', n[0])
+    }, sw(!!s.notif[n[0]])));
+    const leaveForum = () => this.setState({ forumJoined: false, joinAge: false, joinRules: false });
+    const consentRows = [
+      { label: 'Egészségügyi adataid kezelése az ellátáshoz', desc: 'Időpontok, üzenetek és a megosztott dokumentumok. Enélkül az ellátás nem működik.', required: true },
+      { label: 'Személyre szabás az életszakaszod alapján', desc: 'Csak arra használjuk, mit mutasson neked az app. Marketingre soha.', on: personal, onToggle: toggleIn('consents', 'personal') },
+      { label: 'Részvétel a közösségben', desc: 'Névtelen fórum, 18 év felett.', on: !!s.forumJoined, onToggle: () => (this.state.forumJoined ? leaveForum() : this.setState({ tab: 'forum', forumView: 'list', themeOpen: false, modeOpen: false })) },
+      { label: 'Hírek a rendelőtől e-mailben', desc: 'Az életszakaszodat ehhez nem használjuk.', on: !!s.consents.news, onToggle: toggleIn('consents', 'news') },
+      { label: 'Névtelen használati statisztika', desc: 'Az app fejlesztéséhez. Egészségügyi adatot nem tartalmaz.', on: !!s.consents.stats, onToggle: toggleIn('consents', 'stats') }
+    ].map((c, i) => Object.assign({
+      required: !!c.required, optional: !c.required, divider: i === 0 ? 'transparent' : t.border,
+      label: c.label, desc: c.desc, onToggle: c.onToggle || (() => {})
+    }, sw(!!c.on)));
+
+    return {
+      switchFromPreg: !!s.switchFromPreg,
+      switchNote: s.switchFromPreg
+        ? 'Átállítottuk. A terhességhez kötött tartalmakat és emlékeztetőket leállítottuk. Ha bármiben segíthetünk, írj az orvosodnak.'
+        : 'Átállítottuk. Az előző életszakaszhoz kötött emlékeztetők leálltak, az újakat az Adataim között kapcsolhatod be.',
+      forumJoined: !!s.forumJoined, notJoined: !s.forumJoined,
+      joinChecks: joinChecks, cantJoin: !canJoin,
+      joinBg: canJoin ? t.primary : t.track, joinColor: canJoin ? '#FFFFFF' : t.muted,
+      joinForum: () => { if (this.state.joinAge && this.state.joinRules) set({ forumJoined: true }); },
+      stageSw: sw(!!s.showStage), toggleStage: () => set({ showStage: !this.state.showStage }),
+      notifRows: notifRows, consentRows: consentRows,
+      requestExport: () => set({ exportRequested: true }), exportRequested: !!s.exportRequested,
+      askDelete: () => set({ deleteStep: 'confirm' }),
+      cancelDelete: () => set({ deleteStep: null }),
+      confirmDelete: () => set({ deleteStep: 'done' }),
+      deleteConfirm: s.deleteStep === 'confirm', deleteDone: s.deleteStep === 'done',
+
+      t: t,
+      greeting: firstName ? 'Szia, ' + firstName + '!' : 'Szia!',
+
+      themeOpen: s.themeOpen,
+      themeExpanded: s.themeOpen ? 'true' : 'false',
+      themeBtnBg: s.themeOpen ? t.accentSoft : 'transparent',
+      toggleTheme: () => set({ themeOpen: !this.state.themeOpen }),
+      opt: { hold: opt('holdciklus'), gran: opt('granatalma'), bol: opt('bolcso') },
+      pickHold: () => set({ variant: 'holdciklus', themeOpen: false }),
+      pickGran: () => set({ variant: 'granatalma', themeOpen: false }),
+      pickBol: () => set({ variant: 'bolcso', themeOpen: false }),
+
+      mode: mode,
+      modeLabel: personal ? M.label : 'Általános nézet',
+      modeOpen: s.modeOpen,
+      modeExpanded: s.modeOpen ? 'true' : 'false',
+      modeRot: s.modeOpen ? '180deg' : '0deg',
+      modeChanged: s.modeChanged && !s.modeOpen,
+      toggleMode: () => set({ modeOpen: !this.state.modeOpen, modeChanged: false, themeOpen: false }),
+      modes: modes,
+      openModeFromData: go('home', { modeOpen: true, modeChanged: false }),
+      hero: hero,
+      isTtc: mode === 'ttc',
+      checks: checks,
+
+      hasUnread: s.unread,
+      msgAria: s.unread ? 'Üzenetek az orvostól, új üzenet érkezett' : 'Üzenetek az orvostól',
+      msgBtnBg: s.tab === 'msgs' ? t.accentSoft : 'transparent',
+
+      isHome: s.tab === 'home', isBooking: s.tab === 'booking', isKb: s.tab === 'kb',
+      isForum: s.tab === 'forum', isLili: s.tab === 'lili', isMsgs: s.tab === 'msgs',
+      nav: { home: tabStyle('home'), booking: tabStyle('booking'), kb: tabStyle('kb'), forum: tabStyle('forum'), lili: tabStyle('lili') },
+      goHome: go('home'),
+      goBooking: go('booking'),
+      goBookingNew: go('booking', { step: 'service', serviceId: null, slot: null }),
+      goKb: go('kb'),
+      goHomeTopic: go('kb', { kbView: 'guide', topic: M.topic, openFaq: null }),
+      goForum: go('forum', { forumView: 'list' }),
+      goLili: go('lili'),
+      goLiliDocs: go('lili', { liliView: 'docs' }),
+      goMsgs: go('msgs', { unread: false }),
+      askDoctor: go('msgs', { unread: false, draft: 'Kérdésem lenne (' + g.title + '): ' }),
+
+      hasNext: sorted.length > 0, noNext: sorted.length === 0, next: next,
+      homeTip: { kicker: 'Tudtad-e? · ' + homeG.chip, title: homeG.tips[0][0], text: homeG.tips[0][1], more: 'Továbbiak: ' + homeG.chip },
+      homeVideo: homeVideo, openHomeVideo: () => openVideo(homeVideo.id),
+      homeThread: homeThread, openHomeThread: () => openThread(homeThreadRaw.id),
+
+      appts: appts, hasAppts: appts.length > 0, noAppts: appts.length === 0,
+      showStepper: s.step !== 'done', steps: steps,
+      isStepService: s.step === 'service', isStepSlot: s.step === 'slot',
+      isStepConfirm: s.step === 'confirm', isStepDone: s.step === 'done',
+      services: services, svcName: svc.name, days: days, dayLabel: day.label, slots: slots,
+      noSlotsLeft: slots.length === 0,
+      noSlot: !s.slot,
+      nextBg: s.slot ? t.primary : t.track,
+      nextColor: s.slot ? '#FFFFFF' : t.muted,
+      nextCursor: s.slot ? 'pointer' : 'not-allowed',
+      toConfirm: () => { if (this.state.slot) set({ step: 'confirm' }); },
+      backToService: () => set({ step: 'service', slot: null }),
+      backToSlot: () => set({ step: 'slot' }),
+      confirmBooking: confirmBooking,
+      slotLabel: s.slot || '',
+      lb: s.lastBooked || { service: '', when: '', time: '' },
+      newBooking: () => set({ step: 'service', serviceId: null, slot: null }),
+
+      isKbGuide: s.kbView === 'guide', isKbVideos: s.kbView === 'videos',
+      segGuide: seg(s.kbView === 'guide'), segVideos: seg(s.kbView === 'videos'),
+      showKbGuide: () => set({ kbView: 'guide' }),
+      showKbVideos: () => set({ kbView: 'videos', videoId: null }),
+      topicChips: topicChips, g: g, tips: tips, faqs: faqs,
+      isMyTopic: topic === M.topic,
+      topicBadge: (mode === 'preg' || mode === 'post') ? 'Most itt tartasz' : 'Neked szól',
+      videoFilters: videoFilters, videosShown: videosShown,
+      isVideoList: !s.videoId, isVideoPlayer: !!s.videoId,
+      video: Object.assign({}, curVideo, { tagLabel: GUIDE[curVideo.topic].chip }),
+      backToVideos: () => set({ videoId: null }),
+      askAboutVideo: go('msgs', { unread: false, draft: 'Kérdésem lenne a(z) „' + curVideo.title + '” videóval kapcsolatban: ' }),
+
+      myNick: myNick,
+      isForumList: s.forumView === 'list', isForumThread: s.forumView === 'thread', isForumNew: s.forumView === 'new',
+      forumFilters: forumFilters, threadsShown: threadsShown, noThreadsShown: threadsShown.length === 0,
+      backToForum: () => set({ forumView: 'list' }),
+      newQuestion: () => set({ forumView: 'new', newTitle: '', newBody: '', newSpace: M.space }),
+      cur: cur, replies: replies,
+      replyDraft: replyDraft, onReplyDraft: (e) => set({ replyDraft: e.target.value }),
+      sendReply: sendReply, cantReply: !canReply,
+      replyBg: canReply ? t.primary : t.track, replyColor: canReply ? '#FFFFFF' : t.muted,
+      newTitle: s.newTitle, newBody: s.newBody, newSpaces: newSpaces,
+      onNewTitle: (e) => set({ newTitle: e.target.value }),
+      onNewBody: (e) => set({ newBody: e.target.value }),
+      publishQuestion: publishQuestion, cantPublish: !canPublish,
+      publishBg: canPublish ? t.primary : t.track, publishColor: canPublish ? '#FFFFFF' : t.muted,
+
+      isLiliDocs: s.liliView === 'docs', isLiliAccess: s.liliView === 'access', isLiliData: s.liliView === 'data',
+      segLDocs: seg(s.liliView === 'docs'), segLAccess: seg(s.liliView === 'access'), segLData: seg(s.liliView === 'data'),
+      showLiliDocs: () => set({ liliView: 'docs' }),
+      showLiliAccess: () => set({ liliView: 'access' }),
+      showLiliData: () => set({ liliView: 'data' }),
+      upCats: upCats, docFilters: docFilters, docsShown: docsShown, noDocsShown: docsShown.length === 0,
+      docSummary: s.docs.length + ' dokumentum · ' + sharedCount + ' megosztva az orvossal',
+      onFile: onFile, hasLastUpload: !!s.lastUpload, lastUpload: s.lastUpload,
+      hannaAccess: sharedCount > 0 ? sharedCount + ' dokumentumot lát' : 'jelenleg nem lát dokumentumot',
+      hasHannaAccess: sharedCount > 0, noHannaAccess: sharedCount === 0,
+      revokeHanna: () => {
+        const st = this.state;
+        this.setState({
+          docs: st.docs.map((x) => Object.assign({}, x, { shared: false })),
+          accessLog: addLog(st, 'Visszavontad Dr. Schmek Lilian Hanna hozzáférését')
+        });
+      },
+      hasCode: !!s.shareCode, noCode: !s.shareCode, shareCode: s.shareCode || '',
+      createCode: () => {
+        const st = this.state;
+        const code = 'LILI-' + (1000 + Math.floor(Math.random() * 9000));
+        this.setState({ shareCode: code, accessLog: addLog(st, 'Megosztási kódot hoztál létre: ' + code + ' (7 napig érvényes)') });
+      },
+      revokeCode: () => {
+        const st = this.state;
+        this.setState({ shareCode: null, accessLog: addLog(st, 'Visszavontad a megosztási kódot: ' + st.shareCode) });
+      },
+      accessLog: accessLog,
+      fields: fields, saveProfile: () => set({ saved: true }), saved: s.saved,
+
+      msgs: msgs, quick: quick, attachList: attachList,
+      attachOpen: s.attachOpen, attachExpanded: s.attachOpen ? 'true' : 'false',
+      toggleAttach: () => set({ attachOpen: !this.state.attachOpen }),
+      hasAttach: !!s.attach, attach: s.attach || '',
+      removeAttach: () => set({ attach: null }),
+      draft: draft,
+      onDraft: (e) => set({ draft: e.target.value }),
+      onDraftKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); send(); } },
+      send: send, cantSend: !canSend,
+      sendBg: canSend ? t.primary : t.track,
+      sendColor: canSend ? '#FFFFFF' : t.muted
+    };
+  }
+}
+</script>
+</body>
+</html>
