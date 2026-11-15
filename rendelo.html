@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Hanna Health">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<title>Hanna Health – rendelői felület (teszt)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600&family=Gilda+Display&family=Karla:wght@400;500;600;700&family=Fraunces:wght@300;400;500&family=Jost:wght@300;400;500;600&display=swap">
+<style>
+html, body { margin: 0; height: 100%; overflow: hidden; overscroll-behavior: none; background: #E9E9EE; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+* { -webkit-tap-highlight-color: transparent; }
+button, label, input, textarea { touch-action: manipulation; }
+#app { height: 100vh; height: 100dvh; }
+/* iOS nagyít, ha egy beviteli mező betűmérete 16px alatti */
+input, textarea { font-size: 16px !important; }
+.boot { margin: 0; padding: calc(40px + env(safe-area-inset-top)) 24px 24px; font: 16px/1.5 -apple-system, system-ui, sans-serif; color: #26294F; text-align: center; }
+</style>
+</head>
+<body>
+<div id="app"><p class="boot">Betöltés…</p></div>
+<template id="tpl">
+<div style="display: flex; flex-wrap: wrap; height: 100%; overflow: hidden; background: {{t.bg}}; color: {{t.text}}; font-family: 'Josefin Sans', sans-serif; font-size: 15px">
+
+  <aside style="flex: 0 0 236px; height: 100%; box-sizing: border-box; padding: 22px 14px 18px; display: flex; flex-direction: column; gap: 6px; background: {{t.primary}}; color: #FFFFFF">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 8px 18px">
+      <svg width="42" height="28" viewBox="0 0 120 80" aria-hidden="true">
+        <path d="M30 16A24 24 0 0 0 30 64A31 31 0 0 1 30 16Z" fill="#FFFFFF"></path>
+        <circle cx="60" cy="40" r="17" fill="#C9772E"></circle>
+        <path d="M90 16A24 24 0 0 1 90 64A31 31 0 0 0 90 16Z" fill="#FFFFFF"></path>
+      </svg>
+      <div style="display: flex; flex-direction: column; gap: 3px">
+        <span style="font-size: 13px; letter-spacing: 0.22em">HANNA HEALTH</span>
+        <span style="font-size: 10px; letter-spacing: 0.2em; color: #DADBEA">RENDELŐI FELÜLET</span>
+      </div>
+    </div>
+    <nav aria-label="Rendelői menü" style="display: flex; flex-direction: column; gap: 4px">
+      <sc-for list="{{navItems}}" as="ni" hint-placeholder-count="5">
+        <button type="button" onClick="{{ni.onPick}}" aria-current="{{ni.current}}" style="min-height: 46px; border: none; border-radius: 12px; background: {{ni.bg}}; color: {{ni.color}}; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-family: inherit; font-size: 15px; font-weight: {{ni.weight}}; text-align: left; cursor: pointer">
+          <span>{{ni.label}}</span>
+          <sc-if value="{{ni.hasBadge}}" hint-placeholder-val="{{true}}">
+            <span style="min-width: 24px; height: 24px; box-sizing: border-box; padding: 0 7px; border-radius: 999px; background: #F2C9A1; color: #26294F; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600">{{ni.badge}}</span>
+          </sc-if>
+        </button>
+      </sc-for>
+    </nav>
+    <div style="flex: 1 1 auto"></div>
+    <div style="display: flex; flex-direction: column; gap: 8px; padding: 14px 8px 0; border-top: 1px solid #4A4D75">
+      <span style="font-size: 11px; letter-spacing: 0.18em; color: #DADBEA">SZEREPKÖR</span>
+      <div style="display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: #3A3D66">
+        <sc-for list="{{roles}}" as="ro" hint-placeholder-count="2">
+          <button type="button" onClick="{{ro.onPick}}" aria-pressed="{{ro.pressed}}" style="flex: 1 1 0; min-height: 44px; border: none; border-radius: 999px; background: {{ro.bg}}; color: {{ro.color}}; font-family: inherit; font-size: 13px; font-weight: {{ro.weight}}; cursor: pointer; padding: 0 4px">{{ro.label}}</button>
+        </sc-for>
+      </div>
+      <span style="font-size: 13px; line-height: 1.4; color: #FFFFFF">{{userName}}</span>
+      <span style="font-size: 12px; line-height: 1.4; color: #DADBEA">Prototípus: minden név és adat kitalált minta.</span>
+    </div>
+  </aside>
+
+  <main style="flex: 999 1 560px; min-width: 0; height: 100%; box-sizing: border-box; overflow-y: auto; padding: 28px 32px 32px; display: flex; flex-direction: column; gap: 20px">
+
+    <sc-if value="{{isCal}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <h1 style="margin: 0; font-weight: 300; font-size: 32px; line-height: 1.15; color: {{t.primary}}">Naptár</h1>
+        <span style="font-size: 14px; color: {{t.muted}}">{{calSummary}}</span>
+      </div>
+      <sc-if value="{{isMoving}}" hint-placeholder-val="{{false}}">
+        <div role="status" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-radius: 14px; background: {{t.accentSoft}}">
+          <span style="font-size: 14px; line-height: 1.45; color: {{t.text}}">{{moveText}}</span>
+          <button type="button" onClick="{{cancelMove}}" style="min-height: 44px; border: 1px solid {{t.primary}}; border-radius: 999px; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; padding: 0 18px">Mégse</button>
+        </div>
+      </sc-if>
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 20px">
+        <div style="flex: 1 1 520px; min-width: 0; overflow-x: auto">
+          <div style="display: flex; flex-direction: column; gap: 6px; min-width: 620px">
+            <div style="display: flex; gap: 6px">
+              <div style="flex: 0 0 52px"></div>
+              <div style="flex: 1 1 auto; min-width: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px">
+                <sc-for list="{{gridHeads}}" as="gh" hint-placeholder-count="5">
+                  <div style="min-height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px">
+                    <span style="font-size: 12px; color: {{t.muted}}">{{gh.dow}}</span>
+                    <span style="font-size: 14px; font-weight: 600; color: {{t.text}}">{{gh.date}}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display: flex; gap: 6px">
+              <div style="flex: 0 0 52px; display: flex; flex-direction: column; gap: 6px">
+                <sc-for list="{{gridTimes}}" as="gt" hint-placeholder-count="8">
+                  <div style="height: 60px; display: flex; align-items: center; font-size: 14px; font-weight: 600; color: {{t.text}}">{{gt.time}}</div>
+                </sc-for>
+              </div>
+              <div style="flex: 1 1 auto; min-width: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); grid-auto-rows: 60px; gap: 6px">
+                <sc-for list="{{gridCells}}" as="gc" hint-placeholder-count="10">
+                  <button type="button" onClick="{{gc.onPick}}" aria-pressed="{{gc.pressed}}" aria-label="{{gc.aria}}" style="height: 60px; min-width: 0; box-sizing: border-box; border: 2px solid {{gc.border}}; border-radius: 12px; background: {{gc.bg}}; color: {{gc.color}}; padding: 4px 8px; display: flex; flex-direction: column; justify-content: center; gap: 2px; text-align: left; font-family: inherit; cursor: pointer; overflow: hidden">
+                    <span style="font-size: 13px; font-weight: {{gc.weight}}; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{gc.l1}}</span>
+                    <span style="font-size: 12px; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{gc.l2}}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; padding-top: 12px; font-size: 13px; color: {{t.muted}}">
+            <sc-for list="{{legend}}" as="lg" hint-placeholder-count="4">
+              <span style="display: flex; align-items: center; gap: 6px"><span aria-hidden="true" style="width: 14px; height: 14px; border-radius: 4px; background: {{lg.bg}}; border: 1px solid {{t.border}}"></span>{{lg.label}}</span>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="flex: 0 1 340px; min-width: 280px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+          <sc-if value="{{panelNone}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 16px; font-weight: 600; color: {{t.text}}">Válassz egy időpontot</span>
+            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.muted}}">Foglalásra kattintva érkeztetni, áthelyezni vagy lemondani tudsz. Szabad időpontra kattintva új foglalást vehetsz fel, vagy zárolhatod az időpontot.</p>
+          </sc-if>
+
+          <sc-if value="{{panelAppt}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <span style="font-size: 20px; font-weight: 600; color: {{t.text}}">{{sel.name}}</span>
+              <span style="font-size: 14px; color: {{t.muted}}">{{sel.svc}} · {{sel.when}}</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px">
+              <div style="display: flex; justify-content: space-between; gap: 12px"><span style="color: {{t.muted}}">Telefonszám</span><span style="font-weight: 600">[telefonszám]</span></div>
+              <div style="display: flex; justify-content: space-between; gap: 12px"><span style="color: {{t.muted}}">Azonosítás</span><span style="font-weight: 600; text-align: right">{{sel.idText}}</span></div>
+              <div style="display: flex; justify-content: space-between; gap: 12px"><span style="color: {{t.muted}}">Fizetés</span><span style="font-weight: 600; text-align: right">{{sel.payText}}</span></div>
+              <div style="display: flex; justify-content: space-between; gap: 12px"><span style="color: {{t.muted}}">Állapot</span><span style="font-weight: 600; text-align: right">{{sel.stateText}}</span></div>
+              <div style="display: flex; justify-content: space-between; gap: 12px"><span style="color: {{t.muted}}">Vizit előtti teendők</span><span style="font-weight: 600; text-align: right">{{sel.prepText}}</span></div>
+            </div>
+            <sc-if value="{{sel.showPrep}}" hint-placeholder-val="{{false}}">
+              <div style="padding: 12px 14px; border-radius: 14px; background: {{t.bg}}; display: flex; flex-direction: column; gap: 8px">
+                <span style="font-size: 12px; letter-spacing: 0.14em; color: {{t.muted}}">KÉRDŐÍV (CSAK AZ ORVOS LÁTJA)</span>
+                <sc-for list="{{prepRows}}" as="pq" hint-placeholder-count="3">
+                  <div style="display: flex; flex-direction: column; gap: 2px">
+                    <span style="font-size: 12px; color: {{t.muted}}">{{pq.q}}</span>
+                    <span style="font-size: 14px; line-height: 1.45; color: {{t.text}}">{{pq.a}}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <button type="button" onClick="{{sel.onArrive}}" style="min-height: 48px; border: none; border-radius: 999px; background: {{t.primary}}; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">{{sel.arriveLabel}}</button>
+            <button type="button" onClick="{{sel.onNoShow}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: 999px; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">{{sel.noShowLabel}}</button>
+            <sc-if value="{{sel.showPayLink}}" hint-placeholder-val="{{false}}">
+              <button type="button" onClick="{{sel.onPayLink}}" disabled="{{sel.payLinkBtn.disabled}}" style="min-height: 48px; border: 1px solid {{sel.payLinkBtn.border}}; border-radius: 999px; background: {{sel.payLinkBtn.bg}}; color: {{sel.payLinkBtn.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{sel.payLinkBtn.cursor}}; padding: 0 20px">Fizetési link küldése</button>
+            </sc-if>
+            <button type="button" onClick="{{sel.onMove}}" disabled="{{sel.moveBtn.disabled}}" style="min-height: 48px; border: 1px solid {{sel.moveBtn.border}}; border-radius: 999px; background: {{sel.moveBtn.bg}}; color: {{sel.moveBtn.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{sel.moveBtn.cursor}}; padding: 0 20px">Áthelyezés másik időpontra</button>
+            <sc-if value="{{sel.showLink}}" hint-placeholder-val="{{true}}">
+              <button type="button" onClick="{{sel.onCode}}" disabled="{{sel.linkBtn.disabled}}" style="min-height: 48px; border: 1px solid {{sel.linkBtn.border}}; border-radius: 999px; background: {{sel.linkBtn.bg}}; color: {{sel.linkBtn.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{sel.linkBtn.cursor}}; padding: 0 20px">Összekötő kód készítése</button>
+            </sc-if>
+            <sc-if value="{{sel.hasCode}}" hint-placeholder-val="{{false}}">
+              <div style="padding: 14px 16px; border-radius: 14px; background: {{t.accentSoft}}; display: flex; flex-direction: column; gap: 6px">
+                <span style="font-size: 12px; letter-spacing: 0.12em; color: {{t.text}}">EGYSZERI ÖSSZEKÖTŐ KÓD</span>
+                <span style="font-size: 30px; font-weight: 600; letter-spacing: 0.2em; color: {{t.primary}}">{{sel.code}}</span>
+                <span style="font-size: 13px; line-height: 1.45; color: {{t.text}}">15 percig érvényes. Csak azután add át, hogy megnézted a páciens személyi igazolványát és TAJ-kártyáját. A páciens az appban, a Mappám fülön írja be.</span>
+              </div>
+            </sc-if>
+            <sc-if value="{{sel.showRefund}}" hint-placeholder-val="{{false}}">
+              <button type="button" onClick="{{sel.onRefund}}" disabled="{{sel.refundBtn.disabled}}" style="min-height: 48px; border: 1px solid {{sel.refundBtn.border}}; border-radius: 999px; background: {{sel.refundBtn.bg}}; color: {{sel.refundBtn.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{sel.refundBtn.cursor}}; padding: 0 20px">Előleg visszatérítése</button>
+            </sc-if>
+            <button type="button" onClick="{{sel.onCancel}}" disabled="{{sel.cancelBtn.disabled}}" style="min-height: 48px; border: 1px solid {{sel.cancelBtn.border}}; border-radius: 999px; background: {{sel.cancelBtn.bg}}; color: {{sel.cancelBtn.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{sel.cancelBtn.cursor}}; padding: 0 20px">Időpont lemondása</button>
+          </sc-if>
+
+          <sc-if value="{{panelFree}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <span style="font-size: 18px; font-weight: 600; color: {{t.text}}">Új foglalás</span>
+              <span style="font-size: 14px; color: {{t.muted}}">{{slotWhen}}</span>
+            </div>
+            <label for="hh-adm-nbname" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Páciens neve</label>
+            <input id="hh-adm-nbname" type="text" value="{{nbName}}" onChange="{{onNbName}}" placeholder="Vezetéknév Keresztnév" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px">
+            <span style="font-size: 13px; font-weight: 600; color: {{t.text}}">Vizsgálat</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px">
+              <sc-for list="{{nbServices}}" as="ns" hint-placeholder-count="6">
+                <button type="button" onClick="{{ns.onPick}}" aria-pressed="{{ns.pressed}}" style="min-height: 44px; border-radius: 999px; border: 1px solid {{ns.border}}; background: {{ns.bg}}; color: {{ns.color}}; font-family: inherit; font-size: 13px; font-weight: {{ns.weight}}; cursor: pointer; padding: 0 12px">{{ns.label}}</button>
+              </sc-for>
+            </div>
+            <button type="button" onClick="{{toggleNbNew}}" aria-pressed="{{nbNew.pressed}}" style="width: 100%; min-height: 48px; border: none; background: transparent; padding: 4px 0; display: flex; align-items: center; gap: 12px; text-align: left; font-family: inherit; cursor: pointer">
+              <span style="width: 24px; height: 24px; flex-shrink: 0; box-sizing: border-box; border-radius: 7px; border: 2px solid {{t.primary}}; background: {{nbNew.box}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="visibility: {{nbNew.vis}}"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+              </span>
+              <span style="font-size: 14px; line-height: 1.35; color: {{t.text}}">Új páciens (még nincs azonosítva)</span>
+            </button>
+            <span style="font-size: 13px; line-height: 1.45; color: {{t.muted}}">{{nbPayHint}}</span>
+            <button type="button" onClick="{{saveBooking}}" disabled="{{nbSave.disabled}}" style="min-height: 48px; border: 1px solid {{nbSave.border}}; border-radius: 999px; background: {{nbSave.bg}}; color: {{nbSave.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{nbSave.cursor}}; padding: 0 20px">Foglalás rögzítése</button>
+            <button type="button" onClick="{{toggleBlock}}" disabled="{{blockBtn.disabled}}" style="min-height: 48px; border: 1px solid {{blockBtn.border}}; border-radius: 999px; background: {{blockBtn.bg}}; color: {{blockBtn.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{blockBtn.cursor}}; padding: 0 20px">Időpont zárolása</button>
+          </sc-if>
+
+          <sc-if value="{{panelBlocked}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <span style="font-size: 18px; font-weight: 600; color: {{t.text}}">Zárolt időpont</span>
+              <span style="font-size: 14px; color: {{t.muted}}">{{slotWhen}}</span>
+            </div>
+            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.muted}}">A páciensek ezt az időpontot nem látják és nem foglalhatják.</p>
+            <button type="button" onClick="{{toggleBlock}}" disabled="{{blockBtn.disabled}}" style="min-height: 48px; border: 1px solid {{blockBtn.border}}; border-radius: 999px; background: {{blockBtn.bg}}; color: {{blockBtn.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{blockBtn.cursor}}; padding: 0 20px">Zárolás feloldása</button>
+          </sc-if>
+
+          <sc-if value="{{calDenied}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 12px; line-height: 1.45; color: {{t.muted}}">A szürke gombokhoz ebben a szerepkörben nincs jogosultság. Az orvos a Jogosultságok menüben tudja engedélyezni.</span>
+          </sc-if>
+          <sc-if value="{{hasCalNote}}" hint-placeholder-val="{{false}}">
+            <p role="status" style="margin: 0; padding: 12px 14px; border-radius: 12px; background: {{t.track}}; font-size: 13px; line-height: 1.45; color: {{t.text}}">{{calNote}}</p>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isMsgs}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <h1 style="margin: 0; font-weight: 300; font-size: 32px; line-height: 1.15; color: {{t.primary}}">Üzenetek</h1>
+        <span style="font-size: 14px; color: {{t.muted}}">Csak azonosított páciens írhat. Nem sürgősségi csatorna; vállalt válaszidő: [X] munkanap.</span>
+      </div>
+      <sc-if value="{{subOn}}" hint-placeholder-val="{{false}}">
+        <p role="status" style="margin: 0; max-width: 860px; padding: 12px 16px; border-radius: 14px; background: {{t.accentSoft}}; font-size: 14px; line-height: 1.45; color: {{t.text}}">{{subBanner}}</p>
+      </sc-if>
+      <sc-if value="{{msgsLocked}}" hint-placeholder-val="{{false}}">
+        <div style="max-width: 560px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 10px">
+          <span style="font-size: 18px; font-weight: 600; color: {{t.text}}">Az orvosi üzeneteket csak az orvos látja</span>
+          <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.muted}}">Az adminisztrátor az időpontokat, az azonosítást és a fizetést kezeli a Naptárban. Az üzenetek egészségügyi adatot tartalmaznak, ezért a tartalmukhoz ebben a szerepkörben nincs hozzáférés, és ez a jogosultság nem is adható meg.</p>
+          <span style="font-size: 14px; font-weight: 600; color: {{t.text}}">{{lockedCount}}</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{msgsOpen}}" hint-placeholder-val="{{true}}">
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 20px">
+          <div style="flex: 0 1 320px; min-width: 260px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 18px; overflow: hidden">
+            <sc-for list="{{threads}}" as="th" hint-placeholder-count="4">
+              <button type="button" onClick="{{th.onOpen}}" aria-pressed="{{th.pressed}}" style="width: 100%; min-height: 72px; box-sizing: border-box; border: none; border-bottom: 1px solid {{t.border}}; background: {{th.bg}}; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; text-align: left; font-family: inherit; cursor: pointer; color: {{t.text}}">
+                <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+                  <span style="font-size: 15px; font-weight: {{th.weight}}">{{th.name}}</span>
+                  <span style="padding: 3px 9px; border-radius: 999px; background: {{th.tagBg}}; color: {{th.tagColor}}; font-size: 12px; font-weight: 600">{{th.tag}}</span>
+                </span>
+                <span style="font-size: 13px; line-height: 1.4; color: {{t.muted}}">{{th.snippet}}</span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="flex: 1 1 420px; min-width: 0; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px">
+              <div style="display: flex; flex-direction: column; gap: 2px">
+                <span style="font-size: 18px; font-weight: 600; color: {{t.text}}">{{thread.name}}</span>
+                <span style="font-size: 13px; color: {{t.muted}}">{{thread.meta}}</span>
+              </div>
+              <button type="button" onClick="{{thread.onToggleClosed}}" style="min-height: 44px; border: 1px solid {{t.primary}}; border-radius: 999px; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; padding: 0 18px">{{thread.closeLabel}}</button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px">
+              <sc-for list="{{threadMsgs}}" as="tm" hint-placeholder-count="3">
+                <div style="align-self: {{tm.align}}; max-width: 78%; padding: 10px 14px; border-radius: 14px; background: {{tm.bg}}; color: {{tm.color}}; display: flex; flex-direction: column; gap: 4px">
+                  <span style="font-size: 14px; line-height: 1.5">{{tm.text}}</span>
+                  <span style="font-size: 12px; color: {{tm.metaColor}}">{{tm.meta}}</span>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{thread.isOpen}}" hint-placeholder-val="{{true}}">
+              <div style="display: flex; flex-wrap: wrap; gap: 8px">
+                <sc-for list="{{quick}}" as="qk" hint-placeholder-count="3">
+                  <button type="button" onClick="{{qk.onPick}}" style="min-height: 44px; border: 1px solid {{t.border}}; border-radius: 999px; background: {{t.bg}}; color: {{t.text}}; font-family: inherit; font-size: 13px; cursor: pointer; padding: 0 14px">{{qk.label}}</button>
+                </sc-for>
+              </div>
+              <label for="hh-adm-reply" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Válasz</label>
+              <textarea id="hh-adm-reply" rows="3" value="{{reply}}" onChange="{{onReply}}" placeholder="Írd ide a válaszodat…" style="box-sizing: border-box; width: 100%; padding: 12px 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px; line-height: 1.5; resize: vertical"></textarea>
+              <button type="button" onClick="{{sendReply}}" disabled="{{sendBtn.disabled}}" style="align-self: flex-end; min-height: 48px; border: 1px solid {{sendBtn.border}}; border-radius: 999px; background: {{sendBtn.bg}}; color: {{sendBtn.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{sendBtn.cursor}}; padding: 0 28px">Küldés</button>
+            </sc-if>
+            <sc-if value="{{thread.isClosed}}" hint-placeholder-val="{{false}}">
+              <p style="margin: 0; padding: 12px 14px; border-radius: 12px; background: {{t.track}}; font-size: 13px; line-height: 1.45; color: {{t.text}}">Ez a beszélgetés le van zárva. Ha a páciens újra ír, automatikusan megnyílik.</p>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+    </sc-if>
+
+    <sc-if value="{{isMod}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <h1 style="margin: 0; font-weight: 300; font-size: 32px; line-height: 1.15; color: {{t.primary}}">Moderálás</h1>
+          <span style="font-size: 14px; color: {{t.muted}}">Az első hozzászólás jóváhagyás után jelenik meg. A jelzéseket [X] órán belül át kell nézni.</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <sc-for list="{{modFilters}}" as="mf" hint-placeholder-count="3">
+            <button type="button" onClick="{{mf.onPick}}" aria-pressed="{{mf.pressed}}" style="min-height: 44px; border-radius: 999px; border: 1px solid {{mf.border}}; background: {{mf.bg}}; color: {{mf.color}}; font-family: inherit; font-size: 14px; font-weight: {{mf.weight}}; cursor: pointer; padding: 0 16px">{{mf.label}}</button>
+          </sc-for>
+        </div>
+      </div>
+      <sc-if value="{{noModItems}}" hint-placeholder-val="{{false}}">
+        <p style="margin: 0; padding: 20px; border-radius: 18px; background: {{t.surface}}; border: 1px solid {{t.border}}; font-size: 14px; color: {{t.muted}}">Ebben a listában most nincs teendő.</p>
+      </sc-if>
+      <div style="display: flex; flex-direction: column; gap: 14px; max-width: 860px">
+        <sc-for list="{{modItems}}" as="mi" hint-placeholder-count="3">
+          <article style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 18px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+              <span style="padding: 4px 10px; border-radius: 999px; background: {{mi.kindBg}}; color: {{mi.kindColor}}; font-size: 12px; font-weight: 600">{{mi.kind}}</span>
+              <span style="font-size: 13px; color: {{t.muted}}">{{mi.meta}}</span>
+            </div>
+            <p style="margin: 0; font-size: 15px; line-height: 1.5; color: {{t.text}}">{{mi.text}}</p>
+            <span style="font-size: 13px; line-height: 1.45; color: {{t.muted}}">{{mi.reason}}</span>
+            <sc-if value="{{mi.isCrisis}}" hint-placeholder-val="{{false}}">
+              <p style="margin: 0; padding: 12px 14px; border-radius: 12px; background: {{t.accentSoft}}; font-size: 13px; line-height: 1.5; color: {{t.text}}">Válság-protokoll: a hozzászólás rejtve marad, a szerző azonnal megkapta a segélyvonalak elérhetőségét (Lelki Elsősegély 116-123, vészhelyzetben 112). Moderátorként ne adj tanácsot, hanem értesítsd az orvost. Lezárni csak az orvos tudja.</p>
+            </sc-if>
+            <sc-if value="{{mi.isPending}}" hint-placeholder-val="{{true}}">
+              <div style="display: flex; flex-wrap: wrap; gap: 8px">
+                <sc-if value="{{mi.showApprove}}" hint-placeholder-val="{{true}}">
+                  <button type="button" onClick="{{mi.onApprove}}" disabled="{{mi.approveBtn.disabled}}" style="min-height: 44px; border: 1px solid {{mi.approveBtn.border}}; border-radius: 999px; background: {{mi.approveBtn.bg}}; color: {{mi.approveBtn.color}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: {{mi.approveBtn.cursor}}; padding: 0 18px">Megjelenhet</button>
+                </sc-if>
+                <button type="button" onClick="{{mi.onHide}}" disabled="{{mi.hideBtn.disabled}}" style="min-height: 44px; border: 1px solid {{mi.hideBtn.border}}; border-radius: 999px; background: {{mi.hideBtn.bg}}; color: {{mi.hideBtn.color}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: {{mi.hideBtn.cursor}}; padding: 0 18px">{{mi.hideLabel}}</button>
+                <sc-if value="{{mi.showNotify}}" hint-placeholder-val="{{false}}">
+                  <button type="button" onClick="{{mi.onNotify}}" style="min-height: 44px; border: none; border-radius: 999px; background: {{t.primary}}; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; padding: 0 18px">{{mi.notifyLabel}}</button>
+                </sc-if>
+              </div>
+            </sc-if>
+            <sc-if value="{{mi.isDone}}" hint-placeholder-val="{{false}}">
+              <span style="font-size: 13px; font-weight: 600; color: {{t.text}}">{{mi.outcome}}</span>
+            </sc-if>
+          </article>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isContent}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <h1 style="margin: 0; font-weight: 300; font-size: 32px; line-height: 1.15; color: {{t.primary}}">Tartalom</h1>
+          <span style="font-size: 14px; color: {{t.muted}}">{{contentSummary}}</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <sc-for list="{{contentFilters}}" as="cf" hint-placeholder-count="4">
+            <button type="button" onClick="{{cf.onPick}}" aria-pressed="{{cf.pressed}}" style="min-height: 44px; border-radius: 999px; border: 1px solid {{cf.border}}; background: {{cf.bg}}; color: {{cf.color}}; font-family: inherit; font-size: 14px; font-weight: {{cf.weight}}; cursor: pointer; padding: 0 16px">{{cf.label}}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 20px">
+        <div style="flex: 0 1 340px; min-width: 260px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 18px; overflow: hidden">
+          <sc-for list="{{contentItems}}" as="ci" hint-placeholder-count="6">
+            <button type="button" onClick="{{ci.onOpen}}" aria-pressed="{{ci.pressed}}" style="width: 100%; min-height: 64px; box-sizing: border-box; border: none; border-bottom: 1px solid {{t.border}}; background: {{ci.bg}}; padding: 10px 16px; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; text-align: left; font-family: inherit; cursor: pointer; color: {{t.text}}">
+              <span style="font-size: 14px; font-weight: 600; line-height: 1.35">{{ci.title}}</span>
+              <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+                <span style="padding: 3px 9px; border-radius: 999px; background: {{ci.stBg}}; color: {{ci.stColor}}; font-size: 12px; font-weight: 600">{{ci.status}}</span>
+                <span style="font-size: 12px; color: {{t.muted}}">{{ci.meta}}</span>
+              </span>
+            </button>
+          </sc-for>
+        </div>
+        <div style="flex: 1 1 460px; min-width: 0; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px">
+            <span style="font-size: 12px; letter-spacing: 0.14em; color: {{t.muted}}">{{ed.kind}}</span>
+            <span style="padding: 4px 10px; border-radius: 999px; background: {{ed.stBg}}; color: {{ed.stColor}}; font-size: 12px; font-weight: 600">{{ed.status}}</span>
+          </div>
+          <sc-if value="{{ed.readOnly}}" hint-placeholder-val="{{false}}">
+            <p style="margin: 0; padding: 12px 14px; border-radius: 12px; background: {{t.track}}; font-size: 13px; line-height: 1.45; color: {{t.text}}">Ebben a szerepkörben a tartalom csak olvasható. A szerkesztést az orvos a Jogosultságok menüben tudja engedélyezni.</p>
+          </sc-if>
+          <label for="hh-adm-title" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Cím</label>
+          <input id="hh-adm-title" type="text" value="{{ed.title}}" onChange="{{onEdTitle}}" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px">
+          <label for="hh-adm-stat" style="font-size: 13px; font-weight: 600; color: {{t.text}}">{{ed.statLabel}}</label>
+          <input id="hh-adm-stat" type="text" value="{{ed.stat}}" onChange="{{onEdStat}}" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px">
+          <label for="hh-adm-short" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Rövid leírás (a listában jelenik meg)</label>
+          <textarea id="hh-adm-short" rows="2" value="{{ed.short}}" onChange="{{onEdShort}}" style="box-sizing: border-box; width: 100%; padding: 12px 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px; line-height: 1.5; resize: vertical"></textarea>
+          <label for="hh-adm-lead" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Bevezető</label>
+          <textarea id="hh-adm-lead" rows="3" value="{{ed.lead}}" onChange="{{onEdLead}}" style="box-sizing: border-box; width: 100%; padding: 12px 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px; line-height: 1.5; resize: vertical"></textarea>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 6px">
+            <span style="font-size: 12px; letter-spacing: 0.14em; color: {{t.muted}}">SZAKASZOK</span>
+            <button type="button" onClick="{{addSection}}" style="min-height: 44px; border: 1px solid {{t.primary}}; border-radius: 999px; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; padding: 0 16px">Új szakasz</button>
+          </div>
+          <sc-for list="{{edSections}}" as="es" hint-placeholder-count="2">
+            <div style="border: 1px solid {{t.border}}; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px; background: {{t.bg}}">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+                <label for="{{es.hid}}" style="font-size: 13px; font-weight: 600; color: {{t.text}}">{{es.n}}. szakasz címe</label>
+                <button type="button" onClick="{{es.onRemove}}" style="min-height: 44px; border: none; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; padding: 0 8px">Törlés</button>
+              </div>
+              <input id="{{es.hid}}" type="text" value="{{es.h}}" onChange="{{es.onH}}" style="height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid {{t.border}}; border-radius: 10px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px">
+              <textarea aria-label="{{es.pLabel}}" rows="4" value="{{es.p}}" onChange="{{es.onP}}" style="box-sizing: border-box; width: 100%; padding: 10px 12px; border: 1px solid {{t.border}}; border-radius: 10px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 14px; line-height: 1.5; resize: vertical"></textarea>
+            </div>
+          </sc-for>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 6px">
+            <span style="font-size: 12px; letter-spacing: 0.14em; color: {{t.muted}}">MIRE FIGYELJ?</span>
+            <button type="button" onClick="{{addWatch}}" style="min-height: 44px; border: 1px solid {{t.primary}}; border-radius: 999px; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; padding: 0 16px">Új pont</button>
+          </div>
+          <sc-for list="{{edWatch}}" as="ew" hint-placeholder-count="2">
+            <div style="display: flex; align-items: center; gap: 8px">
+              <input type="text" aria-label="{{ew.label}}" value="{{ew.text}}" onChange="{{ew.onText}}" style="flex: 1 1 auto; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid {{t.border}}; border-radius: 10px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 14px">
+              <button type="button" onClick="{{ew.onRemove}}" style="min-height: 44px; border: none; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; padding: 0 8px">Törlés</button>
+            </div>
+          </sc-for>
+
+          <label for="hh-adm-doctor" style="font-size: 13px; font-weight: 600; color: {{t.text}}; padding-top: 6px">Mikor fordulj orvoshoz?</label>
+          <textarea id="hh-adm-doctor" rows="3" value="{{ed.doctor}}" onChange="{{onEdDoctor}}" style="box-sizing: border-box; width: 100%; padding: 12px 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px; line-height: 1.5; resize: vertical"></textarea>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 6px">
+            <span style="font-size: 12px; letter-spacing: 0.14em; color: {{t.muted}}">FORRÁSOK</span>
+            <button type="button" onClick="{{addSource}}" style="min-height: 44px; border: 1px solid {{t.primary}}; border-radius: 999px; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; padding: 0 16px">Új forrás</button>
+          </div>
+          <sc-for list="{{edSources}}" as="eo" hint-placeholder-count="2">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+              <input type="text" aria-label="{{eo.nameLabel}}" value="{{eo.name}}" onChange="{{eo.onName}}" placeholder="Forrás neve" style="flex: 1 1 160px; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid {{t.border}}; border-radius: 10px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 14px">
+              <input type="text" aria-label="{{eo.urlLabel}}" value="{{eo.url}}" onChange="{{eo.onUrl}}" placeholder="https://" style="flex: 2 1 220px; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid {{t.border}}; border-radius: 10px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 14px">
+              <button type="button" onClick="{{eo.onRemove}}" style="min-height: 44px; border: none; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; padding: 0 8px">Törlés</button>
+            </div>
+          </sc-for>
+
+          <span style="font-size: 13px; line-height: 1.45; color: {{t.muted}}; padding-top: 6px">{{ed.reviewLine}}</span>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px">
+            <button type="button" onClick="{{edSaveDraft}}" disabled="{{ed.draftBtn.disabled}}" style="min-height: 46px; border: 1px solid {{ed.draftBtn.border}}; border-radius: 999px; background: {{ed.draftBtn.bg}}; color: {{ed.draftBtn.color}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: {{ed.draftBtn.cursor}}; padding: 0 18px">Mentés vázlatként</button>
+            <button type="button" onClick="{{edSendReview}}" disabled="{{ed.reviewBtn.disabled}}" style="min-height: 46px; border: 1px solid {{ed.reviewBtn.border}}; border-radius: 999px; background: {{ed.reviewBtn.bg}}; color: {{ed.reviewBtn.color}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: {{ed.reviewBtn.cursor}}; padding: 0 18px">Lektorálásra küldöm</button>
+            <button type="button" onClick="{{edPublish}}" disabled="{{ed.publishBtn.disabled}}" style="min-height: 46px; border: 1px solid {{ed.publishBtn.border}}; border-radius: 999px; background: {{ed.publishBtn.bg}}; color: {{ed.publishBtn.color}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: {{ed.publishBtn.cursor}}; padding: 0 18px">{{ed.publishLabel}}</button>
+          </div>
+          <sc-if value="{{ed.adminNote}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 12px; line-height: 1.45; color: {{t.muted}}">Közzétenni és visszavonni csak az orvos tud. Ez a jogosultság nem adható át.</span>
+          </sc-if>
+          <sc-if value="{{hasEdNote}}" hint-placeholder-val="{{false}}">
+            <p role="status" style="margin: 0; padding: 12px 14px; border-radius: 12px; background: {{t.accentSoft}}; font-size: 13px; line-height: 1.45; color: {{t.text}}">{{edNote}}</p>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isPat}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <h1 style="margin: 0; font-weight: 300; font-size: 32px; line-height: 1.15; color: {{t.primary}}">Páciensek</h1>
+        <span style="font-size: 14px; color: {{t.muted}}">{{patSummary}}</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 20px">
+        <div style="flex: 0 1 340px; min-width: 260px; display: flex; flex-direction: column; gap: 10px">
+          <label for="hh-adm-search" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Keresés név vagy telefonszám alapján</label>
+          <input id="hh-adm-search" type="text" value="{{patQuery}}" onChange="{{onPatQuery}}" placeholder="Pl. Minta vagy 0003" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px">
+          <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 18px; overflow: hidden">
+            <sc-for list="{{patRows}}" as="pt" hint-placeholder-count="5">
+              <button type="button" onClick="{{pt.onOpen}}" aria-pressed="{{pt.pressed}}" style="width: 100%; min-height: 64px; box-sizing: border-box; border: none; border-bottom: 1px solid {{t.border}}; background: {{pt.bg}}; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; text-align: left; font-family: inherit; cursor: pointer; color: {{t.text}}">
+                <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+                  <span style="font-size: 15px; font-weight: 600">{{pt.name}}</span>
+                  <span style="font-size: 13px; color: {{t.muted}}">{{pt.meta}}</span>
+                </span>
+                <span style="flex-shrink: 0; padding: 4px 10px; border-radius: 999px; background: {{pt.idBg}}; color: {{pt.idColor}}; font-size: 12px; font-weight: 600">{{pt.idLabel}}</span>
+              </button>
+            </sc-for>
+          </div>
+          <sc-if value="{{noPatRows}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 14px; color: {{t.muted}}">Nincs találat.</span>
+          </sc-if>
+        </div>
+        <div style="flex: 1 1 460px; min-width: 0; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <span style="font-size: 20px; font-weight: 600; color: {{t.text}}">{{pat.name}}</span>
+            <span style="font-size: 14px; color: {{t.muted}}">{{pat.meta}}</span>
+          </div>
+          <span style="font-size: 12px; letter-spacing: 0.14em; color: {{t.muted}}">FOGLALÁSOK</span>
+          <sc-for list="{{patAppts}}" as="pa" hint-placeholder-count="1">
+            <div style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px"><span style="color: {{t.text}}">{{pa.svc}}</span><span style="font-weight: 600; text-align: right">{{pa.when}}</span></div>
+          </sc-for>
+          <sc-if value="{{pat.noAppts}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 14px; color: {{t.muted}}">Nincs közelgő foglalása ezen a héten.</span>
+          </sc-if>
+          <span style="font-size: 12px; letter-spacing: 0.14em; color: {{t.muted}}; padding-top: 6px">A RENDELŐ ÁLTAL KIADOTT LELETEK</span>
+          <sc-for list="{{patDocs}}" as="pd" hint-placeholder-count="1">
+            <div style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px"><span style="color: {{t.text}}">{{pd.name}}</span><span style="color: {{t.muted}}; text-align: right">{{pd.meta}}</span></div>
+          </sc-for>
+          <sc-if value="{{pat.noDocs}}" hint-placeholder-val="{{false}}">
+            <span style="font-size: 14px; color: {{t.muted}}">Még nincs kiadott lelet.</span>
+          </sc-if>
+          <sc-if value="{{pat.canIssue}}" hint-placeholder-val="{{true}}">
+            <div style="border: 1px solid {{t.border}}; border-radius: 14px; padding: 14px; background: {{t.bg}}; display: flex; flex-direction: column; gap: 10px">
+              <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">Lelet kiadása a páciens Mappájába</span>
+              <label for="hh-adm-issue" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Lelet megnevezése</label>
+              <input id="hh-adm-issue" type="text" value="{{issueName}}" onChange="{{onIssueName}}" placeholder="Pl. Citológiai lelet" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px">
+              <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                <sc-for list="{{issueCats}}" as="ic" hint-placeholder-count="4">
+                  <button type="button" onClick="{{ic.onPick}}" aria-pressed="{{ic.pressed}}" style="min-height: 44px; border-radius: 999px; border: 1px solid {{ic.border}}; background: {{ic.bg}}; color: {{ic.color}}; font-family: inherit; font-size: 13px; font-weight: {{ic.weight}}; cursor: pointer; padding: 0 14px">{{ic.label}}</button>
+                </sc-for>
+              </div>
+              <button type="button" onClick="{{issueDoc}}" disabled="{{issueBtn.disabled}}" style="min-height: 48px; border: 1px solid {{issueBtn.border}}; border-radius: 999px; background: {{issueBtn.bg}}; color: {{issueBtn.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{issueBtn.cursor}}; padding: 0 20px">Kiadom a páciensnek</button>
+              <span style="font-size: 12px; line-height: 1.45; color: {{t.muted}}">A páciens értesítést kap, hogy új lelete érkezett. Az értesítés nem írja ki a lelet nevét. Demó: valódi fájl feltöltése nélkül.</span>
+            </div>
+          </sc-if>
+          <sc-if value="{{pat.notLinked}}" hint-placeholder-val="{{false}}">
+            <p style="margin: 0; padding: 12px 14px; border-radius: 12px; background: {{t.accentSoft}}; font-size: 13px; line-height: 1.45; color: {{t.text}}">Ez a páciens még nincs azonosítva, ezért lelet nem adható ki neki. Az összekötő kódot a Naptárban, a foglalásánál tudod elkészíteni.</p>
+          </sc-if>
+          <span style="font-size: 12px; letter-spacing: 0.14em; color: {{t.muted}}; padding-top: 6px">ELFOGADOTT DOKUMENTUMOK</span>
+          <sc-for list="{{patConsents}}" as="pc" hint-placeholder-count="2">
+            <div style="display: flex; justify-content: space-between; gap: 12px; font-size: 14px"><span style="color: {{t.text}}">{{pc.doc}}</span><span style="color: {{t.muted}}; text-align: right">{{pc.meta}}</span></div>
+          </sc-for>
+          <sc-if value="{{hasPatNote}}" hint-placeholder-val="{{false}}">
+            <p role="status" style="margin: 0; padding: 12px 14px; border-radius: 12px; background: {{t.track}}; font-size: 13px; line-height: 1.45; color: {{t.text}}">{{patNote}}</p>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isReq}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <h1 style="margin: 0; font-weight: 300; font-size: 32px; line-height: 1.15; color: {{t.primary}}">Adatkérések</h1>
+        <span style="font-size: 14px; color: {{t.muted}}">A páciensek az appból kérhetik az adataik letöltését vagy a fiókjuk törlését. A teljesítés határideje a kéréstől számított egy hónap.</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 14px; max-width: 860px">
+        <sc-for list="{{reqRows}}" as="rq" hint-placeholder-count="2">
+          <article style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 18px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+              <span style="padding: 4px 10px; border-radius: 999px; background: {{rq.kindBg}}; color: {{rq.kindColor}}; font-size: 12px; font-weight: 600">{{rq.kind}}</span>
+              <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">{{rq.name}}</span>
+              <span style="font-size: 13px; color: {{t.muted}}">{{rq.meta}}</span>
+            </div>
+            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.text}}">{{rq.text}}</p>
+            <sc-if value="{{rq.isOpen}}" hint-placeholder-val="{{true}}">
+              <div style="display: flex; flex-wrap: wrap; gap: 8px">
+                <button type="button" onClick="{{rq.onDone}}" disabled="{{rq.doneBtn.disabled}}" style="min-height: 44px; border: 1px solid {{rq.doneBtn.border}}; border-radius: 999px; background: {{rq.doneBtn.bg}}; color: {{rq.doneBtn.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{rq.doneBtn.cursor}}; padding: 0 20px">{{rq.doneLabel}}</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{rq.isDone}}" hint-placeholder-val="{{false}}">
+              <span style="font-size: 13px; font-weight: 600; color: {{t.text}}">{{rq.outcome}}</span>
+            </sc-if>
+          </article>
+        </sc-for>
+      </div>
+      <sc-if value="{{reqDenied}}" hint-placeholder-val="{{false}}">
+        <span style="font-size: 12px; line-height: 1.45; color: {{t.muted}}">A kérések teljesítéséhez ebben a szerepkörben nincs jogosultság. Az orvos a Jogosultságok menüben tudja engedélyezni.</span>
+      </sc-if>
+    </sc-if>
+
+    <sc-if value="{{isStats}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <h1 style="margin: 0; font-weight: 300; font-size: 32px; line-height: 1.15; color: {{t.primary}}">Kimutatások</h1>
+        <span style="font-size: 14px; color: {{t.muted}}">Összesített adatok a mintahétről, személyes adat nélkül. A számok a felületen végzett műveletek szerint frissülnek.</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; max-width: 980px">
+        <sc-for list="{{statTiles}}" as="stt" hint-placeholder-count="8">
+          <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px">
+            <span style="font-size: 13px; line-height: 1.35; color: {{t.muted}}">{{stt.label}}</span>
+            <span style="font-size: 30px; font-weight: 300; line-height: 1.1; color: {{t.primary}}">{{stt.value}}</span>
+            <span style="font-size: 12px; line-height: 1.35; color: {{t.muted}}">{{stt.sub}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="max-width: 620px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 18px; overflow: hidden">
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) 110px; gap: 12px; padding: 12px 18px; background: {{t.track}}; font-size: 12px; letter-spacing: 0.12em; color: {{t.text}}">
+          <span>VIZSGÁLAT</span><span>FOGLALÁS</span>
+        </div>
+        <sc-for list="{{svcRows}}" as="sv" hint-placeholder-count="4">
+          <div style="display: grid; grid-template-columns: minmax(0, 1fr) 110px; gap: 12px; align-items: center; min-height: 44px; box-sizing: border-box; padding: 6px 18px; border-top: 1px solid {{t.border}}; font-size: 14px">
+            <span style="color: {{t.text}}">{{sv.name}}</span><span style="font-weight: 600; color: {{t.text}}">{{sv.count}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isPerms}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <h1 style="margin: 0; font-weight: 300; font-size: 32px; line-height: 1.15; color: {{t.primary}}">Jogosultságok</h1>
+        <span style="font-size: 14px; color: {{t.muted}}">{{permLead}}</span>
+      </div>
+      <div style="max-width: 900px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 18px; overflow: hidden">
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) 90px 190px; gap: 12px; align-items: center; padding: 12px 18px; background: {{t.track}}; font-size: 12px; letter-spacing: 0.12em; color: {{t.text}}">
+          <span>FUNKCIÓ</span><span>ORVOS</span><span>ADMINISZTRÁTOR</span>
+        </div>
+        <sc-for list="{{permRows}}" as="pr" hint-placeholder-count="8">
+          <div style="display: grid; grid-template-columns: minmax(0, 1fr) 90px 190px; gap: 12px; align-items: center; min-height: 60px; box-sizing: border-box; padding: 8px 18px; border-top: 1px solid {{t.border}}">
+            <span style="display: flex; flex-direction: column; gap: 2px">
+              <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">{{pr.label}}</span>
+              <span style="font-size: 12px; color: {{t.muted}}">{{pr.group}}</span>
+            </span>
+            <span style="font-size: 14px; font-weight: 600; color: {{t.text}}">Igen</span>
+            <span>
+              <sc-if value="{{pr.isToggle}}" hint-placeholder-val="{{true}}">
+                <button type="button" onClick="{{pr.onToggle}}" aria-pressed="{{pr.pressed}}" aria-label="{{pr.aria}}" style="min-width: 150px; min-height: 44px; border-radius: 999px; border: 1px solid {{pr.border}}; background: {{pr.bg}}; color: {{pr.color}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; padding: 0 16px">{{pr.admText}}</button>
+              </sc-if>
+              <sc-if value="{{pr.isFixed}}" hint-placeholder-val="{{false}}">
+                <span style="display: flex; flex-direction: column; gap: 2px">
+                  <span style="font-size: 14px; font-weight: 600; color: {{t.text}}">{{pr.admText}}</span>
+                  <span style="font-size: 12px; color: {{t.muted}}">{{pr.fixedNote}}</span>
+                </span>
+              </sc-if>
+            </span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="max-width: 900px; background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+        <span style="font-size: 18px; font-weight: 600; color: {{t.text}}">Helyettesítés</span>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.muted}}">Ha az orvos nincs bent, a helyettes orvos válaszol az üzenetekre és lektorálja a tartalmat. A páciensek az üzeneteknél látják, hogy helyettes válaszol.</p>
+        <label for="hh-adm-sub" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Helyettes orvos neve</label>
+        <input id="hh-adm-sub" type="text" value="{{subName}}" onChange="{{onSubName}}" placeholder="[helyettes orvos neve]" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px; max-width: 420px">
+        <label for="hh-adm-subto" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Helyettesítés vége</label>
+        <input id="hh-adm-subto" type="text" value="{{subTo}}" onChange="{{onSubTo}}" placeholder="[dátum]" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px; max-width: 420px">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px">
+          <button type="button" onClick="{{toggleSub}}" disabled="{{subBtn.disabled}}" style="min-height: 48px; border: 1px solid {{subBtn.border}}; border-radius: 999px; background: {{subBtn.bg}}; color: {{subBtn.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{subBtn.cursor}}; padding: 0 20px">{{subLabel}}</button>
+          <span style="font-size: 14px; font-weight: 600; color: {{t.text}}">{{subState}}</span>
+        </div>
+      </div>
+    </sc-if>
+
+  </main>
+</div>
+</template>
+<script src="https://cdn.jsdelivr.net/npm/preact@10.19.3/dist/preact.umd.js"></script>
+<script>
+class DCLogic {
+  constructor(props) { this.props = props || {}; this.state = {}; }
+  setState(p) {
+    this.state = Object.assign({}, this.state, typeof p === 'function' ? p(this.state) : p);
+    if (window.__dcRender) window.__dcRender();
+  }
+}
+</script>
+<script>
+
+const SEED = {"articles":[{"id":"pcos","title":"PCOS: gyakori, kezelhető, és lehet mellette gyerek","stat":"A fogamzóképes nők 10–13%-át érinti","short":"Sok nő évekig nem tud róla. Kezeléssel a legtöbben teherbe esnek, csak a terhesség alatt kell jobban figyelni.","lead":"A policisztás ovárium szindróma (PCOS) a fogamzóképes nők egyik leggyakoribb hormonális állapota. Nem jelenti azt, hogy nem lehet gyereked: kezeléssel a legtöbb nő teherbe esik.","sections":[["Mennyire gyakori?","A WHO szerint a fogamzóképes korú nők 10–13 százalékát érinti, és az érintettek akár 70 százaléka nem tud róla. Akkor állapítható meg, ha három jel közül legalább kettő fennáll: rendszertelen vagy elmaradó menstruáció; magasabb férfihormon-szint vagy annak jelei, például erősebb szőrnövekedés, pattanások; policisztás petefészek-kép. Előbb azonban más okokat ki kell zárni."],["Lehet gyerekem?","Igen. A nemzetközi PCOS-ajánlás szerint a terhesség gyakran sikeresen elérhető, természetes úton vagy segítséggel. Ha nincs rendszeres peteérés, első lépésként gyógyszeres peteérés-serkentés jön szóba, és ha ez nem elég, további lehetőségek is vannak."],["Mire kell figyelni terhesség alatt?","PCOS-szel gyakoribb a terhességi cukorbetegség, a magas vérnyomás és a preeclampsia, a koraszülés és a túlzott súlygyarapodás. Az ajánlás szerint ezért a PCOS-t jelezni kell a terhesgondozásban. Cukorterheléses vizsgálat (OGTT) javasolt már a babatervezéskor vagy az első vizsgálaton, majd a 24–28. héten is."],["Mi segít?","Nincs egyetlen „PCOS-diéta”: az ajánlás szerint egyik étrendtípus sem jobb a másiknál. A lényeg a kiegyensúlyozott táplálkozás és a rendszeres mozgás. Akinél indokolt, már 5 százalékos testsúlycsökkenés is érezhető javulást hozhat, és gyakrabban helyreáll a peteérés."]],"watch":["Rendszeresen, 1–3 évente ellenőriztesd a vércukrodat: PCOS-szel nagyobb a 2-es típusú cukorbetegség kockázata.","Ha babát tervezel, a terhesség előtt beszéld meg orvosoddal a cukorterheléses vizsgálatot és a vérnyomásodat.","A lelki egészséged is számít: szorongás vagy lehangoltság esetén kérj segítséget, mert ez PCOS mellett gyakoribb."],"doctor":"Ha a menstruációd rendszertelen vagy hónapokig elmarad, ha erősebb a szőrnövekedésed vagy makacs a pattanásod, vagy ha 35 év alatt egy éve, 35 év felett fél éve sikertelenül próbálkoztok.","sources":[["WHO: policisztás ovárium szindróma (2026)","https://www.who.int/news-room/fact-sheets/detail/polycystic-ovary-syndrome"],["Nemzetközi PCOS-ajánlás, Teede és mtsai, Human Reproduction 2023","https://eprints.soton.ac.uk/484749/1/dead156.pdf"],["NHS Wales: PCOS","https://111.wales.nhs.uk/encyclopaedia/p/article/polycysticovarysyndrome/"],["Samarasinghe és mtsai, Human Reproduction 2026: fogyás és peteérés","https://pure.ulster.ac.uk/en/publications/ovulatory-recovery-following-weight-loss-in-women-with-polycystic/"]]},{"id":"ir","title":"Inzulinrezisztencia: nem kell tiltólista, de figyelni kell rá","stat":"PCOS mellett a nők többségénél kimutatható","short":"Nem kell szigorú diéta. A terhesség előtt és alatt viszont fontos a vércukor ellenőrzése.","lead":"Inzulinrezisztenciáról akkor beszélünk, ha a szervezet nem reagál megfelelően az inzulinra. Magyarországon sokan foglalkoznak vele, és sok az ellentmondó tanács. A jó hír: a legtöbb esetben az általános egészséges életmód a legjobb kezelés.","sections":[["Mennyire gyakori?","PCOS-ben kulcsjellemzőnek számít. Egy vizsgálatban a normál testsúlyú PCOS-es nők 75, a túlsúlyosak 95 százalékánál mutatták ki, de a PCOS nélküli túlsúlyos nők 62 százalékánál is jelen volt."],["Betegség vagy állapot?","Az inzulinrezisztencia sok állapotot kísér, és ha nem foglalkozunk vele, növeli a prediabétesz és a 2-es típusú cukorbetegség kockázatát. A nemzetközi PCOS-ajánlás a rutinszerű inzulinmérést nem javasolja: a vércukor-anyagcsere megítélésére a cukorterheléses vizsgálat (OGTT) az ajánlott. A HOMA-index határértékeiről a hazai szakmai források sem egységesek."],["Lehet gyerekem?","Igen. Az inzulinrezisztencia önmagában nem akadálya a teherbeesésnek, de növelheti a terhességi cukorbetegség kockázatát. Ezért babatervezéskor és a terhesség alatt fontos a vércukor ellenőrzése."],["Kell „IR-diéta”?","A Magyar Dietetikusok Országos Szövetsége szerint az IR-étrend fő elemei ugyanazok, mint amit minden egészséges embernek javasolnak. A Semmelweis Egyetem dietetikusa szerint IR mellett sincs tiltólistás gyümölcs, a mennyiség számít. Testsúlyfelesleg esetén már 5–7 százalékos fogyás is csökkenti a cukorbetegség kockázatát."]],"watch":["Ne kezdj szigorú, sok mindent tiltó diétába orvosi vagy dietetikusi javaslat nélkül.","A rendszeres mozgás az egyik leghatékonyabb eszköz.","Babatervezéskor és a terhesség alatt kérd a vércukor ellenőrzését."],"doctor":"Ha PCOS-ed van, ha korábban volt terhességi cukorbetegséged, ha a családodban gyakori a cukorbetegség, vagy ha babát tervezel, és tudni szeretnéd, hogyan áll a vércukrod.","sources":[["NIDDK: prediabétesz és inzulinrezisztencia","https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/prediabetes-insulin-resistance"],["Nemzetközi PCOS-ajánlás, Teede és mtsai, Human Reproduction 2023","https://eprints.soton.ac.uk/484749/1/dead156.pdf"],["Stepto és mtsai, Human Reproduction 2013","https://vu-9.eprints-hosting.org/21733/1/Human%20Reproduction%202013%20Post-print%20.pdf"],["MDOSZ: az inzulinrezisztencia és a PCOS életmódi kezelése","https://mdosz.hu/inzulinrezisztencia-es-policisztasovarium-szindroma-eletmodi-kezelese/"],["Semmelweis Egyetem (2025): gyümölcs inzulinrezisztencia mellett","https://semmelweis.hu/mediasarok/2025/08/04/ne-feljunk-a-termeszetes-edessegektol-egyunk-gyumolcsot/"],["Winkler G., Orvosi Hetilap 2020","https://real.mtak.hu/151397/"]]},{"id":"endo","title":"Endometriózis: a nagyon fájdalmas menstruáció nem „normális”","stat":"Minden 10. fogamzóképes nőt érint","short":"Átlagosan évekig tart, mire kiderül. A legtöbb érintett természetes úton is teherbe eshet.","lead":"Endometriózisban a méh nyálkahártyájához hasonló szövet a méhen kívül is megjelenik, és fájdalmat okozhat. Gyakori, mégis sokszor évekig nem ismerik fel, mert a fájdalmas menstruációt sokan természetesnek tartják.","sections":[["Mennyire gyakori?","A WHO becslése szerint világszerte a fogamzóképes korú nők kb. 10 százalékát, mintegy 190 millió nőt érint. Magyarországon a Semmelweis Egyetem 2018-as becslése szerint csaknem 200 ezer nőt. A diagnózisig átlagosan 4–12 év telik el."],["Milyen tünetei vannak?","Erős menstruációs fájdalom és vérzés, tartós kismedencei fájdalom, puffadás, hányinger, fájdalmas együttlét, valamint a menstruációhoz kötődő bél- vagy vizelési panaszok. Előfordul, hogy csak a meddőség kivizsgálásakor derül ki."],["Lehet gyerekem?","A legtöbb érintettnek igen. Az endometriózissal élő nők egy részénél nehezebb a teherbeesés, de egy brit betegszervezet szerint 60–70 százalékuk természetes úton is teherbe eshet, és akinek kell, annak a meddőségi kezelés is segíthet."],["Mire kell figyelni terhesség alatt?","Az európai szakmai ajánlás szerint az első trimeszterben valamivel nagyobb lehet a vetélés és a méhen kívüli terhesség kockázata, ezért erről érdemes a terhesgondozás elején beszélni. Csak azért viszont nem javasolt teherbe esni, hogy a tünetek enyhüljenek."]],"watch":["Ha a menstruációs fájdalom miatt kimaradsz a munkából vagy a programjaidból, az nem „normális”: érdemes kivizsgáltatni.","Vezess fájdalomnaplót: segít az orvosnak a diagnózisban.","Ha babát tervezel, beszéld meg orvosoddal az időzítést és a lehetőségeket."],"doctor":"Ha tartós kismedencei fájdalmad van, ha a menstruációs fájdalom megnehezíti a mindennapjaidat, ha fáj az együttlét, ha a menstruációhoz kötődő bél- vagy vizelési panaszaid vannak, vagy ha ezek mellett nem sikerül teherbe esni.","sources":[["WHO: endometriózis","https://www.who.int/news-room/fact-sheets/detail/endometriosis"],["Semmelweis Egyetem (2018): csaknem 200 ezer nőt érint az endometriózis","https://semmelweis.hu/hirek/2018/03/20/csaknem-200-ezer-not-erint-az-endometriozis-idehaza/"],["NICE NG73: endometriózis","https://www.nice.org.uk/guidance/NG73/chapter/context"],["ESHRE endometriózis-ajánlás (2022)","https://eprints.soton.ac.uk/492366/1/hoac009.pdf"],["Endometriosis UK: termékenység és terhesség","https://www.endometriosis-uk.org/endometriosis-fertility-and-pregnancy"]]},{"id":"infertility","title":"Ha nem jön a baba: sokkal több párt érint, mint gondolnád","stat":"Minden 6. ember érintett élete során (WHO)","short":"Nem ritka, és nem csak a nőn múlik. Mikor érdemes kivizsgálást kérni, és mire számíts.","lead":"Meddőségről akkor beszélünk, ha 12 hónapnyi rendszeres, védekezés nélküli együttlét után sem jön létre terhesség. Sokkal gyakoribb, mint gondolnánk, és sokféle segítség létezik.","sections":[["Mennyire gyakori?","A WHO 2023-as jelentése szerint a felnőttek kb. 17,5 százaléka, nagyjából minden hatodik ember tapasztal élete során meddőséget. Ugyanakkor a 40 év alatti nők párjainak több mint 80 százalékánál egy éven belül létrejön a terhesség."],["Nem csak a nőn múlik","A meddő párok nagyjából felénél részben vagy egészben férfioldali ok is szerepet játszik. Ezért a kivizsgálás mindig a pár mindkét tagjára kiterjed."],["Mikor kérj kivizsgálást?","Az amerikai reprodukciós társaság (ASRM) szerint 35 év alatt egy év, 35 év felett fél év sikertelen próbálkozás után. Ismert kockázat esetén, például rendszertelen ciklus, endometriózis vagy korábbi kismedencei műtét után, nem kell kivárni ezt az időt."]],"watch":["A kivizsgálásra együtt menjetek: a férfi oldal vizsgálata egyszerű, és sokat számít.","Kerüljétek a dohányzást, és mindketten figyeljetek az egészséges életmódra.","A várakozás lelkileg megterhelő: kérj segítséget, ha nehéz, nem vagy egyedül vele."],"doctor":"Ha 35 év alatt egy éve, 35 év felett fél éve próbálkoztok eredmény nélkül, vagy már korábban, ha rendszertelen a ciklusod, nagyon fájdalmas a menstruációd, vagy ismert nőgyógyászati betegséged van.","sources":[["WHO (2023): minden hatodik embert érint a meddőség","https://www.who.int/news/item/04-04-2023-1-in-6-people-globally-affected-by-infertility"],["WHO: meddőség","https://www.who.int/news-room/fact-sheets/detail/infertility"],["ASRM (2023): a meddőség meghatározása","https://prod.asrm.org/globalassets/_asrm/practice-guidance/practice-guidelines/pdf/definition-of-infertility.pdf"],["NICE NG257 (2026): termékenységi problémák","https://www.nice.org.uk/guidance/ng257/resources/fertility-problems-assessment-and-treatment-pdf-66144022104517"],["AUA/ASRM: férfi meddőség","https://auanet.org/documents/Guidelines/PDF/2024%20Guidelines/Male%20Infertility%20Unabridged%20Final.pdf"]]},{"id":"thyroid","title":"Pajzsmirigy és babavárás","stat":"Minden 8. nőnél kialakul pajzsmirigybetegség","short":"Gyakori, jól kezelhető, és beállított kezeléssel nem akadálya a gyerekvállalásnak.","lead":"A pajzsmirigy-alulműködés és leggyakoribb oka, a Hashimoto-betegség, sokkal gyakoribb nőknél, mint férfiaknál. Jól kezelhető: a cél az, hogy a fogantatás előtt és a terhesség alatt is jól be legyen állítva.","sections":[["Mennyire gyakori?","A Hashimoto-betegség nőknél 4–10-szer gyakoribb, mint férfiaknál, és leginkább 30 és 50 éves kor között kezdődik. Az Amerikai Pajzsmirigy Társaság szerint minden nyolcadik nőnél kialakul valamilyen pajzsmirigybetegség élete során."],["Lehet gyerekem?","Igen. A kezeletlen alulműködés megnehezítheti a teherbeesést, és növelheti a vetélés és a koraszülés kockázatát. Ezért fontos, hogy a pajzsmirigy már a fogantatás előtt jól be legyen állítva, és ez kezeléssel jól elérhető."],["Mi változik a terhesség alatt?","Aki már szed pajzsmirigyhormont, annál a terhesség elején gyakran emelni kell az adagot, ezért a terhesség első felében nagyjából négyhetente ellenőrzik a TSH-szintet. Szülés után a nők kb. 5–10 százalékánál átmeneti pajzsmirigygyulladás alakulhat ki, amely többnyire 12–18 hónap alatt rendeződik."]],"watch":["Ha pajzsmirigyhormont szedsz, a pozitív teszt után ne várj a következő vizsgálatig: még aznap jelezd orvosodnak.","Az adagot ne módosítsd magadtól, csak orvosi utasításra.","Babatervezéskor kérj TSH-vizsgálatot, ha korábban volt pajzsmirigyproblémád.","Szülés után kb. 6 héttel érdemes újra ellenőriztetni."],"doctor":"Ha tartós fáradtságot, hízást, hidegérzékenységet vagy rendszertelen ciklust tapasztalsz, illetve ha pajzsmirigybeteg vagy, és babát tervezel vagy várandós lettél.","sources":[["NIDDK: Hashimoto-betegség","https://niddk.nih.gov/health-information/endocrine-diseases/hashimotos-disease"],["American Thyroid Association: tényadatok","https://www.thyroid.org/wp-content/uploads/2026/01/ATA-Thyroid-Fact-Sheet-2.pdf"],["ATA: pajzsmirigy és terhesség, 2017-es ajánlás összefoglalója","https://thyroid.org/patient-thyroid-information/ct-for-patients/may-2017/vol-10-issue-5-p-3-7"],["ATA: alulműködés kezelése terhesség alatt","https://www.thyroid.org/management-hypothyroidism-pregnancy/"],["ATA: szülés utáni pajzsmirigygyulladás","https://www.thyroid.org/postpartum-thyroiditis"]]},{"id":"hpv","title":"HPV: szinte mindenkit érint, és többnyire magától elmúlik","stat":"A legtöbb nő és férfi élete során elkapja","short":"A pozitív HPV-eredmény nem rák. A rendszeres szűrés és az oltás a legjobb védelem.","lead":"A HPV-fertőzés annyira gyakori, hogy a legtöbb ember élete során átesik rajta. A fertőzések többsége tünetmentes, és két éven belül magától elmúlik.","sections":[["Mennyire gyakori?","A WHO szerint a legtöbb nő és férfi élete során megfertőződik HPV-vel. A fertőzések többsége semmilyen tünetet nem okoz, és két éven belül kezelés nélkül meggyógyul."],["Mi a kapcsolat a méhnyakrákkal?","A méhnyakrákos esetek 99 százaléka HPV-fertőzéssel függ össze, de fordítva ez nem igaz: a fertőzöttek túlnyomó többségénél nem alakul ki rák. A tartósan megmaradó fertőzés okozhat sejtelváltozást, és ezt a szűrés még a rák előtti szakaszban felismeri."],["Lehet gyerekem?","Igen, a HPV önmagában nem akadálya a terhességnek, és a szűrést terhesség alatt is folytatni kell. Ha méhnyak-elváltozás miatt kúpkimetszésed (konizációd) volt, a koraszülés kockázata valamivel nagyobb, ezért ezt jelezd a terhesgondozás elején."],["Oltás és szűrés Magyarországon","Az iskolai programban a 7. évfolyamos, 12. életévüket betöltött lányok 2014 óta, a fiúk a 2020/21-es tanévtől ingyen kaphatnak HPV elleni oltást. A szervezett méhnyakszűrés 25 és 65 év között háromévente javasolt."]],"watch":["Járj rendszeresen méhnyakszűrésre, akkor is, ha be vagy oltva.","Egy pozitív HPV-eredmény nem diagnózis: a további teendőket az orvosod beszéli meg veled.","Ha volt konizációd, jelezd a terhesgondozás kezdetén."],"doctor":"Ha esedékes vagy elmaradt a szűrésed, ha szokatlan vérzést tapasztalsz (például együttlét után), vagy ha kóros szűrési eredményt kaptál.","sources":[["WHO Európa: HPV","https://www.who.int/europe/news-room/fact-sheets/item/human-papillomavirus-(hpv)"],["Nógrád Vármegyei Kormányhivatal: HPV elleni iskolai oltás","https://kormanyhivatalok.hu/kormanyhivatalok/nograd/megye/hirek/hir/hpv-okozta-betegsegek-megelozhetok-0"],["Csákvári és mtsai (2023): a méhnyakrák hazai adatai","https://real.mtak.hu/170055/1/assessing-the-changes-of-epidemiological-indicators-of-cervical-cancer-in-hungary-and-on-international-scale-between-2000-and-2019.pdf"],["Kyrgiou és mtsai, BMJ 2016: konizáció és koraszülés","https://eprints.lancs.ac.uk/id/eprint/82281"]]},{"id":"myoma","title":"Mióma: nagyon gyakori, és többnyire nem okoz gondot","stat":"50 éves korra a nők 70–80%-ánál kimutatható","short":"Sokszor csak véletlenül derül ki. A legtöbb mióma nem igényel kezelést.","lead":"A mióma a méh izomzatának jóindulatú csomója. Ultrahanggal 50 éves korra a nők nagy többségénél kimutatható, de csak egy részüknek okoz panaszt.","sections":[["Mennyire gyakori?","Egy nagy amerikai vizsgálat szerint 50 éves korra a fehér nők közel 70, a fekete nők több mint 80 százalékánál alakul ki mióma. Panaszt a nők 20–50 százalékánál okoz."],["Lehet gyerekem?","A legtöbb mióma nem igényel kezelést. A teherbeesést főleg a méh üregébe domborodó (szubmukózus) mióma nehezítheti; ennek eltávolítása javíthatja az esélyeket. A méh falában lévő miómák eltávolítása a vizsgálatok szerint nem javította a teherbeesési arányokat."],["Mire kell figyelni terhesség alatt?","Miómával valamivel gyakoribb a farfekvés, a korai burokrepedés, a koraszülés és a szülés utáni vérzés, és gyakrabban kerül sor császármetszésre. Ezért ilyenkor gyakoribb ellenőrzés javasolt. A magzat növekedését a mióma a jelek szerint nem korlátozza."]],"watch":["A tünetmentes mióma általában csak rendszeres ultrahangos ellenőrzést igényel.","Ha erős a menstruációd, kérj vérképet: az erős vérzés vashiányhoz vezethet.","Babatervezés előtt beszéld meg orvosoddal, hol helyezkedik el a mióma."],"doctor":"Ha a menstruációd erős vagy elhúzódó, ha a ciklusok között vérzel, ha nyomást, teltségérzést vagy kismedencei fájdalmat érzel, vagy ha fáradékony, sápadt vagy, mert ez vérszegénység jele lehet.","sources":[["Baird és mtsai, Am J Obstet Gynecol 2003","https://scholars.duke.edu/publication/769704"],["American Family Physician (2017): a mióma ellátása","https://www.aafp.org/afp/2017/0115/p100.pdf"],["ASRM betegtájékoztató: mióma","https://reproductivefacts.org/globalassets/_rf/news-and-publications/bookletsfact-sheets/english-pdf/what_are_fibroids-factsheet.pdf"],["NICHD: mióma","https://nichd.nih.gov/sites/default/files/2024-07/NICHD_WH_fibroids_webOP.pdf"]]},{"id":"iron","title":"Vashiány: fáradtság, ami mögött gyakran más áll","stat":"Világszerte minden 3. nő vérszegény","short":"Fáradtság, sápadtság, hajhullás: gyakran vashiány áll mögötte, és egy vérvétellel kiderül.","lead":"A vérszegénység leggyakoribb táplálkozási oka a vashiány. Az erős menstruáció és a terhesség a két leggyakoribb kiváltó ok, ezért nőknél sokkal gyakoribb. Egyszerű vérvétellel kiderül, és jól kezelhető.","sections":[["Mennyire gyakori?","A WHO 2023-as becslése szerint világszerte a 15–49 éves nők 30,7 százaléka, a várandósok 35,5 százaléka vérszegény. A vérszegénység nem mindig vashiány, de ez a leggyakoribb oka."],["Milyen tünetei vannak?","Fáradtság, gyengeség, szédülés, álmosság, terheléskor jelentkező légszomj, szívdobogás-érzés, sápadt bőr, fejfájás és hajhullás."],["Miért fontos terhesség alatt és után?","A súlyos vashiányos vérszegénység növeli a koraszülés kockázatát, és összefügg az alacsony születési súllyal és a szülés utáni depresszióval. Ezért a terhesség alatt fontos a vérkép ellenőrzése."]],"watch":["Ha erős a menstruációd, kérj vérképet: ez a leggyakoribb ok.","Vaskészítményt ne szedj találomra: előbb vérvétel mutassa meg, valóban vashiány áll-e a panaszok mögött.","Szülés után a tartós fáradtság nem mindig csak a kialvatlanság: érdemes ellenőriztetni."],"doctor":"Ha tartósan fáradt vagy szédülékeny vagy, ha terheléskor hamar kifulladsz, vagy ha a menstruációd nagyon erős, például éjszaka is cserélned kell, vagy nagy alvadékok távoznak.","sources":[["WHO: vérszegénység nők és gyermekek körében (2023)","https://www.who.int/data/gho/data/themes/topics/anaemia_in_women_and_children"],["WHO: vérszegénység","https://www.who.int/Health-Topics/Anaemia"],["HSE (Írország): vashiányos vérszegénység","https://www.hse.ie/conditions/iron-deficiency-anaemia/"],["Mayo Clinic: vérszegénység terhesség alatt","https://mayoclinic.org/healthy-lifestyle/pregnancy-week-by-week/in-depth/anemia-during-pregnancy/art-20114455"],["NICE NG88: erős menstruációs vérzés","https://nice.org.uk/guidance/ng88/chapter/recommendations"]]},{"id":"ppd","title":"Szülés utáni depresszió: gyakori, és nem a te hibád","stat":"A frissen szült nők kb. 13%-át érinti","short":"Nem gyengeség és nem rossz anyaság jele. Kezelhető, és minél előbb kérsz segítséget, annál jobb.","lead":"A szülés utáni hetekben sok nő sírékony és kimerült, ez többnyire két héten belül elmúlik. Ha a lehangoltság tartós, az már betegség lehet, amely gyakori, és jól kezelhető.","sections":[["Mennyire gyakori?","A WHO szerint a frissen szült nők kb. 13 százalékánál, a várandósok kb. 10 százalékánál alakul ki lelki betegség, elsősorban depresszió."],["Miben más, mint a baby blues?","A szülés utáni első napok sírékonysága általában két héten belül magától elmúlik. Ha a lehangoltság, a reménytelenség vagy a szorongás ennél tovább tart, vagy egyre erősebb, érdemes szakemberrel beszélni."],["Mi segít?","A szülés utáni depresszió kezelhető. Az első lépés, hogy beszélj róla: az orvosoddal, a védőnővel vagy egy szakemberrel. A kezelést mindig személyre szabják, szoptatás mellett is van megoldás."]],"watch":["Mondd el a környezetednek, ha nem érzed jól magad: a segítségkérés nem kudarc.","Pihenj, amikor tudsz, és fogadd el a felajánlott segítséget.","Ha korábban volt depressziód, ezt már a terhesség alatt jelezd orvosodnak."],"doctor":"Ha a lehangoltság két hétnél tovább tart, ha nem tudod ellátni magad vagy a babát, vagy ha nem érzel örömet semmiben. Ha bántanád magad vagy a babát, azonnal kérj segítséget: hívd a 112-t, vagy a Lelki Elsősegély Telefonszolgálatot a 116-123 számon.","sources":[["WHO: az anyák lelki egészsége","https://www.who.int/teams/mental-health-and-substance-use/promotion-prevention/maternal-mental-health"],["Telefonos Lelki Elsősegély Szolgálat, 116-123","https://findahelpline.com/organizations/telefonos-lelki-elsosegely-szolgalat"]]},{"id":"pelvic","title":"Vizeletcsepegés szülés után: gyakori, és lehet rajta segíteni","stat":"A szült nők kb. negyedét érinti","short":"Nem kell szégyellni, és nem kell beletörődni: a medencefenék erősítése sokat segíthet.","lead":"Köhögéskor, nevetéskor vagy ugráskor elcseppenő vizelet a szülés után nagyon gyakori. Sokan szégyellik, ezért nem beszélnek róla, pedig jó eséllyel javítható.","sections":[["Mennyire gyakori?","Egy 2023-as összesítő elemzés szerint a szülés után a nők kb. 26 százalékánál fordul elő vizeletinkontinencia."],["Mi segít?","A medencefenék izmainak célzott erősítése sokat javíthat, különösen ha gyógytornász mutatja meg a helyes technikát. A legtöbb nőnek ez az első lépés, és sokaknál elég is."],["Elmúlik magától?","Sokaknál a szülés utáni hónapokban javul, de ha nem, nem kell beletörődni. Érdemes szólni róla a gyermekágyi kontrollon."]],"watch":["Szólj róla a gyermekágyi kontrollon, akkor is, ha kínos.","A medencefenék-tornát érdemes gyógytornásszal elkezdeni, hogy jól csináld.","Ne igyál kevesebbet a csepegés miatt: ez inkább ront a helyzeten."],"doctor":"Ha a csepegés a szülés után hónapokkal sem javul, ha erős vizelési ingert, fájdalmat vagy égő érzést tapasztalsz, vagy ha a hüvelyben nyomást, „leereszkedést” érzel.","sources":[["Dai és mtsai, BMC Pregnancy and Childbirth 2023","https://ouci.dntb.gov.ua/works/42QE1qW7"]]},{"id":"perimeno","title":"Perimenopauza: nem képzelődés, és nem kell kibírni","stat":"Minden 2. nőnél panaszokkal jár","short":"Hőhullám, alvászavar, hangulatváltozás: évekkel a menopauza előtt elkezdődhet, és kezelhető.","lead":"A perimenopauza a menopauzát megelőző átmeneti időszak. Évekig tarthat, és a panaszok sokszor már a 40-es években megjelennek, amikor még rendszeres lehet a menstruáció.","sections":[["Mennyire gyakori?","Egy ausztrál egészségügyi tájékoztató szerint nagyjából minden második nőnek enyhe vagy közepes, minden negyediknek pedig a mindennapokat is megnehezítő panaszai vannak. A menopauza átlagosan 51 éves korban következik be, a perimenopauza átlagosan 4–6 évig tart."],["Milyen panaszokkal járhat?","Rendszertelen ciklus, hőhullám, éjszakai izzadás, alvászavar, hangulatingadozás, koncentrációs nehézség. Nem mindenkinél jelentkezik mind, és erősségük is nagyon eltérő."],["Mi segít?","A panaszok enyhítésére hormonális és nem hormonális lehetőségek is vannak. Hogy neked mi megfelelő, azt orvosoddal közösen érdemes eldönteni."]],"watch":["A perimenopauzában is lehet teherbe esni: a fogamzásgátlásról beszélj orvosoddal.","A menopauza utáni bármilyen hüvelyi vérzést ki kell vizsgálni.","A szűréseket (méhnyak, emlő) ebben az időszakban se hagyd ki."],"doctor":"Ha a panaszok rontják az életminőségedet, ha a vérzésed nagyon erős vagy rendszertelenné válik, vagy ha a menopauza után vérzést tapasztalsz.","sources":[["Ausztrál egészségügyi tájékoztató: perimenopauza és menopauza","https://www.health.gov.au/sites/default/files/2026-05/fact-sheet-about-perimenopause-and-menopause_0.pdf"]]}],"guides":[{"id":"ttc","title":"Babatervezés","range":"A fogantatás előtt","intro":"A felkészülés már a fogantatás előtt elkezdődik: néhány vizsgálat és döntés sokat számít az első hetekben.","tips":[["Folsav már a tervezéskor","A folsav szedését már a fogantatás előtt érdemes elkezdeni, mert csökkenti a velőcső-záródási rendellenességek kockázatát. A megfelelő adagot beszéld meg orvosoddal."],["Fogamzás előtti vizsgálat","Egy nőgyógyászati vizsgálat és a szükséges laborvizsgálatok segítenek időben felismerni, amire a terhesség előtt figyelni kell."],["Védőoltások ellenőrzése","Érdemes ellenőrizni a rubeola és a bárányhimlő elleni védettséget, mert ezek az oltások terhesség alatt nem adhatók. Az oltás utáni várakozási időről orvosod tájékoztat."],["Szedett gyógyszerek","Ha rendszeresen szedsz gyógyszert, a tervezés előtt beszéld meg orvosoddal. Magadtól ne hagyd abba."]],"faq":[["Mennyi idő alatt szokás teherbe esni?","Sok pár az első évben teherbe esik. Ha 35 év alatt egy év, 35 év felett hat hónap rendszeres próbálkozás után sem jön a baba, érdemes kivizsgálást kérni."],["Kell követnem a ciklusomat?","Nem kötelező, de segíthet megismerni a termékeny napokat. Ha a ciklusod nagyon rendszertelen, jelezd orvosodnak."],["Min érdemes változtatnom?","A dohányzás és az alkohol elhagyása, a kiegyensúlyozott étkezés és a rendszeres mozgás már a tervezés idején is sokat számít."]]},{"id":"p1","title":"1. trimeszter","range":"1–13. hét","intro":"A szervek kialakulásának időszaka. Ilyenkor zajlanak az első szűrővizsgálatok is.","tips":[["Folsav már a fogantatás előtt","A folsav a fogantatás előtti hetekben és az első trimeszterben a legfontosabb: csökkenti a velőcső-záródási rendellenességek kockázatát. Az adagot beszéld meg orvosoddal."],["Első genetikai ultrahang: 11–14. hét","Ekkor mérik többek között a tarkóredő vastagságát. Vérvizsgálattal kiegészítve ez a kombinált teszt, amely a leggyakoribb kromoszóma-rendellenességek kockázatát becsüli."],["NIPT a 10. héttől","Az anyai vérből végzett, nem invazív magzati DNS-vizsgálat a 10. héttől elvégezhető. Szűrővizsgálat, nem diagnózis: eltérő eredmény esetén további vizsgálat szükséges."],["Biztonságos étkezés","A nyers vagy nem átsütött hús, a nyers tojás és a pasztőrözetlen tejtermékek kerülése csökkenti a toxoplazma- és a listeriafertőzés kockázatát."]],"faq":[["Mikor jöjjek az első vizsgálatra?","Pozitív teszt után érdemes időpontot kérni. Az első terhesgondozási vizsgálat ideálisan a 12. hét előtt történik, hogy a korai szűrések időben elkészülhessenek."],["Normális, hogy ennyire hányingerem van?","A terhességi hányinger gyakori, és sokaknál a 12–16. hét körül enyhül. Ha semmit nem tudsz magadban tartani, vagy fogysz, jelezd orvosodnak."],["Ihatok kávét?","Mérsékelten igen, de a koffeinbevitelt érdemes korlátozni. Az alkoholra viszont nincs biztonságos mennyiség a terhesség alatt."],["Mikor forduljak azonnal orvoshoz?","Erős hasi fájdalom, vérzés vagy ájulásérzés esetén ne várj: hívd a 112-t, vagy menj a legközelebbi ügyeletre."]]},{"id":"p2","title":"2. trimeszter","range":"14–27. hét","intro":"Sokan ezt tartják a legkönnyebb időszaknak. Ilyenkor érezhetők az első magzatmozgások.","tips":[["Cukorterhelés: 24–28. hét","A terhességi cukorbetegség gyakran tünetmentes, ezért fontos a szűrés. A vizsgálatra éhgyomorra kell érkezni, a pontos előkészítést orvosod adja meg."],["Második genetikai ultrahang: 18–22. hét","Ilyenkor részletesen átvizsgálják a magzat szerveit, a méhlepényt és a magzatvíz mennyiségét."],["Az első mozgások","Első terhességben a magzatmozgás jellemzően a 18–20. hét körül érezhető, ismételt terhességben gyakran korábban."],["Rh-negatív vércsoport","Ha Rh-negatív vagy, orvosod megbeszéli veled az anti-D profilaxis szükségességét és időzítését."]],"faq":[["Utazhatok repülővel?","Szövődménymentes terhességben általában igen. A késői hetekben a légitársaságok korlátozhatják az utazást, ezért indulás előtt beszéld meg orvosoddal."],["Mennyit hízhatok?","Ez a terhesség előtti testsúlyodtól függ, ezért egyénileg érdemes megbeszélni orvosoddal."],["Normális, ha néha megkeményedik a hasam?","Az alkalmanként jelentkező, fájdalmatlan keményedés (jóslófájás) normális lehet. Ha rendszeressé vagy fájdalmassá válik a 37. hét előtt, vagy vérzéssel jár, azonnal jelentkezz."],["Sportolhatok?","Szövődménymentes terhességben a rendszeres, mérsékelt mozgás kifejezetten ajánlott. Kerüld az eséssel, ütközéssel járó sportokat, és beszéld meg orvosoddal, mi biztonságos neked."]]},{"id":"p3","title":"3. trimeszter","range":"28–40. hét","intro":"A felkészülés időszaka: gyakoribbak a vizsgálatok, és egyre fontosabb figyelni a baba mozgását.","tips":[["Figyeld a mozgásokat","Ismerd meg a babád megszokott mozgásmintáját. Ha a mozgások csökkennek vagy megváltoznak, ne várj másnapig: még aznap jelentkezz."],["Oldalt fekve elalvás","A 28. héttől oldalt fekve érdemes elaludni, mert a hanyatt fekvés terhelheti a nagy ereket. Hogy bal vagy jobb oldalon, az kevésbé lényeges."],["GBS-szűrés: 35–37. hét","A B csoportú streptococcus-szűrés megmutatja, szükség van-e antibiotikumra a szülés alatt."],["CTG a terhesség végén","Az utolsó hetekben rendszeres CTG-vizsgálat követi a baba szívműködését és a méhtevékenységet."]],"faq":[["Mikor induljak a kórházba?","Ha a fájások rendszeressé válnak, elfolyik a magzatvíz, vérzést tapasztalsz, vagy kevesebbet mozog a baba. Az indulásról előre egyeztess orvosoddal és a választott szülészettel."],["Mit vigyek a szülésre?","Személyi igazolványt, TAJ-kártyát, a várandósgondozási könyvet és a leleteidet, valamint a választott kórház listája szerinti holmikat."],["Mikor forduljak azonnal orvoshoz?","Hüvelyi vérzés, magzatvízfolyás, erős fejfájás vagy látászavar, hirtelen arc- vagy kézduzzanat, illetve csökkent magzatmozgás esetén azonnal jelentkezz. Sürgős esetben hívd a 112-t."]]},{"id":"post","title":"Szülés után","range":"A gyermekágy és az első hónapok","intro":"A szülés utáni hetekben a tested és a lelked is alkalmazkodik. Ebben az időszakban rád is ugyanúgy figyelni kell, mint a babára.","tips":[["Gyermekágyi kontroll","A szülés után kb. 6 héttel javasolt nőgyógyászati kontrollvizsgálat. Ilyenkor a fogamzásgátlásról is érdemes beszélni."],["A szülés utáni vérzés","A gyermekágyi folyás hetekig tarthat, és fokozatosan halványul. Ha hirtelen erősödik, nagy alvadékok távoznak, vagy lázas leszel, azonnal jelentkezz."],["Lelki változások","Az első napokban gyakori a sírékonyság, ami általában két héten belül elmúlik. Ha a lehangoltság tartós, vagy nehéz ellátnod magad és a babát, kérj segítséget: ez kezelhető állapot."],["Medencefenék","A medencefenék-torna segíthet a vizelettartási panaszok megelőzésében. Hogy mikor kezdheted, beszéld meg orvosoddal vagy gyógytornásszal."]],"faq":[["Teherbe eshetek szoptatás alatt?","Igen. A szoptatás önmagában nem megbízható fogamzásgátlás, a számodra megfelelő módszert beszéld meg orvosoddal."],["Mikor kezdhetek újra sportolni?","Fokozatosan, a gyermekágyi kontroll után és orvosi jóváhagyással. A séta általában korábban is jót tesz."],["Mikor forduljak azonnal orvoshoz?","Erős vérzés, láz, erős hasi fájdalom, vádlifájdalom vagy -duzzanat, mellkasi fájdalom vagy nehézlégzés esetén azonnal. Sürgős esetben hívd a 112-t."]]},{"id":"gyn","title":"Nőgyógyászat","range":"Minden életszakaszban","intro":"Szűrések, megelőzés és rendszeres vizsgálatok.","tips":[["Méhnyakszűrés","A hazai szervezett szűrőprogram 25 és 65 év között háromévente javasolja a méhnyakszűrést. Orvosod ennél gyakoribb vizsgálatot is javasolhat."],["Emlőszűrés","A szervezett mammográfiás szűrés 45 és 65 év között kétévente hív be. Ha elváltozást tapasztalsz, ne várd meg a meghívót."],["HPV elleni védőoltás","A HPV elleni védőoltás a méhnyakrák megelőzésének fontos eszköze. Hogy neked ajánlott-e, beszéld meg orvosoddal."]],"faq":[["Hogyan készüljek a vizsgálatra?","A vizsgálat előtti 48 órában lehetőleg ne legyen hüvelyi kezelés, irrigálás vagy együttlét. Menstruáció alatt a méhnyakszűrés kevésbé megbízható, ilyenkor érdemes időpontot módosítani."],["Mit hozzak magammal?","TAJ-kártyát, személyi igazolványt, a korábbi leleteidet és a szedett gyógyszereid listáját. A leleteket előre is feltöltheted a Mappádba."],["Hogyan mondhatom le az időpontomat?","Az Időpont menüben bármikor. Kérjük, legalább [X] órával előtte jelezd."],["Mennyi idő alatt válaszol az orvos?","Munkanapokon általában [X] órán belül. Az üzenetküldés nem sürgős esetekre való: sürgős esetben hívd a 112-t."]]},{"id":"meno","title":"Változókor","range":"Jellemzően a 40-es évektől","intro":"A változókor évekig tartó átmenet. A panaszok sokfélék, és a legtöbbjükre van megoldás.","tips":[["Mi a perimenopauza?","A menopauzát megelőző években gyakori a rendszertelen ciklus, a hőhullám, az alvászavar és a hangulatingadozás."],["A tünetek kezelhetők","A panaszok enyhítésére hormonális és nem hormonális lehetőségek is vannak. Hogy neked mi megfelelő, azt orvosoddal közösen érdemes eldönteni."],["Csontok egészsége","Az ösztrogénszint csökkenésével nő a csontritkulás kockázata. A rendszeres mozgás és a megfelelő kalcium- és D-vitamin-bevitel segít, a részleteket beszéld meg orvosoddal."],["Szűrések továbbra is","A mammográfiás szűrés 45 és 65 év között kétévente, a méhnyakszűrés 65 éves korig háromévente javasolt."]],"faq":[["Kell még fogamzásgátlás?","Igen, a változókorban is lehetséges teherbe esni, amíg a menstruáció teljesen meg nem szűnik. Hogy meddig szükséges, beszéld meg orvosoddal."],["Normális a vérzés a menopauza után?","Nem. A menopauza utáni bármilyen hüvelyi vérzést ki kell vizsgálni, ezért kérj időpontot."],["Kihez fordulhatok a panaszaimmal?","Nőgyógyászodhoz: a hőhullámokról, az alvászavarról vagy a hangulatváltozásról is nyugodtan beszélhetsz vele."]]}],"videos":[{"id":"v1","title":"Mire számíts az első terhesgondozáson?","desc":"Milyen vizsgálatok várnak rád az első alkalommal, és mit érdemes magaddal hozni."},{"id":"v2","title":"Genetikai ultrahang és NIPT: mi a különbség?","desc":"A szűrővizsgálatok célja, időzítése, és hogy mit jelent egy eltérő eredmény."},{"id":"v3","title":"Cukorterheléses vizsgálat lépésről lépésre","desc":"Hogyan készülj, mi történik a vizsgálat napján, és mikor kapod meg az eredményt."},{"id":"v4","title":"Mit néz az orvos a második genetikai ultrahangon?","desc":"A 18–22. heti részletes vizsgálat menete, érthetően elmagyarázva."},{"id":"v5","title":"A magzatmozgások figyelése","desc":"Hogyan ismerd meg a babád mozgásmintáját, és mikor jelentkezz azonnal."},{"id":"v6","title":"Készülés a szülésre","desc":"Mikor indulj, mit vigyél, és mire figyelj az utolsó hetekben."},{"id":"v7","title":"Méhnyakszűrés: mi történik a vizsgálaton?","desc":"A citológiai vizsgálat menete és az előkészület."},{"id":"v8","title":"Fogamzás előtti felkészülés: mire figyelj?","desc":"A tervezés előtti vizsgálatok, a folsav és a védőoltások, röviden."},{"id":"v9","title":"Az első hetek a szülés után","desc":"Gyermekágyi vérzés, kontrollvizsgálat, és mikor kérj azonnal segítséget."},{"id":"v10","title":"Változókor: tünetek és kezelési lehetőségek","desc":"Mi zajlik a szervezetben, és milyen lehetőségek enyhíthetik a panaszokat."},{"id":"v11","title":"Fogamzásgátlási módszerek áttekintése","desc":"A gyakori módszerek előnyei és korlátai, hogy felkészülten érkezz a tanácsadásra."}],"services":["Terhesgondozási vizsgálat","Genetikai ultrahang","Nőgyógyászati vizsgálat","Méhnyakszűrés (citológia)","Fogamzásgátlási tanácsadás","Leletmegbeszélés","Fogamzás előtti tanácsadás","Gyermekágyi kontroll","Változókori konzultáció"]};
+const T = {
+  primary: '#26294F', accentSoft: '#F6EADF', bg: '#F5F5F9', surface: '#FFFFFF',
+  text: '#1B1D38', muted: '#55576B', border: '#DEDFEA', track: '#E4E5EE', rowOn: '#EEEFF6', cool: '#E1EAF6'
+};
+const PILL = {
+  neutral: { bg: '#E4E5EE', color: '#2E3050' },
+  warm: { bg: '#F6EADF', color: '#7A4310' },
+  cool: { bg: '#E1EAF6', color: '#1F3F6B' },
+  solid: { bg: '#26294F', color: '#FFFFFF' }
+};
+const DAYS = [
+  { id: 'd2', dow: 'Hétfő', date: 'nov. 2.' },
+  { id: 'd3', dow: 'Kedd', date: 'nov. 3.' },
+  { id: 'd4', dow: 'Szerda', date: 'nov. 4.' },
+  { id: 'd5', dow: 'Csütörtök', date: 'nov. 5.' },
+  { id: 'd6', dow: 'Péntek', date: 'nov. 6.' }
+];
+const TIMES = ['8:00', '8:30', '9:00', '9:30', '10:00', '10:30', '11:00', '11:30'];
+const LONG_SVC = 'Genetikai ultrahang';
+const QUICK = [
+  ['Köszönöm, megnéztem', 'Köszönöm, megnéztem a feltöltött leletet. A részleteket a következő vizsgálaton beszéljük meg.'],
+  ['Kérek időpontot', 'Ezt személyesen szeretném megnézni. Kérlek, foglalj időpontot az alkalmazásban a legközelebbi szabad napra.'],
+  ['Sürgős esetben', 'Ha a panaszod erősödik vagy hirtelen jelentkezik, ne várj a válaszomra: hívd a rendelőt a [Telefonszám] számon, vészhelyzetben a 112-t.']
+];
+const KIND_LABEL = { article: 'CIKK', video: 'VIDEÓ', guide: 'ÚTMUTATÓ' };
+const KIND_NAME = { article: 'Cikk', video: 'Videó', guide: 'Útmutató' };
+const STATUS = {
+  draft: ['Vázlat', 'neutral'],
+  review: ['Lektorálásra vár', 'warm'],
+  live: ['Közzétéve', 'cool']
+};
+// key, csoport, megnevezés, az adminisztrátornál rögzített érték ('yes' | 'no' | null = az orvos állítja), alapérték
+const PERMS = [
+  ['cal.arrive', 'Naptár', 'Páciens érkeztetése, meg nem jelenés rögzítése', 'yes', true],
+  ['cal.book', 'Naptár', 'Foglalás felvétele és áthelyezése', null, true],
+  ['cal.cancel', 'Naptár', 'Időpont lemondása', null, true],
+  ['cal.block', 'Naptár', 'Időpont zárolása és feloldása', null, true],
+  ['id.link', 'Azonosítás', 'Összekötő kód készítése az új páciensnek', null, true],
+  ['pay.refund', 'Fizetés', 'Előleg visszatérítése', null, false],
+  ['pay.link', 'Fizetés', 'Fizetési link küldése', null, true],
+  ['prep.read', 'Naptár', 'Vizit előtti kérdőív válaszainak megtekintése', 'no', false],
+  ['doc.issue', 'Páciensek', 'Lelet kiadása a páciens Mappájába', null, true],
+  ['gdpr.handle', 'Adatkérések', 'Adatletöltési és törlési kérés teljesítése', null, false],
+  ['stats.view', 'Kimutatások', 'Összesítő kimutatások megtekintése', 'yes', true],
+  ['msg.read', 'Üzenetek', 'Orvosi üzenetek olvasása és megválaszolása', 'no', false],
+  ['mod.act', 'Moderálás', 'Hozzászólás jóváhagyása és elrejtése', null, true],
+  ['mod.crisis', 'Moderálás', 'Válságjelzés lezárása', 'no', false],
+  ['content.edit', 'Tartalom', 'Tartalom szerkesztése és lektorálásra küldése', null, true],
+  ['content.publish', 'Tartalom', 'Közzététel és visszavonás', 'no', false],
+  ['perm.manage', 'Beállítások', 'Jogosultságok módosítása', 'no', false]
+];
+
+const DOC_CATS = ['Labor', 'Ultrahang', 'Szűrés', 'Egyéb'];
+const WAITLIST = 2;
+const SAMPLE_PREP = [
+  ['Mi a látogatás fő oka?', 'Kontrollvizsgálat, a múltkori lelet megbeszélése.'],
+  ['Szed rendszeresen gyógyszert?', 'Nem'],
+  ['Kérdés az orvoshoz', 'Mikor esedékes a következő szűrés?'],
+  ['Beleegyező nyilatkozat', 'Elfogadva az appban, [dátum]']
+];
+function seedPatients(appts) {
+  const seen = {};
+  const out = [];
+  appts.forEach((a, i) => {
+    if (seen[a.name]) return;
+    seen[a.name] = true;
+    out.push({
+      id: 'u' + (i + 1), name: a.name, phone: '+36 30 000 00' + String(i + 1).padStart(2, '0'), linked: a.linked,
+      docs: a.linked && i % 2 === 1 ? [{ name: 'Vérkép', cat: 'Labor', date: 'okt. 28.' }] : [],
+      consents: [['ÁSZF', '1.0 változat · [dátum]'], ['Adatkezelési tájékoztató', '1.0 változat · [dátum]']].concat(a.pay === 'deposit' ? [['Lemondási feltételek', '1.0 változat · [dátum]']] : [])
+    });
+  });
+  return out;
+}
+
+function seedContent() {
+  const out = [];
+  SEED.articles.forEach((a) => out.push({
+    id: 'a-' + a.id, kind: 'article', title: a.title, stat: a.stat, short: a.short, lead: a.lead,
+    sections: a.sections.map((x) => [x[0], x[1]]), watch: a.watch.slice(), doctor: a.doctor,
+    sources: a.sources.map((x) => [x[0], x[1]]), status: 'review', reviewed: ''
+  }));
+  SEED.guides.forEach((g) => out.push({
+    id: 'g-' + g.id, kind: 'guide', title: g.title, stat: g.range, short: g.intro, lead: '',
+    sections: g.tips.map((x) => [x[0], x[1]]).concat(g.faq.map((x) => ['Gyakori kérdés: ' + x[0], x[1]])),
+    watch: [], doctor: '', sources: [], status: 'review', reviewed: ''
+  }));
+  SEED.videos.forEach((v) => out.push({
+    id: 'v-' + v.id, kind: 'video', title: v.title, stat: '[hossz]', short: v.desc, lead: '',
+    sections: [], watch: [], doctor: '', sources: [], status: 'draft', reviewed: ''
+  }));
+  return out;
+}
+
+class Component extends DCLogic {
+  constructor(...args) {
+    super(...args);
+    const perm = {};
+    PERMS.forEach((p) => { perm[p[0]] = p[4]; });
+    const content = seedContent();
+    const appts0 = [
+        { id: 'p1', dayId: 'd4', time: '8:00', name: 'Minta Kata', svc: 'Nőgyógyászati vizsgálat', linked: false, pay: 'deposit', arrived: false, code: '' },
+        { id: 'p2', dayId: 'd4', time: '8:30', name: 'Demó Anna', svc: 'Terhesgondozási vizsgálat', linked: true, pay: 'onsite', arrived: true, code: '', prep: true },
+        { id: 'p3', dayId: 'd4', time: '9:30', name: 'Próba Zsófia', svc: 'Genetikai ultrahang', linked: true, pay: 'deposit', arrived: false, code: '', prep: true },
+        { id: 'p4', dayId: 'd4', time: '10:30', name: 'Teszt Réka', svc: 'Változókori konzultáció', linked: false, pay: 'pending', arrived: false, code: '' },
+        { id: 'p5', dayId: 'd3', time: '9:00', name: 'Minta Dóra', svc: 'Méhnyakszűrés (citológia)', linked: true, pay: 'onsite', arrived: false, code: '', prep: true },
+        { id: 'p6', dayId: 'd5', time: '8:00', name: 'Próba Eszter', svc: 'Leletmegbeszélés', linked: true, pay: 'onsite', arrived: false, code: '' },
+        { id: 'p7', dayId: 'd5', time: '10:00', name: 'Demó Lilla', svc: 'Fogamzás előtti tanácsadás', linked: false, pay: 'deposit', arrived: false, code: '' },
+        { id: 'p8', dayId: 'd2', time: '8:30', name: 'Teszt Nóra', svc: 'Gyermekágyi kontroll', linked: true, pay: 'onsite', arrived: false, code: '' },
+        { id: 'p9', dayId: 'd2', time: '10:00', name: 'Minta Petra', svc: 'Genetikai ultrahang', linked: true, pay: 'deposit', arrived: false, code: '' },
+        { id: 'p10', dayId: 'd6', time: '9:00', name: 'Próba Júlia', svc: 'Fogamzásgátlási tanácsadás', linked: true, pay: 'onsite', arrived: false, code: '' }
+    ];
+    const patients = seedPatients(appts0);
+    this.state = {
+      patients: patients, patId: patients[0].id, patQuery: '', issueName: '', issueCat: 'Labor', patNote: '',
+      requests: [
+        { id: 'r1', type: 'export', name: 'Minta Dóra', received: 'nov. 2.', due: 'dec. 2.', state: 'open', outcome: '' },
+        { id: 'r2', type: 'delete', name: 'Demó Lilla', received: 'nov. 3.', due: 'dec. 3.', state: 'open', outcome: '' },
+        { id: 'r3', type: 'export', name: 'Próba Eszter', received: 'okt. 20.', due: 'nov. 20.', state: 'done', outcome: 'Teljesítve · Dr. Schmek Lilian Hanna, okt. 22.' }
+      ],
+      counts: { cancelled: 0, moved: 0, booked: 0 },
+      feedback: [5, 4, 5, 4],
+      sub: { on: false, name: '', to: '' },
+      role: null,
+      tab: 'cal',
+      perm: perm,
+      selId: null,
+      slotKey: null,
+      moveId: null,
+      calNote: '',
+      nbName: '', nbSvc: SEED.services[2], nbNew: false,
+      blocked: { 'd4|11:30': true, 'd6|11:00': true, 'd6|11:30': true },
+      appts: appts0,
+      threadId: 'm1',
+      reply: '',
+      threads: [
+        { id: 'm1', name: 'Demó Anna', meta: 'Azonosított páciens · várandós, 24. hét', unread: true, closed: false, msgs: [
+          { from: 'doc', text: 'Megnéztem a feltöltött vérképedet, az eredményeid rendben vannak. A következő vizsgálaton átbeszéljük a cukorterheléses vizsgálatot.', time: 'okt. 28., 14:12' },
+          { from: 'pat', text: 'Köszönöm szépen! Éhgyomorra kell majd érkeznem?', time: 'okt. 28., 15:40' }
+        ] },
+        { id: 'm2', name: 'Próba Zsófia', meta: 'Azonosított páciens · várandós, 12. hét', unread: true, closed: false, msgs: [
+          { from: 'pat', text: 'Feltöltöttem a korábbi ultrahangleletet a Mappámba. A szerdai vizsgálatra kell még valamit vinnem?', time: 'nov. 2., 18:05' }
+        ] },
+        { id: 'm3', name: 'Minta Dóra', meta: 'Azonosított páciens · nőgyógyászati gondozás', unread: false, closed: false, msgs: [
+          { from: 'pat', text: 'A szűrés eredményét hol fogom látni?', time: 'okt. 30., 9:20' },
+          { from: 'doc', text: 'Amint megérkezik, a Mappádban jelenik meg, és értesítést is kapsz róla.', time: 'okt. 30., 11:02' }
+        ] },
+        { id: 'm4', name: 'Próba Eszter', meta: 'Azonosított páciens · nőgyógyászati gondozás', unread: false, closed: true, msgs: [
+          { from: 'pat', text: 'Köszönöm a gyors választ, a csütörtöki időpont megfelel.', time: 'okt. 27., 16:44' }
+        ] }
+      ],
+      modFilter: 'pending',
+      modItems: [
+        { id: 'q1', type: 'first', space: 'Várandósok tere', author: 'Százszorszép · 9. hét', time: '20 perce', text: 'Sziasztok! Most csatlakoztam. Ti mikor mondtátok el a munkahelyen, hogy babát vártok?', reason: 'Első hozzászólás: jóváhagyás után jelenik meg.', state: 'pending', notified: false, outcome: '' },
+        { id: 'q2', type: 'report', space: 'Babatervezők tere', author: 'Borostyán', time: '1 órája', text: 'Nekem ez a kapszula hozta meg a babát, itt tudjátok megrendelni kedvezménnyel: [link]', reason: 'Jelentés oka: reklám, termékajánlás (2 jelzés).', state: 'pending', notified: false, outcome: '' },
+        { id: 'q3', type: 'report', space: 'Várandósok tere', author: 'Mályva · 31. hét', time: '3 órája', text: 'Szerintem nyugodtan hagyd abba a gyógyszert, nekem sem kellett, és semmi baj nem lett.', reason: 'Jelentés oka: orvosi tanácsadás, ami árthat (1 jelzés).', state: 'pending', notified: false, outcome: '' },
+        { id: 'q4', type: 'crisis', space: 'Szülés utáni tér', author: 'Hóvirág', time: '5 órája', text: 'Hetek óta úgy érzem, nem bírom tovább, és senkinek nem hiányoznék.', reason: 'Válságjelzés: a rendszer automatikusan elrejtette és megjelölte.', state: 'pending', notified: false, outcome: '' },
+        { id: 'q5', type: 'report', space: 'Változókor tere', author: 'Rozmaring', time: 'tegnap', text: 'A hőhullámokra nekem a réteges öltözködés vált be.', reason: 'Jelentés oka: nem megfelelő tartalom (1 jelzés).', state: 'done', notified: false, outcome: 'Megjelenhet · a jelzés nem volt megalapozott · Adminisztrátor, tegnap' }
+      ],
+      contentFilter: 'all',
+      contentId: content[0].id,
+      edNote: '',
+      content: content
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const t = T;
+    const set = (patch) => this.setState(patch);
+    const role = s.role || (this.props.role === 'admin' ? 'admin' : 'doctor');
+    const isDoctor = role === 'doctor';
+    const can = (k) => isDoctor || !!s.perm[k];
+    const chip = (on) => (on
+      ? { bg: t.primary, color: '#FFFFFF', border: t.primary, weight: '600', pressed: 'true' }
+      : { bg: t.surface, color: t.text, border: t.border, weight: '400', pressed: 'false' });
+    const pill = (k) => PILL[k] || PILL.neutral;
+    const act = (ok, solid) => (ok
+      ? { disabled: false, bg: solid ? t.primary : 'transparent', color: solid ? '#FFFFFF' : t.primary, border: t.primary, cursor: 'pointer' }
+      : { disabled: true, bg: t.track, color: t.muted, border: t.track, cursor: 'default' });
+    const who = isDoctor ? 'Dr. Schmek Lilian Hanna' : 'Adminisztrátor';
+    const dayOf = (id) => DAYS.find((d) => d.id === id) || DAYS[0];
+
+    // ---------- Naptár: heti rács ----------
+    const apptAt = (dayId, tm) => s.appts.find((a) => a.dayId === dayId && a.time === tm);
+    const sel = s.appts.find((a) => a.id === s.selId) || null;
+    const moving = s.appts.find((a) => a.id === s.moveId) || null;
+    const slotParts = s.slotKey ? s.slotKey.split('|') : null;
+    const slotFree = slotParts && !apptAt(slotParts[0], slotParts[1]);
+    const slotBlocked = !!(slotFree && s.blocked[s.slotKey]);
+    const patchAppt = (id, patch, note) => {
+      const st = this.state;
+      this.setState({ appts: st.appts.map((a) => (a.id === id ? Object.assign({}, a, patch) : a)), calNote: note || '' });
+    };
+    const payLabel = { deposit: 'Előleg fizetve', pending: 'Előlegre vár', onsite: 'Helyszínen fizet', refunded: 'Előleg visszatérítve' };
+    const gridCells = [];
+    let freeCount = 0;
+    TIMES.forEach((tm) => {
+      DAYS.forEach((d) => {
+        const a = apptAt(d.id, tm);
+        const key = d.id + '|' + tm;
+        const base = {};
+        if (a) {
+          const on = sel && sel.id === a.id;
+          const isMoved = moving && moving.id === a.id;
+          gridCells.push(Object.assign(base, {
+            l1: a.name, l2: a.noShow ? 'nem jelent meg' : (a.arrived ? 'megérkezett' : a.svc), weight: '600',
+            bg: a.linked ? t.cool : t.accentSoft, color: t.text, border: on || isMoved ? t.primary : 'transparent',
+            pressed: on ? 'true' : 'false',
+            aria: d.dow + ' ' + tm + ', ' + a.name + ', ' + a.svc,
+            onPick: () => { if (!this.state.moveId) set({ selId: a.id, slotKey: null, calNote: '' }); }
+          }));
+          return;
+        }
+        const isBlocked = !!s.blocked[key];
+        if (!isBlocked) freeCount++;
+        const on = s.slotKey === key;
+        gridCells.push(Object.assign(base, {
+          l1: isBlocked ? 'Zárolva' : (moving ? 'Ide helyezem' : 'Szabad'), l2: '', weight: '400',
+          bg: isBlocked ? t.track : t.surface, color: isBlocked ? t.text : t.muted,
+          border: on ? t.primary : t.border, pressed: on ? 'true' : 'false',
+          aria: d.dow + ' ' + tm + ', ' + (isBlocked ? 'zárolt időpont' : 'szabad időpont'),
+          onPick: () => {
+            const st = this.state;
+            const mv = st.appts.find((x) => x.id === st.moveId);
+            if (mv) {
+              if (isBlocked) { set({ calNote: 'Zárolt időpontra nem lehet foglalást áthelyezni.' }); return; }
+              this.setState({
+                appts: st.appts.map((x) => (x.id === mv.id ? Object.assign({}, x, { dayId: d.id, time: tm }) : x)),
+                moveId: null, selId: mv.id, slotKey: null, counts: Object.assign({}, st.counts, { moved: st.counts.moved + 1 }),
+                calNote: mv.name + ' új időpontja: ' + d.date + ' ' + tm + '. A páciens értesítést kapott.'
+              });
+              return;
+            }
+            set({ slotKey: key, selId: null, calNote: '' });
+          }
+        }));
+      });
+    });
+    const selDay = sel ? dayOf(sel.dayId) : null;
+    const offBtn = act(false, false);
+    const selVals = sel ? {
+      name: sel.name, svc: sel.svc, when: selDay.date + ' ' + sel.time,
+      idText: sel.linked ? 'Azonosított páciens' : 'Még nincs azonosítva',
+      payText: sel.pay === 'deposit' ? 'Előleg fizetve: [előleg összege]' : (sel.pay === 'pending' ? 'Előlegre vár, a fizetési linket elküldtük' : (sel.pay === 'refunded' ? 'Előleg visszatérítve' : 'A helyszínen fizet')),
+      stateText: sel.noShow ? 'Nem jelent meg' : (sel.arrived ? 'Megérkezett' : 'Várjuk'),
+      prepText: sel.prep ? 'Kérdőív és nyilatkozat kész' : 'Még nem töltötte ki',
+      showPrep: !!sel.prep && can('prep.read'),
+      noShowLabel: sel.noShow ? 'Meg nem jelenés visszavonása' : 'Nem jelent meg',
+      onNoShow: () => patchAppt(sel.id, { noShow: !sel.noShow, arrived: false }, sel.noShow ? '' : 'Rögzítettük, hogy a páciens nem jelent meg.' + (sel.pay === 'deposit' ? ' A lemondási feltételek szerint az előleg nem jár vissza.' : '')),
+      showPayLink: sel.pay === 'pending', payLinkBtn: act(can('pay.link'), false),
+      onPayLink: () => { if (can('pay.link')) patchAppt(sel.id, {}, 'Fizetési linket küldtünk a páciensnek SMS-ben és e-mailben. A link [X] óráig érvényes.'); },
+      arriveLabel: sel.arrived ? 'Érkeztetés visszavonása' : 'Megérkezett',
+      onArrive: () => patchAppt(sel.id, { arrived: !sel.arrived, noShow: false }),
+      moveBtn: act(can('cal.book'), false),
+      onMove: () => { if (can('cal.book')) set({ moveId: sel.id, slotKey: null, calNote: '' }); },
+      showLink: !sel.linked && !sel.code, linkBtn: act(can('id.link'), false), hasCode: !!sel.code, code: sel.code,
+      onCode: () => {
+        if (!can('id.link')) return;
+        const n = String(100000 + Math.floor(Math.random() * 900000));
+        patchAppt(sel.id, { code: n.slice(0, 3) + ' ' + n.slice(3) }, 'Az összekötő kód elkészült. A fiók akkor lesz azonosított, amikor a páciens beírja az appban.');
+      },
+      showRefund: sel.pay === 'deposit', refundBtn: act(can('pay.refund'), false),
+      onRefund: () => { if (can('pay.refund')) patchAppt(sel.id, { pay: 'refunded' }, 'Az előleg visszautalását elindítottuk. Rögzítve: ' + who + '.'); },
+      cancelBtn: act(can('cal.cancel'), false),
+      onCancel: () => {
+        if (!can('cal.cancel')) return;
+        const st = this.state;
+        const refund = sel.pay === 'deposit' ? ' Mivel a rendelő mondta le, az előleg teljes összege visszajár.' : '';
+        this.setState({ appts: st.appts.filter((a) => a.id !== sel.id), selId: null, moveId: null, counts: Object.assign({}, st.counts, { cancelled: st.counts.cancelled + 1 }), calNote: sel.name + ' időpontját lemondtuk, a páciens értesítést kapott.' + refund + ' A várólistán lévő ' + WAITLIST + ' páciens értesítést kapott a felszabadult időpontról.' });
+      }
+    } : {
+      name: '', svc: '', when: '', idText: '', payText: '', stateText: '', arriveLabel: '', onArrive: () => {},
+      prepText: '', showPrep: false, noShowLabel: '', onNoShow: () => {}, showPayLink: false, payLinkBtn: offBtn, onPayLink: () => {},
+      moveBtn: offBtn, onMove: () => {}, showLink: false, linkBtn: offBtn, hasCode: false, code: '', onCode: () => {},
+      showRefund: false, refundBtn: offBtn, onRefund: () => {}, cancelBtn: offBtn, onCancel: () => {}
+    };
+    const nbNeedsDeposit = s.nbNew || s.nbSvc === LONG_SVC;
+    const nbOk = can('cal.book') && s.nbName.trim().length > 1;
+    const saveBooking = () => {
+      const st = this.state;
+      if (!st.slotKey || !can('cal.book') || st.nbName.trim().length < 2) return;
+      const p = st.slotKey.split('|');
+      const dep = st.nbNew || st.nbSvc === LONG_SVC;
+      const appt = { id: 'p' + Date.now(), dayId: p[0], time: p[1], name: st.nbName.trim(), svc: st.nbSvc, linked: !st.nbNew, pay: dep ? 'pending' : 'onsite', arrived: false, code: '' };
+      const known = st.patients.find((x) => x.name === appt.name);
+      this.setState({
+        patients: known ? st.patients : st.patients.concat([{ id: 'u' + Date.now(), name: appt.name, phone: '[telefonszám]', linked: appt.linked, docs: [], consents: [] }]),
+        counts: Object.assign({}, st.counts, { booked: st.counts.booked + 1 }),
+        appts: st.appts.concat([appt]), selId: appt.id, slotKey: null, nbName: '', nbNew: false,
+        calNote: 'A foglalást rögzítettük.' + (dep ? ' A páciens fizetési linket kapott az előleghez.' : ' A páciens visszaigazolást kapott.')
+      });
+    };
+    const calDenied = !isDoctor && (
+      (sel && (!can('cal.book') || !can('cal.cancel') || (sel.pay === 'pending' && !can('pay.link')) || (!sel.linked && !sel.code && !can('id.link')) || (sel.pay === 'deposit' && !can('pay.refund'))))
+      || (slotFree && (!can('cal.book') || !can('cal.block'))));
+
+    // ---------- Üzenetek ----------
+    const thread = s.threads.find((x) => x.id === s.threadId) || s.threads[0];
+    const unreadCount = s.threads.filter((x) => x.unread).length;
+    const openThreads = s.threads.filter((x) => !x.closed).length;
+    const threads = s.threads.map((x) => {
+      const last = x.msgs[x.msgs.length - 1];
+      const tg = x.closed ? ['Lezárva', 'neutral'] : (x.unread ? ['Új', 'warm'] : ['Megválaszolva', 'cool']);
+      const p = pill(tg[1]);
+      const on = x.id === thread.id;
+      return {
+        name: x.name, weight: x.unread ? '600' : '400', snippet: last.text.length > 64 ? last.text.slice(0, 64) + '…' : last.text,
+        tag: tg[0], tagBg: p.bg, tagColor: p.color, bg: on ? t.rowOn : t.surface, pressed: on ? 'true' : 'false',
+        onOpen: () => this.setState({
+          threadId: x.id, reply: '',
+          threads: this.state.threads.map((y) => (y.id === x.id ? Object.assign({}, y, { unread: false }) : y))
+        })
+      };
+    });
+    const threadMsgs = thread.msgs.map((m) => (m.from === 'doc'
+      ? { text: m.text, meta: 'Te · ' + m.time, align: 'flex-end', bg: t.primary, color: '#FFFFFF', metaColor: '#DADBEA' }
+      : { text: m.text, meta: thread.name + ' · ' + m.time, align: 'flex-start', bg: t.track, color: t.text, metaColor: t.muted }));
+    const sendReply = () => {
+      const st = this.state;
+      const txt = st.reply.trim();
+      if (!txt || !can('msg.read')) return;
+      this.setState({
+        reply: '',
+        threads: st.threads.map((y) => (y.id === thread.id
+          ? Object.assign({}, y, { unread: false, msgs: y.msgs.concat([{ from: 'doc', text: txt, time: 'most' }]) })
+          : y))
+      });
+    };
+
+    // ---------- Moderálás ----------
+    const inFilter = (x, f) => (f === 'done' ? x.state === 'done' : x.state === 'pending' && (f === 'pending' ? x.type === 'first' : x.type !== 'first'));
+    const pendingMod = s.modItems.filter((x) => x.state === 'pending');
+    const patchMod = (id, patch) => this.setState({ modItems: this.state.modItems.map((x) => (x.id === id ? Object.assign({}, x, patch) : x)) });
+    const resolve = (id, outcome) => patchMod(id, { state: 'done', outcome: outcome + ' · ' + who + ', most' });
+    const modItems = s.modItems.filter((x) => inFilter(x, s.modFilter)).map((x) => {
+      const k = x.type === 'first' ? ['Első hozzászólás', 'cool'] : (x.type === 'crisis' ? ['Válságjelzés', 'solid'] : ['Jelentett', 'warm']);
+      const p = pill(k[1]);
+      const crisis = x.type === 'crisis';
+      const okAct = crisis ? can('mod.crisis') : can('mod.act');
+      return {
+        kind: k[0], kindBg: p.bg, kindColor: p.color,
+        meta: x.space + ' · ' + x.author + ' · ' + x.time, text: x.text,
+        reason: x.reason + (x.notified ? ' Az orvos értesítve.' : ''),
+        isCrisis: crisis, isPending: x.state === 'pending', isDone: x.state === 'done',
+        showApprove: !crisis, approveBtn: act(can('mod.act'), true),
+        hideBtn: act(okAct, false), hideLabel: crisis ? 'Rejtve marad, lezárom' : 'Elrejtem',
+        showNotify: crisis && !isDoctor, notifyLabel: x.notified ? 'Orvos értesítve' : 'Orvos értesítése',
+        outcome: x.outcome,
+        onApprove: () => { if (can('mod.act')) resolve(x.id, 'Megjelenhet'); },
+        onHide: () => { if (okAct) resolve(x.id, crisis ? 'Rejtve maradt, az orvos felvette a kapcsolatot a szerzővel' : 'Elrejtve, a szerző értesítést kapott az okról'); },
+        onNotify: () => patchMod(x.id, { notified: true })
+      };
+    });
+    const modFilters = [['pending', 'Jóváhagyásra vár'], ['reported', 'Jelentett'], ['done', 'Lezárt']].map((f) => Object.assign(
+      { label: f[1] + ' (' + s.modItems.filter((x) => inFilter(x, f[0])).length + ')' }, chip(s.modFilter === f[0]), { onPick: () => set({ modFilter: f[0] }) }));
+
+    // ---------- Tartalom ----------
+    const cur = s.content.find((c) => c.id === s.contentId) || s.content[0];
+    const stOf = (c) => { const x = STATUS[c.status] || STATUS.draft; const p = pill(x[1]); return { status: x[0], stBg: p.bg, stColor: p.color }; };
+    const canEdit = can('content.edit');
+    const canPublish = can('content.publish');
+    const mut = (fn, note) => {
+      if (!canEdit) return;
+      const st = this.state;
+      this.setState({
+        content: st.content.map((c) => {
+          if (c.id !== cur.id) return c;
+          const n = Object.assign({}, c, { sections: c.sections.map((x) => x.slice()), watch: c.watch.slice(), sources: c.sources.map((x) => x.slice()) });
+          fn(n);
+          return n;
+        }),
+        edNote: note === undefined ? st.edNote : note
+      });
+    };
+    const reviewCount = s.content.filter((c) => c.status === 'review').length;
+    const liveCount = s.content.filter((c) => c.status === 'live').length;
+    const contentItems = s.content.filter((c) => s.contentFilter === 'all' || c.kind === s.contentFilter).map((c) => Object.assign({
+      title: c.title,
+      meta: KIND_NAME[c.kind] + (c.reviewed ? ' · lektorálva: ' + c.reviewed : ''),
+      bg: c.id === cur.id ? t.rowOn : t.surface, pressed: c.id === cur.id ? 'true' : 'false',
+      onOpen: () => set({ contentId: c.id, edNote: '' })
+    }, stOf(c)));
+    const contentFilters = [['all', 'Mind'], ['article', 'Cikkek'], ['guide', 'Útmutatók'], ['video', 'Videók']].map((f) => Object.assign(
+      { label: f[1] }, chip(s.contentFilter === f[0]), { onPick: () => set({ contentFilter: f[0] }) }));
+    const isLive = cur.status === 'live';
+
+    // ---------- Jogosultságok ----------
+    const permRows = PERMS.map((p) => {
+      const fixed = p[3];
+      const on = fixed ? fixed === 'yes' : !!s.perm[p[0]];
+      const toggle = isDoctor && !fixed;
+      return {
+        label: p[2], group: p[1], isToggle: toggle, isFixed: !toggle,
+        admText: on ? (toggle ? 'Engedélyezve' : 'Igen') : (toggle ? 'Tiltva' : 'Nem'),
+        fixedNote: fixed ? 'rögzített, nem módosítható' : 'az orvos módosíthatja',
+        pressed: on ? 'true' : 'false', aria: p[2] + ' az adminisztrátornak: ' + (on ? 'engedélyezve' : 'tiltva'),
+        bg: on ? t.primary : t.surface, color: on ? '#FFFFFF' : t.text, border: on ? t.primary : t.border,
+        onToggle: () => {
+          if (!toggle) return;
+          const np = Object.assign({}, this.state.perm);
+          np[p[0]] = !np[p[0]];
+          this.setState({ perm: np });
+        }
+      };
+    });
+
+    // ---------- Páciensek ----------
+    const pq = s.patQuery.trim().toLowerCase();
+    const pqDigits = pq.replace(/\D/g, '');
+    const patShown = s.patients.filter((x) => !pq || x.name.toLowerCase().indexOf(pq) >= 0 || (pqDigits && x.phone.replace(/\D/g, '').indexOf(pqDigits) >= 0));
+    const pat = s.patients.find((x) => x.id === s.patId) || s.patients[0];
+    const patApptList = s.appts.filter((a) => a.name === pat.name);
+    const issueOk = can('doc.issue') && s.issueName.trim().length > 1;
+
+    // ---------- Adatkérések ----------
+    const openReq = s.requests.filter((x) => x.state === 'open').length;
+    const reqRows = s.requests.map((x) => {
+      const del = x.type === 'delete';
+      const p = pill(del ? 'warm' : 'cool');
+      return {
+        kind: del ? 'Fióktörlés' : 'Adatletöltés', kindBg: p.bg, kindColor: p.color, name: x.name,
+        meta: 'Beérkezett: ' + x.received + ' · határidő: ' + x.due,
+        text: del
+          ? 'A páciens a fiókja és a Mappája törlését kérte. A törlés az appban tárolt adatokra vonatkozik; a rendelő jogszabály szerint megőrzendő orvosi dokumentációját nem érinti (ezt jogi tanácsadóval ellenőrizni kell).'
+          : 'A páciens az appban kezelt adatai másolatát kérte. A csomag a fiókadatokat, a foglalásokat, az üzeneteket és a Mappa tartalmát tartalmazza.',
+        isOpen: x.state === 'open', isDone: x.state === 'done', outcome: x.outcome,
+        doneBtn: act(can('gdpr.handle'), true), doneLabel: del ? 'Töröltem, lezárom' : 'Elküldtem, lezárom',
+        onDone: () => {
+          if (!can('gdpr.handle')) return;
+          this.setState({ requests: this.state.requests.map((y) => (y.id === x.id ? Object.assign({}, y, { state: 'done', outcome: 'Teljesítve · ' + who + ', most. A páciens visszaigazolást kapott.' }) : y)) });
+        }
+      };
+    });
+
+    // ---------- Kimutatások ----------
+    const noShows = s.appts.filter((a) => a.noShow).length;
+    const fbAvg = s.feedback.length ? (s.feedback.reduce((x, y) => x + y, 0) / s.feedback.length).toFixed(1).replace('.', ',') : '–';
+    const svcCount = {};
+    s.appts.forEach((a) => { svcCount[a.svc] = (svcCount[a.svc] || 0) + 1; });
+    const statTiles = [
+      ['Foglalások a héten', String(s.appts.length), freeCount + ' szabad időpont'],
+      ['Lemondások', String(s.counts.cancelled), 'a rendelő által lemondva'],
+      ['Áthelyezések', String(s.counts.moved), 'a rendelő által áthelyezve'],
+      ['Meg nem jelenések', String(noShows), 'rögzítve a naptárban'],
+      ['Nyitott beszélgetések', String(openThreads), unreadCount + ' megválaszolatlan'],
+      ['Átlagos válaszidő', '[X] óra', 'éles adatokból számolható'],
+      ['Elégedettség', fbAvg + ' / 5', s.feedback.length + ' visszajelzés alapján'],
+      ['Moderálásra vár', String(pendingMod.length), reviewCount + ' anyag lektorálásra vár']
+    ].map((x) => ({ label: x[0], value: x[1], sub: x[2] }));
+
+    const subName = s.sub.name.trim() || '[helyettes orvos neve]';
+    const tabs = [
+      ['cal', 'Naptár', 0],
+      ['pat', 'Páciensek', 0],
+      ['msgs', 'Üzenetek', can('msg.read') ? unreadCount : 0],
+      ['mod', 'Moderálás', pendingMod.length],
+      ['content', 'Tartalom', canPublish ? reviewCount : 0],
+      ['req', 'Adatkérések', openReq],
+      ['stats', 'Kimutatások', 0],
+      ['perms', 'Jogosultságok', 0]
+    ];
+
+    return {
+      t: t,
+      userName: isDoctor ? 'Dr. Schmek Lilian Hanna' : 'Adminisztrátor (recepció)',
+      roles: [['doctor', 'Orvos'], ['admin', 'Adminisztrátor']].map((r) => ({
+        label: r[1], pressed: role === r[0] ? 'true' : 'false',
+        bg: role === r[0] ? '#FFFFFF' : 'transparent', color: role === r[0] ? t.primary : '#FFFFFF', weight: role === r[0] ? '600' : '400',
+        onPick: () => set({ role: r[0], moveId: null })
+      })),
+      navItems: tabs.map((x) => ({
+        label: x[1], badge: String(x[2]), hasBadge: x[2] > 0,
+        current: s.tab === x[0] ? 'page' : 'false',
+        bg: s.tab === x[0] ? '#FFFFFF' : 'transparent', color: s.tab === x[0] ? t.primary : '#FFFFFF', weight: s.tab === x[0] ? '600' : '400',
+        onPick: () => set({ tab: x[0] })
+      })),
+      isPat: s.tab === 'pat', isReq: s.tab === 'req', isStats: s.tab === 'stats',
+      patSummary: s.patients.length + ' páciens · ' + s.patients.filter((x) => x.linked).length + ' azonosított',
+      patQuery: s.patQuery, onPatQuery: (e) => set({ patQuery: e.target.value }),
+      patRows: patShown.map((x) => {
+        const p = pill(x.linked ? 'cool' : 'warm');
+        return {
+          name: x.name, meta: x.phone + ' · ' + s.appts.filter((a) => a.name === x.name).length + ' foglalás',
+          idLabel: x.linked ? 'Azonosított' : 'Új páciens', idBg: p.bg, idColor: p.color,
+          bg: x.id === pat.id ? t.rowOn : t.surface, pressed: x.id === pat.id ? 'true' : 'false',
+          onOpen: () => set({ patId: x.id, patNote: '', issueName: '' })
+        };
+      }),
+      noPatRows: patShown.length === 0,
+      pat: {
+        name: pat.name, meta: pat.phone + ' · ' + (pat.linked ? 'azonosított páciens' : 'még nincs azonosítva'),
+        noAppts: patApptList.length === 0, noDocs: pat.docs.length === 0, canIssue: !!pat.linked, notLinked: !pat.linked
+      },
+      patAppts: patApptList.map((a) => ({ svc: a.svc, when: dayOf(a.dayId).date + ' ' + a.time })),
+      patDocs: pat.docs.map((d) => ({ name: d.name, meta: d.cat + ' · ' + d.date })),
+      patConsents: pat.consents.length ? pat.consents.map((c) => ({ doc: c[0], meta: c[1] })) : [{ doc: 'Telefonon felvett páciens', meta: 'az appban még nem fogadott el dokumentumot' }],
+      issueName: s.issueName, onIssueName: (e) => set({ issueName: e.target.value }),
+      issueCats: DOC_CATS.map((c) => Object.assign({ label: c }, chip(s.issueCat === c), { onPick: () => set({ issueCat: c }) })),
+      issueBtn: act(issueOk, true),
+      issueDoc: () => {
+        const st = this.state;
+        if (!can('doc.issue') || st.issueName.trim().length < 2 || !pat.linked) return;
+        this.setState({
+          patients: st.patients.map((x) => (x.id === pat.id ? Object.assign({}, x, { docs: [{ name: st.issueName.trim(), cat: st.issueCat, date: 'ma' }].concat(x.docs) }) : x)),
+          issueName: '', patNote: 'A leletet kiadtuk ' + pat.name + ' Mappájába, a páciens értesítést kapott. Rögzítve: ' + who + '.'
+        });
+      },
+      patNote: s.patNote, hasPatNote: !!s.patNote,
+      reqRows: reqRows, reqDenied: !can('gdpr.handle'),
+      statTiles: statTiles,
+      svcRows: Object.keys(svcCount).sort((a, b) => svcCount[b] - svcCount[a]).map((k) => ({ name: k, count: String(svcCount[k]) })),
+      subOn: !!s.sub.on,
+      subBanner: 'Helyettesítés aktív' + (s.sub.to.trim() ? ' eddig: ' + s.sub.to.trim() : '') + '. Az üzenetekre ' + subName + ' válaszol, és ő lektorálja a tartalmat. A páciensek ezt az üzeneteknél látják.',
+      subName: s.sub.name, subTo: s.sub.to,
+      onSubName: (e) => { if (isDoctor) set({ sub: Object.assign({}, this.state.sub, { name: e.target.value }) }); },
+      onSubTo: (e) => { if (isDoctor) set({ sub: Object.assign({}, this.state.sub, { to: e.target.value }) }); },
+      subBtn: act(isDoctor, !s.sub.on),
+      subLabel: s.sub.on ? 'Helyettesítés kikapcsolása' : 'Helyettesítés bekapcsolása',
+      subState: s.sub.on ? 'Bekapcsolva: ' + subName : (isDoctor ? 'Kikapcsolva' : 'Kikapcsolva · csak az orvos állíthatja'),
+      toggleSub: () => { if (isDoctor) set({ sub: Object.assign({}, this.state.sub, { on: !this.state.sub.on }) }); },
+      isCal: s.tab === 'cal', isMsgs: s.tab === 'msgs', isMod: s.tab === 'mod', isContent: s.tab === 'content', isPerms: s.tab === 'perms',
+
+      calSummary: 'Hét: nov. 2–6. · ' + s.appts.length + ' foglalás · ' + freeCount + ' szabad időpont · várólistán ' + WAITLIST + ' páciens',
+      prepRows: SAMPLE_PREP.map((x) => ({ q: x[0], a: x[1] })),
+      gridHeads: DAYS.map((d) => ({ dow: d.dow, date: d.date })),
+      gridTimes: TIMES.map((tm) => ({ time: tm })),
+      gridCells: gridCells,
+      legend: [[t.cool, 'Azonosított páciens'], [t.accentSoft, 'Új páciens'], [t.surface, 'Szabad'], [t.track, 'Zárolva']].map((l) => ({ bg: l[0], label: l[1] })),
+      isMoving: !!moving,
+      moveText: moving ? moving.name + ' foglalását helyezed át. Kattints egy szabad időpontra a rácsban.' : '',
+      cancelMove: () => set({ moveId: null }),
+      panelNone: !sel && !slotFree, panelAppt: !!sel, panelFree: !!slotFree && !slotBlocked, panelBlocked: slotBlocked,
+      sel: selVals,
+      slotWhen: slotParts ? dayOf(slotParts[0]).dow + ', ' + dayOf(slotParts[0]).date + ' ' + slotParts[1] : '',
+      nbName: s.nbName, onNbName: (e) => set({ nbName: e.target.value }),
+      nbServices: SEED.services.map((n) => Object.assign({ label: n }, chip(s.nbSvc === n), { onPick: () => set({ nbSvc: n }) })),
+      nbNew: { pressed: s.nbNew ? 'true' : 'false', box: s.nbNew ? t.primary : 'transparent', vis: s.nbNew ? 'visible' : 'hidden' },
+      toggleNbNew: () => this.setState({ nbNew: !this.state.nbNew }),
+      nbPayHint: nbNeedsDeposit ? 'Ehhez a foglaláshoz előleg tartozik: a páciens fizetési linket kap.' : 'Fizetés a helyszínen, előleg nem kell.',
+      nbSave: act(nbOk, true), saveBooking: saveBooking,
+      blockBtn: act(can('cal.block'), false),
+      toggleBlock: () => {
+        const st = this.state;
+        if (!st.slotKey || !can('cal.block')) return;
+        const b = Object.assign({}, st.blocked);
+        if (b[st.slotKey]) delete b[st.slotKey]; else b[st.slotKey] = true;
+        this.setState({ blocked: b, calNote: b[st.slotKey] ? 'Az időpontot zároltuk.' : 'A zárolást feloldottuk.' });
+      },
+      calDenied: !!calDenied,
+      calNote: s.calNote, hasCalNote: !!s.calNote,
+
+      msgsLocked: !can('msg.read'), msgsOpen: can('msg.read'),
+      lockedCount: openThreads + ' nyitott beszélgetés vár az orvosra.',
+      threads: threads,
+      thread: {
+        name: thread.name, meta: thread.meta, isOpen: !thread.closed, isClosed: !!thread.closed,
+        closeLabel: thread.closed ? 'Újranyitás' : 'Lezárás',
+        onToggleClosed: () => this.setState({
+          threads: this.state.threads.map((y) => (y.id === thread.id ? Object.assign({}, y, { closed: !y.closed, unread: false }) : y))
+        })
+      },
+      threadMsgs: threadMsgs,
+      quick: QUICK.map((q) => ({ label: q[0], onPick: () => set({ reply: q[1] }) })),
+      reply: s.reply, onReply: (e) => set({ reply: e.target.value }),
+      sendReply: sendReply, sendBtn: act(s.reply.trim().length > 0, true),
+
+      modFilters: modFilters, modItems: modItems, noModItems: modItems.length === 0,
+
+      contentSummary: s.content.length + ' anyag · ' + reviewCount + ' lektorálásra vár · ' + liveCount + ' közzétéve. A páciens csak a közzétett anyagot látja.',
+      contentFilters: contentFilters, contentItems: contentItems,
+      ed: Object.assign({
+        kind: KIND_LABEL[cur.kind] || 'ANYAG', title: cur.title, stat: cur.stat, short: cur.short, lead: cur.lead, doctor: cur.doctor,
+        statLabel: cur.kind === 'article' ? 'Gyakoriság (kiemelt adat a cikk tetején)' : (cur.kind === 'video' ? 'Videó hossza' : 'Időszak'),
+        readOnly: !canEdit,
+        reviewLine: cur.reviewed ? 'Szakmai ellenőrzés: ' + cur.reviewed : 'Szakmai ellenőrzés: még nem történt meg. Lektorálás nélkül az anyag nem tehető közzé.',
+        draftBtn: act(canEdit, false),
+        reviewBtn: act(canEdit && cur.status === 'draft', false),
+        publishBtn: act(canPublish, true),
+        publishLabel: isLive ? 'Visszavonom a közzétételt' : 'Lektoráltam, közzéteszem',
+        adminNote: !canPublish
+      }, stOf(cur)),
+      onEdTitle: (e) => mut((c) => { c.title = e.target.value; }),
+      onEdStat: (e) => mut((c) => { c.stat = e.target.value; }),
+      onEdShort: (e) => mut((c) => { c.short = e.target.value; }),
+      onEdLead: (e) => mut((c) => { c.lead = e.target.value; }),
+      onEdDoctor: (e) => mut((c) => { c.doctor = e.target.value; }),
+      edSections: cur.sections.map((x, i) => ({
+        n: String(i + 1), hid: 'hh-adm-sec-' + i, h: x[0], p: x[1], pLabel: (i + 1) + '. szakasz szövege',
+        onH: (e) => mut((c) => { c.sections[i][0] = e.target.value; }),
+        onP: (e) => mut((c) => { c.sections[i][1] = e.target.value; }),
+        onRemove: () => mut((c) => { c.sections.splice(i, 1); })
+      })),
+      addSection: () => mut((c) => { c.sections.push(['', '']); }),
+      edWatch: cur.watch.map((x, i) => ({
+        text: x, label: 'Mire figyelj, ' + (i + 1) + '. pont',
+        onText: (e) => mut((c) => { c.watch[i] = e.target.value; }),
+        onRemove: () => mut((c) => { c.watch.splice(i, 1); })
+      })),
+      addWatch: () => mut((c) => { c.watch.push(''); }),
+      edSources: cur.sources.map((x, i) => ({
+        name: x[0], url: x[1], nameLabel: (i + 1) + '. forrás neve', urlLabel: (i + 1) + '. forrás webcíme',
+        onName: (e) => mut((c) => { c.sources[i][0] = e.target.value; }),
+        onUrl: (e) => mut((c) => { c.sources[i][1] = e.target.value; }),
+        onRemove: () => mut((c) => { c.sources.splice(i, 1); })
+      })),
+      addSource: () => mut((c) => { c.sources.push(['', '']); }),
+      edSaveDraft: () => mut((c) => { c.status = 'draft'; c.reviewed = ''; }, 'Vázlatként mentve. A páciensek nem látják.'),
+      edSendReview: () => { if (cur.status === 'draft') mut((c) => { c.status = 'review'; }, 'Elküldve lektorálásra az orvosnak.'); },
+      edPublish: () => {
+        if (!canPublish) return;
+        if (isLive) mut((c) => { c.status = 'draft'; c.reviewed = ''; }, 'A közzétételt visszavontad, az anyag újra vázlat.');
+        else mut((c) => { c.status = 'live'; c.reviewed = 'ma · Dr. Schmek Lilian Hanna'; }, 'Közzétéve. Az anyag megjelent a páciensek Tudástárában.');
+      },
+      edNote: s.edNote, hasEdNote: !!s.edNote,
+
+      permLead: isDoctor
+        ? 'Itt állítod be, mit tehet meg az adminisztrátor. A változás azonnal érvényes: váltson át az Adminisztrátor szerepkörre a bal alsó sarokban, és látod a hatását.'
+        : 'Ezt a táblát csak az orvos módosíthatja. Itt látod, mihez van jogosultságod.',
+      permRows: permRows
+    };
+  }
+}
+
+</script>
+<script>
+
+(function () {
+  var mount = document.getElementById('app');
+  if (!window.preact) {
+    mount.innerHTML = '<p class="boot">Nem sikerült betölteni az appot. Ellenőrizd az internetkapcsolatot, és töltsd újra az oldalt.</p>';
+    return;
+  }
+  var h = preact.h;
+  var root = document.getElementById('tpl').content.firstElementChild;
+  var EVENTS = { onclick: 'onClick', onkeydown: 'onKeyDown', onchange: 'onChange' };
+  var ONE = /^\{\{\s*([^}]+?)\s*\}\}$/;
+  var ANY = /\{\{\s*([^}]+?)\s*\}\}/g;
+  var ids = new WeakMap(), nextId = 0;
+  function idOf(n) { if (!ids.has(n)) ids.set(n, 'n' + (nextId++)); return ids.get(n); }
+
+  function lookup(path, scope, vals) {
+    if (path === 'true') return true;
+    if (path === 'false') return false;
+    var parts = path.split('.');
+    var v = Object.prototype.hasOwnProperty.call(scope, parts[0]) ? scope : vals;
+    for (var i = 0; i < parts.length; i++) { if (v == null) return undefined; v = v[parts[i]]; }
+    return v;
+  }
+  function interp(str, scope, vals) {
+    var m = str.match(ONE);
+    if (m) return lookup(m[1], scope, vals);
+    return str.replace(ANY, function (_, p) { var v = lookup(p, scope, vals); return v == null ? '' : String(v); });
+  }
+  function kids(node, scope, vals, out, prefix) {
+    var c = node.childNodes;
+    for (var i = 0; i < c.length; i++) build(c[i], scope, vals, out, prefix ? prefix + ':' + i : null);
+  }
+  function build(node, scope, vals, out, key) {
+    if (node.nodeType === 3) {
+      var t = node.nodeValue;
+      if (t.indexOf('{{') >= 0) { var r = interp(t, scope, vals); out.push(r == null ? '' : String(r)); }
+      else out.push(t);
+      return;
+    }
+    if (node.nodeType !== 1) return;
+    var tag = node.localName;
+    if (tag === 'sc-if') {
+      if (interp(node.getAttribute('value'), scope, vals)) kids(node, scope, vals, out, idOf(node));
+      return;
+    }
+    if (tag === 'sc-for') {
+      var list = interp(node.getAttribute('list'), scope, vals) || [];
+      var as = node.getAttribute('as');
+      for (var j = 0; j < list.length; j++) {
+        var s = Object.assign({}, scope); s[as] = list[j];
+        kids(node, s, vals, out, null);
+      }
+      return;
+    }
+    var props = {};
+    if (key) props.key = key;
+    for (var k = 0; k < node.attributes.length; k++) {
+      var a = node.attributes[k], name = a.name;
+      if (name.indexOf('hint-') === 0) continue;
+      var val = a.value.indexOf('{{') >= 0 ? interp(a.value, scope, vals) : a.value;
+      if (EVENTS[name]) {
+        name = EVENTS[name];
+        if (name === 'onChange' && (tag === 'textarea' || (tag === 'input' && node.getAttribute('type') !== 'file'))) name = 'onInput';
+      } else if (name === 'disabled') {
+        val = val === true || val === 'true';
+      }
+      props[name] = val;
+    }
+    var children = [];
+    kids(node, scope, vals, children, null);
+    out.push(h(tag, props, children));
+  }
+
+  var comp = new Component({ variant: 'holdciklus' });
+  var lastView = '';
+  function draw() {
+    var vals = comp.renderVals();
+    var out = [];
+    build(root, {}, vals, out, null);
+    preact.render(out[0], mount);
+    var s = comp.state;
+    var view = [s.tab, s.kbView, s.videoId, s.articleId, s.forumView, s.threadId, s.liliView, s.step, s.onboard, s.mapUnlocked, s.linked].join('|');
+    if (view !== lastView) {
+      lastView = view;
+      var screen = mount.querySelector("main");
+      if (screen) screen.scrollTop = 0;
+    }
+  }
+  var queued = false;
+  window.__dcRender = function () {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; draw(); });
+  };
+  mount.innerHTML = '';
+  draw();
+})();
+
+</script>
+</body>
+</html>

@@ -27,3 +27,11 @@ Az app a Design vásznon készül, ez a repó annak másolata, és nem frissül 
 3. Commitold és töltsd fel a `main` ágra. A GitHub Pages egy-két percen belül frissíti az oldalt, a link nem változik.
 
 Ha a 2. lépés „Layout anchor changed” hibával áll le, a vásznon megváltozott az app kerete (fejléc, menü, képernyőmagasság). Ilyenkor a `tools/build-phone.js` elején lévő `swaps` listát kell az új keretre igazítani.
+
+## Rendelői felület
+
+A `rendelo.html` az orvosi és adminisztrátori felület kattintható prototípusa (asztali képernyőre): naptár, páciensek, üzenetek, moderálás, tartalom, adatkérések, kimutatások és jogosultságok. Forrása a `source/Admin.dc.html`.
+
+Újraépítés: `node tools/build-phone.js source/Admin.dc.html rendelo.html desktop`
+
+A két felület nincs összekötve, és minden név és adat kitalált minta.

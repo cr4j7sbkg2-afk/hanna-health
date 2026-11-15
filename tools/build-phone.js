@@ -3,7 +3,9 @@
 // It keeps the artboard's template and logic as they are and adds a small Preact-based runner,
 // full-screen phone sizing (iPhone safe areas), home-screen app tags and noindex.
 const fs = require('fs');
-const [srcPath, outPath] = process.argv.slice(2);
+// Third argument 'desktop' builds the staff interface (a desktop page) instead of the phone app.
+const [srcPath, outPath, mode] = process.argv.slice(2);
+const desktop = mode === 'desktop';
 if (!srcPath || !outPath) {
   console.error('Usage: node tools/build-phone.js <Main.dc.html> <index.html>');
   process.exit(1);
@@ -29,13 +31,17 @@ const swaps = [
   ['<nav aria-label="Fő menü" style="height: 72px; flex-shrink: 0; box-sizing: border-box;',
    '<nav aria-label="Fő menü" style="height: calc(72px + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom); flex-shrink: 0; box-sizing: border-box;']
 ];
-for (const [a, b] of swaps) {
+for (const [a, b] of desktop ? [] : swaps) {
   if (tpl.split(a).length !== 2) throw new Error('Layout anchor changed in the artboard, update tools/build-phone.js: ' + a.slice(0, 70));
   tpl = tpl.replace(a, b);
 }
 const screens = tpl.split('height: 708px;').length - 1;
-if (screens < 6) throw new Error('Expected at least 6 screen heights of 708px, found ' + screens);
+if (!desktop && screens < 6) throw new Error('Expected at least 6 screen heights of 708px, found ' + screens);
 tpl = tpl.split('height: 708px;').join('height: 100%;');
+if (desktop) {
+  if (tpl.split('height: 860px;').length !== 2) throw new Error('Expected one 860px root height in the staff artboard');
+  tpl = tpl.replace('height: 860px;', 'height: 100%;');
+}
 
 const runtime = `
 (function () {
@@ -121,7 +127,7 @@ const runtime = `
     var view = [s.tab, s.kbView, s.videoId, s.articleId, s.forumView, s.threadId, s.liliView, s.step, s.onboard, s.mapUnlocked, s.linked].join('|');
     if (view !== lastView) {
       lastView = view;
-      var screen = mount.querySelector('main > div');
+      var screen = mount.querySelector(${JSON.stringify(desktop ? 'main' : 'main > div')});
       if (screen) screen.scrollTop = 0;
     }
   }
@@ -186,5 +192,5 @@ ${runtime}
 </body>
 </html>
 `;
-fs.writeFileSync(outPath, page);
+fs.writeFileSync(outPath, desktop ? page.replace('<title>Hanna Health – telefonos teszt</title>', '<title>Hanna Health – rendelői felület (teszt)</title>').replace('<link rel="manifest" href="manifest.webmanifest">\n', '') : page);
 console.log('Wrote ' + outPath + ' (' + page.length + ' characters, ' + screens + ' screens)');

@@ -35,12 +35,17 @@ input, textarea { font-size: 16px !important; }
         <div style="flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; gap: 14px">
           <span style="font-family: {{t.headFont}}; font-weight: {{t.headWeight}}; font-size: 40px; line-height: 1.1; color: {{t.primary}}">Hanna Health</span>
           <span style="font-size: 13px; letter-spacing: 0.2em; color: {{t.muted}}">FOR WOMEN</span>
-          <p style="margin: 8px 0 0; font-size: 16px; line-height: 1.5; color: {{t.text}}">Időpontfoglalás, tudástár, közösség és a saját egészségügyi mappád egy helyen.</p>
+          <p style="margin: 8px 0 0; font-size: 16px; line-height: 1.5; color: {{t.text}}">{{L.tagline}}</p>
         </div>
         <div style="display: flex; flex-direction: column; gap: 10px">
-          <button type="button" onClick="{{obRegister}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{t.primary}}; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Regisztrálok</button>
-          <button type="button" onClick="{{obLogin}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Van már fiókom</button>
-          <p style="margin: 6px 0 0; font-size: 12px; line-height: 1.45; text-align: center; color: {{t.muted}}">Prototípus: ne adj meg valódi személyes vagy egészségügyi adatot.</p>
+          <button type="button" onClick="{{obRegister}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{t.primary}}; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">{{L.register}}</button>
+          <button type="button" onClick="{{obLogin}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">{{L.login}}</button>
+          <p style="margin: 6px 0 0; font-size: 12px; line-height: 1.45; text-align: center; color: {{t.muted}}">{{L.proto}}</p>
+          <div style="display: flex; justify-content: center; gap: 8px">
+            <sc-for list="{{langs}}" as="lng" hint-placeholder-count="2">
+              <button type="button" onClick="{{lng.onPick}}" aria-pressed="{{lng.pressed}}" style="min-height: 44px; border-radius: 999px; border: 1px solid {{lng.border}}; background: {{lng.bg}}; color: {{lng.color}}; font-family: inherit; font-size: 14px; font-weight: {{lng.weight}}; cursor: pointer; padding: 0 18px">{{lng.label}}</button>
+            </sc-for>
+          </div>
         </div>
       </sc-if>
       <sc-if value="{{isObForm}}" hint-placeholder-val="{{false}}">
@@ -48,38 +53,38 @@ input, textarea { font-size: 16px !important; }
         <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.muted}}">{{ob.lead}}</p>
         <sc-if value="{{ob.isRegister}}" hint-placeholder-val="{{true}}">
           <div style="display: flex; flex-direction: column; gap: 6px">
-            <label for="hh-reg-name" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Név</label>
+            <label for="hh-reg-name" style="font-size: 13px; font-weight: 600; color: {{t.text}}">{{L.fName}}</label>
             <input id="hh-reg-name" type="text" autocomplete="name" value="{{regName}}" onChange="{{onRegName}}" placeholder="Vezetéknév Keresztnév" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px">
           </div>
           <div style="display: flex; flex-direction: column; gap: 6px">
-            <label for="hh-reg-email" style="font-size: 13px; font-weight: 600; color: {{t.text}}">E-mail-cím</label>
+            <label for="hh-reg-email" style="font-size: 13px; font-weight: 600; color: {{t.text}}">{{L.fEmail}}</label>
             <input id="hh-reg-email" type="text" inputmode="email" autocomplete="email" value="{{regEmail}}" onChange="{{onRegEmail}}" placeholder="nev@pelda.hu" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px">
           </div>
         </sc-if>
         <div style="display: flex; flex-direction: column; gap: 6px">
-          <label for="hh-reg-phone" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Mobiltelefonszám</label>
+          <label for="hh-reg-phone" style="font-size: 13px; font-weight: 600; color: {{t.text}}">{{L.fPhone}}</label>
           <input id="hh-reg-phone" type="text" inputmode="tel" autocomplete="tel" value="{{regPhone}}" onChange="{{onRegPhone}}" placeholder="+36 30 123 4567" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px">
         </div>
         <sc-if value="{{ob.isRegister}}" hint-placeholder-val="{{true}}">
           <button type="button" onClick="{{toggleRegAccept}}" aria-pressed="{{ob.acceptPressed}}" style="width: 100%; min-height: 48px; border: none; background: transparent; padding: 4px 0; display: flex; align-items: center; gap: 12px; text-align: left; font-family: inherit; cursor: pointer">
             <span style="width: 24px; height: 24px; flex-shrink: 0; box-sizing: border-box; border-radius: 7px; border: 2px solid {{t.primary}}; background: {{ob.acceptBox}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="visibility: {{ob.acceptVis}}"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span>
-            <span style="font-size: 14px; line-height: 1.35; color: {{t.text}}">Elfogadom az [adatkezelési tájékoztató]-t és az [ÁSZF]-et</span>
+            <span style="font-size: 14px; line-height: 1.35; color: {{t.text}}">{{L.accept}}</span>
           </button>
-          <p style="margin: 0; padding: 12px 14px; border-radius: {{t.radius}}; background: {{t.accentSoft}}; font-size: 13px; line-height: 1.5; color: {{t.text}}">Jelszót nem kérünk: a telefonodra küldött kóddal lépsz be. A TAJ-számodat itt nem kérjük, arra csak az első vizitnél lesz szükség.</p>
+          <p style="margin: 0; padding: 12px 14px; border-radius: {{t.radius}}; background: {{t.accentSoft}}; font-size: 13px; line-height: 1.5; color: {{t.text}}">{{L.noPass}}</p>
         </sc-if>
-        <button type="button" onClick="{{obSend}}" disabled="{{ob.send.disabled}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{ob.send.bg}}; color: {{ob.send.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{ob.send.cursor}}; padding: 0 20px">Kódot kérek</button>
-        <button type="button" onClick="{{obBackWelcome}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Vissza</button>
+        <button type="button" onClick="{{obSend}}" disabled="{{ob.send.disabled}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{ob.send.bg}}; color: {{ob.send.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{ob.send.cursor}}; padding: 0 20px">{{L.sendCode}}</button>
+        <button type="button" onClick="{{obBackWelcome}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">{{L.back}}</button>
       </sc-if>
       <sc-if value="{{isObCode}}" hint-placeholder-val="{{false}}">
-        <h1 style="margin: 0; font-family: {{t.headFont}}; font-weight: {{t.headWeight}}; font-size: {{t.titleSize}}; letter-spacing: {{t.titleSpacing}}; line-height: 1.15; color: {{t.primary}}">Írd be a kódot</h1>
-        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.muted}}">6 jegyű kódot küldtünk SMS-ben erre a számra: {{ob.phone}}</p>
+        <h1 style="margin: 0; font-family: {{t.headFont}}; font-weight: {{t.headWeight}}; font-size: {{t.titleSize}}; letter-spacing: {{t.titleSpacing}}; line-height: 1.15; color: {{t.primary}}">{{L.codeTitle}}</h1>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.muted}}">{{L.codeLead}} {{ob.phone}}</p>
         <div style="display: flex; flex-direction: column; gap: 6px">
-          <label for="hh-reg-code" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Belépőkód</label>
+          <label for="hh-reg-code" style="font-size: 13px; font-weight: 600; color: {{t.text}}">{{L.fCode}}</label>
           <input id="hh-reg-code" type="text" inputmode="numeric" autocomplete="one-time-code" value="{{regCode}}" onChange="{{onRegCode}}" placeholder="6 számjegy" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px; letter-spacing: 0.3em">
         </div>
-        <p style="margin: 0; font-size: 12px; line-height: 1.45; color: {{t.muted}}">Demó: nem megy ki SMS, bármilyen 6 számjegy megfelel.</p>
-        <button type="button" onClick="{{obFinish}}" disabled="{{ob.enter.disabled}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{ob.enter.bg}}; color: {{ob.enter.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{ob.enter.cursor}}; padding: 0 20px">Belépés</button>
-        <button type="button" onClick="{{obBackForm}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Vissza</button>
+        <p style="margin: 0; font-size: 12px; line-height: 1.45; color: {{t.muted}}">{{L.codeDemo}}</p>
+        <button type="button" onClick="{{obFinish}}" disabled="{{ob.enter.disabled}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{ob.enter.bg}}; color: {{ob.enter.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{ob.enter.cursor}}; padding: 0 20px">{{L.enter}}</button>
+        <button type="button" onClick="{{obBackForm}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">{{L.back}}</button>
       </sc-if>
     </div>
   </sc-if>
@@ -350,6 +355,35 @@ input, textarea { font-size: 16px !important; }
         </section>
 
         <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px">
+          <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Értesítések</h2>
+          <sc-for list="{{inbox}}" as="ib" hint-placeholder-count="2">
+            <div style="padding: 8px 0; border-top: 1px solid {{ib.divider}}; display: flex; flex-direction: column; gap: 2px">
+              <span style="font-size: 14px; line-height: 1.4; color: {{t.text}}">{{ib.text}}</span>
+              <span style="font-size: 12px; color: {{t.muted}}">{{ib.time}}</span>
+            </div>
+          </sc-for>
+        </section>
+
+        <sc-if value="{{showFeedback}}" hint-placeholder-val="{{false}}">
+          <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px">
+            <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Visszajelzés</h2>
+            <sc-if value="{{fbOpen}}" hint-placeholder-val="{{true}}">
+              <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">Milyen volt a legutóbbi vizited?</span>
+              <div style="display: flex; justify-content: space-between; gap: 6px">
+                <sc-for list="{{fbScores}}" as="fb5" hint-placeholder-count="5">
+                  <button type="button" onClick="{{fb5.onPick}}" aria-pressed="{{fb5.pressed}}" aria-label="{{fb5.aria}}" style="width: 48px; height: 48px; border-radius: 50%; border: 1px solid {{fb5.border}}; background: {{fb5.bg}}; color: {{fb5.color}}; font-family: inherit; font-size: 16px; font-weight: {{fb5.weight}}; cursor: pointer; padding: 0">{{fb5.n}}</button>
+                </sc-for>
+              </div>
+              <span style="font-size: 12px; color: {{t.muted}}">1 = nem voltam elégedett, 5 = nagyon elégedett voltam. A válasz név nélkül, összesítve jut el a rendelőhöz.</span>
+              <button type="button" onClick="{{sendFeedback}}" disabled="{{fbSend.disabled}}" style="min-height: 48px; border: none; border-radius: {{t.btnRadius}}; background: {{fbSend.bg}}; color: {{fbSend.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{fbSend.cursor}}; padding: 0 20px">Elküldöm</button>
+            </sc-if>
+            <sc-if value="{{fbDone}}" hint-placeholder-val="{{false}}">
+              <span role="status" style="font-size: 14px; line-height: 1.45; color: {{t.text}}">Köszönjük a visszajelzést! Segít, hogy jobbá tegyük a rendelést.</span>
+            </sc-if>
+          </section>
+        </sc-if>
+
+        <section style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px">
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
             <h2 style="margin: 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Cikk neked</h2>
             <button type="button" onClick="{{goArticles}}" style="min-height: 44px; border: none; background: none; padding: 0 4px; color: {{t.primary}}; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer">Mind</button>
@@ -405,15 +439,24 @@ input, textarea { font-size: 16px !important; }
           <sc-if value="{{hasAppts}}" hint-placeholder-val="{{true}}">
             <div style="display: flex; flex-direction: column; gap: 10px">
               <sc-for list="{{appts}}" as="a" hint-placeholder-count="1">
-                <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 12px 12px 12px 16px; display: flex; align-items: center; gap: 12px">
-                  <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px">
+                <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
+                  <div style="display: flex; flex-direction: column; gap: 3px">
                     <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">{{a.service}}</span>
                     <span style="font-size: 13px; color: {{t.muted}}">{{a.when}} · {{a.time}}</span>
+                    <span style="font-size: 12px; color: {{t.muted}}">{{a.status}}</span>
                   </div>
-                  <button type="button" onClick="{{a.onCancel}}" style="min-height: 44px; flex-shrink: 0; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.muted}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Lemondás</button>
+                  <div style="display: flex; flex-wrap: wrap; gap: 8px">
+                    <button type="button" onClick="{{a.onPrep}}" style="min-height: 44px; padding: 0 14px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer">{{a.prepLabel}}</button>
+                    <button type="button" onClick="{{a.onMove}}" style="min-height: 44px; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.text}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Áthelyezés</button>
+                    <button type="button" onClick="{{a.onCal}}" style="min-height: 44px; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.text}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer">{{a.calLabel}}</button>
+                    <button type="button" onClick="{{a.onCancel}}" style="min-height: 44px; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.text}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Lemondás</button>
+                  </div>
                 </div>
               </sc-for>
             </div>
+          </sc-if>
+          <sc-if value="{{hasApptNote}}" hint-placeholder-val="{{false}}">
+            <p role="status" style="margin: 0; padding: 12px 14px; border-radius: 12px; background: {{t.accentSoft}}; font-size: 13px; line-height: 1.45; color: {{t.text}}">{{apptNote}}</p>
           </sc-if>
           <sc-if value="{{noAppts}}" hint-placeholder-val="{{false}}">
             <p style="margin: 0; font-size: 14px; color: {{t.muted}}">Jelenleg nincs lefoglalt időpontod.</p>
@@ -454,6 +497,12 @@ input, textarea { font-size: 16px !important; }
 
           <sc-if value="{{isStepSlot}}" hint-placeholder-val="{{false}}">
             <div style="display: flex; flex-direction: column; gap: 14px">
+              <sc-if value="{{isResched}}" hint-placeholder-val="{{false}}">
+                <div role="status" style="padding: 12px 14px; border-radius: 12px; background: {{t.accentSoft}}; display: flex; flex-direction: column; gap: 8px">
+                  <span style="font-size: 14px; line-height: 1.45; color: {{t.text}}">{{reschedText}}</span>
+                  <button type="button" onClick="{{cancelResched}}" style="align-self: flex-start; min-height: 44px; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.text}}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer">Mégsem helyezem át</button>
+                </div>
+              </sc-if>
               <div style="display: flex; align-items: center; gap: 10px">
                 <button type="button" onClick="{{backToService}}" aria-label="Vissza a vizsgálatokhoz" style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; border: 1px solid {{t.border}}; background: {{t.surface}}; color: {{t.primary}}; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
@@ -480,6 +529,13 @@ input, textarea { font-size: 16px !important; }
               </div>
               <sc-if value="{{noSlotsLeft}}" hint-placeholder-val="{{false}}">
                 <p style="margin: 0; font-size: 14px; color: {{t.muted}}">Erre a napra már nincs szabad időpont. Válassz másik napot.</p>
+              </sc-if>
+              <button type="button" onClick="{{toggleWaitlist}}" aria-pressed="{{wait.pressed}}" style="width: 100%; min-height: 48px; border: none; background: transparent; padding: 4px 0; display: flex; align-items: center; gap: 12px; text-align: left; font-family: inherit; cursor: pointer">
+                <span style="width: 24px; height: 24px; flex-shrink: 0; box-sizing: border-box; border-radius: 7px; border: 2px solid {{t.primary}}; background: {{wait.box}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="visibility: {{wait.vis}}"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span>
+                <span style="font-size: 14px; line-height: 1.35; color: {{t.text}}">Értesítsetek, ha korábbi időpont szabadul fel</span>
+              </button>
+              <sc-if value="{{wait.on}}" hint-placeholder-val="{{false}}">
+                <p role="status" style="margin: 0; font-size: 13px; line-height: 1.45; color: {{t.muted}}">Feliratkoztál a várólistára ennél a vizsgálatnál. Ha korábbi időpont szabadul fel, értesítünk, és egy koppintással átveheted.</p>
               </sc-if>
               <button type="button" onClick="{{toConfirm}}" disabled="{{noSlot}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{nextBg}}; color: {{nextColor}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{nextCursor}}; padding: 0 20px">Tovább</button>
             </div>
@@ -562,16 +618,48 @@ input, textarea { font-size: 16px !important; }
             </div>
           </sc-if>
 
+          <sc-if value="{{isStepPrep}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 12px">
+              <div style="display: flex; flex-direction: column; gap: 4px">
+                <span style="font-size: 18px; font-weight: 600; color: {{t.text}}">Vizit előtti teendők</span>
+                <span style="font-size: 14px; color: {{t.muted}}">{{prep.title}}</span>
+              </div>
+              <label for="hh-prep-reason" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Mi a látogatás fő oka?</label>
+              <textarea id="hh-prep-reason" rows="2" value="{{prep.reason}}" onChange="{{onPrepReason}}" style="box-sizing: border-box; width: 100%; padding: 12px 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px; line-height: 1.5; resize: vertical"></textarea>
+              <label for="hh-prep-lmp" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Az utolsó menstruációd első napja</label>
+              <input id="hh-prep-lmp" type="text" value="{{prep.lmp}}" onChange="{{onPrepLmp}}" placeholder="éééé. hh. nn." style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px">
+              <span style="font-size: 13px; font-weight: 600; color: {{t.text}}">Szedsz rendszeresen gyógyszert?</span>
+              <div style="display: flex; gap: 8px">
+                <sc-for list="{{prepMeds}}" as="pmd" hint-placeholder-count="2">
+                  <button type="button" onClick="{{pmd.onPick}}" aria-pressed="{{pmd.pressed}}" style="min-height: 44px; border-radius: 999px; border: 1px solid {{pmd.border}}; background: {{pmd.bg}}; color: {{pmd.color}}; font-family: inherit; font-size: 14px; font-weight: {{pmd.weight}}; cursor: pointer; padding: 0 18px">{{pmd.label}}</button>
+                </sc-for>
+              </div>
+              <label for="hh-prep-q" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Van kérdésed az orvoshoz?</label>
+              <textarea id="hh-prep-q" rows="2" value="{{prep.q}}" onChange="{{onPrepQ}}" style="box-sizing: border-box; width: 100%; padding: 12px 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px; line-height: 1.5; resize: vertical"></textarea>
+              <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px">
+                <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">Beleegyező nyilatkozat</span>
+                <p style="margin: 0; font-size: 13px; line-height: 1.5; color: {{t.muted}}">A vizsgálat előtt olvasd el: [tájékoztató a vizsgálatról]. Ha kérdésed van, a vizsgálat előtt személyesen is megbeszéljük, és a beleegyezésedet bármikor visszavonhatod.</p>
+                <button type="button" onClick="{{togglePrepConsent}}" aria-pressed="{{prep.cPressed}}" style="width: 100%; min-height: 48px; border: none; background: transparent; padding: 4px 0; display: flex; align-items: center; gap: 12px; text-align: left; font-family: inherit; cursor: pointer">
+                  <span style="width: 24px; height: 24px; flex-shrink: 0; box-sizing: border-box; border-radius: 7px; border: 2px solid {{t.primary}}; background: {{prep.cBox}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="visibility: {{prep.cVis}}"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span>
+                  <span style="font-size: 14px; line-height: 1.35; color: {{t.text}}">Elolvastam a tájékoztatót, és beleegyezem a vizsgálatba</span>
+                </button>
+              </div>
+              <p style="margin: 0; font-size: 12px; line-height: 1.45; color: {{t.muted}}">A válaszaidat csak az orvosod látja. Prototípus: ne írj be valódi egészségügyi adatot.</p>
+              <button type="button" onClick="{{sendPrep}}" disabled="{{prep.send.disabled}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{prep.send.bg}}; color: {{prep.send.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{prep.send.cursor}}; padding: 0 20px">Elküldöm az orvosnak</button>
+              <button type="button" onClick="{{newBooking}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Vissza az időpontokhoz</button>
+            </div>
+          </sc-if>
+
           <sc-if value="{{isStepDone}}" hint-placeholder-val="{{false}}">
             <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 24px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
               <div style="width: 56px; height: 56px; border-radius: 50%; background: {{t.accentSoft}}; color: {{t.primary}}; display: flex; align-items: center; justify-content: center">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
               </div>
-              <span style="font-family: {{t.headFont}}; font-size: 26px; line-height: 1.2; color: {{t.primary}}">Lefoglaltuk!</span>
+              <span style="font-family: {{t.headFont}}; font-size: 26px; line-height: 1.2; color: {{t.primary}}">{{lb.headline}}</span>
               <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">{{lb.service}}</span>
               <span style="font-size: 14px; color: {{t.muted}}">{{lb.when}} · {{lb.time}}</span>
               <span style="font-size: 13px; line-height: 1.5; color: {{t.text}}">{{lb.payNote}}</span>
-              <p style="margin: 0; font-size: 13px; line-height: 1.5; color: {{t.muted}}">Az időpontod megjelent a közelgő időpontjaid között.</p>
+              <p style="margin: 0; font-size: 13px; line-height: 1.5; color: {{t.muted}}">Az időpontod megjelent a közelgő időpontjaid között. Ott tudod a naptáradba menteni és kitölteni a vizit előtti kérdőívet.</p>
               <button type="button" onClick="{{newBooking}}" style="margin-top: 6px; min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 24px">Új foglalás</button>
             </div>
           </sc-if>
@@ -1146,6 +1234,29 @@ input, textarea { font-size: 16px !important; }
                 </div>
               </sc-for>
             </div>
+            <h2 style="margin: 12px 0 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Értesítési csatornák</h2>
+            <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 2px 6px 2px 16px; display: flex; flex-direction: column">
+              <sc-for list="{{chanRows}}" as="chn" hint-placeholder-count="3">
+                <div style="padding: 10px 0; border-top: 1px solid {{chn.divider}}; display: flex; align-items: center; gap: 10px">
+                  <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                    <span style="font-size: 14px; font-weight: 600; color: {{t.text}}">{{chn.label}}</span>
+                    <span style="font-size: 12px; line-height: 1.4; color: {{t.muted}}">{{chn.desc}}</span>
+                  </div>
+                  <button type="button" role="switch" aria-checked="{{chn.checked}}" aria-label="{{chn.label}}" onClick="{{chn.onToggle}}" style="width: 56px; height: 44px; flex-shrink: 0; border: none; background: none; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center">
+                    <span style="width: 46px; height: 28px; box-sizing: border-box; border-radius: 14px; border: 2px solid {{chn.border}}; background: {{chn.track}}; padding: 0 3px; display: flex; align-items: center; justify-content: {{chn.justify}}">
+                      <span style="width: 18px; height: 18px; border-radius: 50%; background: {{chn.knob}}"></span>
+                    </span>
+                  </button>
+                </div>
+              </sc-for>
+            </div>
+            <h2 style="margin: 12px 0 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Nyelv · Language</h2>
+            <div style="display: flex; gap: 8px">
+              <sc-for list="{{langs}}" as="lng" hint-placeholder-count="2">
+                <button type="button" onClick="{{lng.onPick}}" aria-pressed="{{lng.pressed}}" style="min-height: 44px; border-radius: 999px; border: 1px solid {{lng.border}}; background: {{lng.bg}}; color: {{lng.color}}; font-family: inherit; font-size: 14px; font-weight: {{lng.weight}}; cursor: pointer; padding: 0 18px">{{lng.label}}</button>
+              </sc-for>
+            </div>
+            <span style="font-size: 12px; line-height: 1.45; color: {{t.muted}}">A prototípusban az angol fordítás csak a belépő képernyőkre és a menüre terjed ki.</span>
             <p style="margin: 0; font-size: 12px; line-height: 1.45; color: {{t.muted}}">Életszakasz váltásakor az előzőhöz kötött emlékeztetők azonnal leállnak.</p>
 
             <h2 style="margin: 12px 0 0; font-size: 12px; font-weight: 600; letter-spacing: {{t.sectionSpacing}}; text-transform: uppercase; color: {{t.muted}}">Adatvédelem</h2>
@@ -1274,27 +1385,27 @@ input, textarea { font-size: 16px !important; }
     <button type="button" onClick="{{goHome}}" style="flex: 1 1 0; position: relative; border: none; background: none; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: {{nav.home.color}}; font-family: inherit; font-size: 11px; font-weight: {{nav.home.weight}}">
       <span aria-hidden="true" style="position: absolute; top: 0; left: 26%; right: 26%; height: 3px; border-radius: 0 0 3px 3px; background: {{nav.home.bar}}"></span>
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"></path></svg>
-      <span>Kezdőlap</span>
+      <span>{{L.navHome}}</span>
     </button>
     <button type="button" onClick="{{goBooking}}" style="flex: 1 1 0; position: relative; border: none; background: none; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: {{nav.booking.color}}; font-family: inherit; font-size: 11px; font-weight: {{nav.booking.weight}}">
       <span aria-hidden="true" style="position: absolute; top: 0; left: 26%; right: 26%; height: 3px; border-radius: 0 0 3px 3px; background: {{nav.booking.bar}}"></span>
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"></path></svg>
-      <span>Időpont</span>
+      <span>{{L.navBook}}</span>
     </button>
     <button type="button" onClick="{{goKb}}" style="flex: 1 1 0; position: relative; border: none; background: none; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: {{nav.kb.color}}; font-family: inherit; font-size: 11px; font-weight: {{nav.kb.weight}}">
       <span aria-hidden="true" style="position: absolute; top: 0; left: 26%; right: 26%; height: 3px; border-radius: 0 0 3px 3px; background: {{nav.kb.bar}}"></span>
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h13v15H6a2 2 0 0 0-2 2V5a2 2 0 0 1 2-2zM4 20a2 2 0 0 0 2 1h13v-3"></path></svg>
-      <span>Tudástár</span>
+      <span>{{L.navKb}}</span>
     </button>
     <button type="button" onClick="{{goForum}}" style="flex: 1 1 0; position: relative; border: none; background: none; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: {{nav.forum.color}}; font-family: inherit; font-size: 11px; font-weight: {{nav.forum.weight}}">
       <span aria-hidden="true" style="position: absolute; top: 0; left: 26%; right: 26%; height: 3px; border-radius: 0 0 3px 3px; background: {{nav.forum.bar}}"></span>
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h12v8H7l-4 3zM9 16a2 2 0 0 0 2 2h6l4 3V10a2 2 0 0 0-2-2h-2"></path></svg>
-      <span>Közösség</span>
+      <span>{{L.navForum}}</span>
     </button>
     <button type="button" onClick="{{goLili}}" style="flex: 1 1 0; position: relative; border: none; background: none; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: {{nav.lili.color}}; font-family: inherit; font-size: 11px; font-weight: {{nav.lili.weight}}">
       <span aria-hidden="true" style="position: absolute; top: 0; left: 26%; right: 26%; height: 3px; border-radius: 0 0 3px 3px; background: {{nav.lili.bar}}"></span>
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-      <span>Mappám</span>
+      <span>{{L.navMap}}</span>
     </button>
   </nav>
 </div>
@@ -1825,6 +1936,39 @@ function threadView(th) {
   });
 }
 
+const LANG = {
+  hu: {
+    navHome: 'Kezdőlap', navBook: 'Időpont', navKb: 'Tudástár', navForum: 'Közösség', navMap: 'Mappám',
+    tagline: 'Időpontfoglalás, tudástár, közösség és a saját egészségügyi mappád egy helyen.',
+    register: 'Regisztrálok', login: 'Van már fiókom',
+    proto: 'Prototípus: ne adj meg valódi személyes vagy egészségügyi adatot.',
+    regTitle: 'Fiók létrehozása', loginTitle: 'Belépés',
+    regLead: 'Egy perc az egész. Ezzel már tudsz időpontot foglalni, olvasni és csatlakozni a közösséghez.',
+    loginLead: 'Add meg a telefonszámodat, és küldünk egy belépőkódot.',
+    fName: 'Név', fEmail: 'E-mail-cím', fPhone: 'Mobiltelefonszám', fCode: 'Belépőkód',
+    accept: 'Elfogadom az [adatkezelési tájékoztató]-t és az [ÁSZF]-et',
+    noPass: 'Jelszót nem kérünk: a telefonodra küldött kóddal lépsz be. A TAJ-számodat itt nem kérjük, arra csak az első vizitnél lesz szükség.',
+    sendCode: 'Kódot kérek', back: 'Vissza', codeTitle: 'Írd be a kódot',
+    codeLead: '6 jegyű kódot küldtünk SMS-ben erre a számra:',
+    codeDemo: 'Demó: nem megy ki SMS, bármilyen 6 számjegy megfelel.', enter: 'Belépés'
+  },
+  en: {
+    navHome: 'Home', navBook: 'Booking', navKb: 'Library', navForum: 'Community', navMap: 'My folder',
+    tagline: 'Appointments, a health library, a community and your own health folder in one place.',
+    register: 'Create account', login: 'I already have an account',
+    proto: 'Prototype: please do not enter real personal or health data.',
+    regTitle: 'Create your account', loginTitle: 'Sign in',
+    regLead: 'It takes a minute. You can then book appointments, read the library and join the community.',
+    loginLead: 'Enter your phone number and we will send you a sign-in code.',
+    fName: 'Name', fEmail: 'Email address', fPhone: 'Mobile number', fCode: 'Sign-in code',
+    accept: 'I accept the [privacy notice] and the [terms and conditions]',
+    noPass: 'No password needed: you sign in with a code sent to your phone. We do not ask for your social security (TAJ) number here; it is only needed at your first visit.',
+    sendCode: 'Send me a code', back: 'Back', codeTitle: 'Enter the code',
+    codeLead: 'We sent a 6-digit code by text message to:',
+    codeDemo: 'Demo: no text message is sent, any 6 digits will work.', enter: 'Sign in'
+  }
+};
+
 class Component extends DCLogic {
   constructor(...args) {
     super(...args);
@@ -1833,6 +1977,12 @@ class Component extends DCLogic {
       themeOpen: false,
       onboard: 'welcome', obMode: 'register', regName: '', regEmail: '', regPhone: '', regAccept: false, regCode: '',
       linked: false, linkCode: '', mapUnlocked: false, payAccept: false, payMethod: 'apple',
+      lang: 'hu', reschedId: null, prepId: null, prepReason: '', prepLmp: '', prepMeds: '', prepQ: '', prepConsent: false,
+      apptNote: '', waitlist: false, fbScore: 0, fbSent: false, chan: { push: true, sms: true, email: false },
+      inbox: [
+        { text: 'Emlékeztető: nov. 12., csütörtök 10:30, Terhesgondozási vizsgálat.', time: 'ma', needLinked: false },
+        { text: 'Új lelet érkezett a Mappádba a rendelőtől.', time: 'tegnap', needLinked: true }
+      ],
       mode: 'preg',
       modeOpen: false,
       modeChanged: false,
@@ -1842,7 +1992,7 @@ class Component extends DCLogic {
       joinAge: false,
       joinRules: false,
       showStage: false,
-      notif: { appt: true, stage: true, forum: false },
+      notif: { appt: true, stage: true, forum: false, msg: true, doc: true, change: true },
       consents: { personal: true, news: false, stats: false },
       exportRequested: false,
       deleteStep: null,
@@ -1974,7 +2124,7 @@ class Component extends DCLogic {
     const mode = personal && MODES[s.mode] ? s.mode : 'gyn';
     const M = MODES[mode];
     const set = (patch) => this.setState(patch);
-    const go = (tab, extra) => () => set(Object.assign({ tab: tab, themeOpen: false, modeOpen: false }, extra || {}));
+    const go = (tab, extra) => () => set(Object.assign({ tab: tab, themeOpen: false, modeOpen: false, reschedId: null }, extra || {}));
     const chip = (on) => (on
       ? { bg: t.primary, color: '#FFFFFF', border: t.primary, weight: '600', pressed: 'true' }
       : { bg: t.surface, color: t.text, border: t.border, weight: '500', pressed: 'false' });
@@ -2023,7 +2173,7 @@ class Component extends DCLogic {
         onPick: () => pickMode(k)
       };
     });
-    const bookService = (id) => this.setState({ tab: 'booking', step: 'slot', serviceId: id, slot: null, themeOpen: false, modeOpen: false });
+    const bookService = (id) => this.setState({ tab: 'booking', step: 'slot', serviceId: id, slot: null, themeOpen: false, modeOpen: false, reschedId: null });
     const checks = CHECKS.map((c) => {
       const on = !!s.checks[c.id];
       return {
@@ -2047,9 +2197,34 @@ class Component extends DCLogic {
 
     // Időpont
     const sorted = s.appts.slice().sort((a, b) => a.ord - b.ord);
+    const notify = (st, text) => [{ text: text, time: 'most', needLinked: false }].concat(st.inbox);
     const appts = sorted.map((a) => Object.assign({}, a, {
-      onCancel: () => this.setState({ appts: this.state.appts.filter((x) => x.id !== a.id) })
+      status: a.prepDone ? 'Kérdőív és beleegyező nyilatkozat: kész' : 'Teendő: kérdőív és beleegyező nyilatkozat',
+      prepLabel: a.prepDone ? 'Teendők kész' : 'Vizit előtti teendők',
+      calLabel: a.inCal ? 'Naptárban' : 'Naptárba',
+      onPrep: () => set({ step: 'prep', prepId: a.id, prepReason: '', prepLmp: '', prepMeds: '', prepQ: '', prepConsent: !!a.prepDone, apptNote: '' }),
+      onMove: () => {
+        const sv = SERVICES.find((x) => x.name === a.service) || SERVICES[0];
+        set({ step: 'slot', serviceId: sv.id, slot: null, reschedId: a.id, apptNote: '' });
+      },
+      onCal: () => {
+        const st = this.state;
+        this.setState({
+          appts: st.appts.map((x) => (x.id === a.id ? Object.assign({}, x, { inCal: true }) : x)),
+          apptNote: 'Hozzáadtuk a telefonod naptárához: ' + a.service + ', ' + a.when + ' ' + a.time + '. (Demó: valódi naptárbejegyzés nem készül.)'
+        });
+      },
+      onCancel: () => {
+        const st = this.state;
+        this.setState({
+          appts: st.appts.filter((x) => x.id !== a.id), reschedId: null,
+          inbox: notify(st, 'Lemondtad: ' + a.service + ', ' + a.when + ' ' + a.time + '.'),
+          apptNote: 'Az időpontot lemondtuk.'
+        });
+      }
     }));
+    const resched = s.appts.find((x) => x.id === s.reschedId) || null;
+    const prepAppt = s.appts.find((x) => x.id === s.prepId) || null;
     const next = sorted[0] || { service: '', when: '', time: '' };
     const booked = {};
     s.appts.forEach((a) => { booked[a.dayId + '|' + a.time] = true; });
@@ -2075,11 +2250,24 @@ class Component extends DCLogic {
       };
     });
     // Előleg: új (még nem azonosított) páciensnél és a hosszú vizsgálatoknál; minden másnál helyszíni fizetés.
-    const needsDeposit = !!s.serviceId && (!s.linked || !!svc.long);
+    const needsDeposit = !!s.serviceId && !resched && (!s.linked || !!svc.long);
     const confirmBooking = () => {
       const st = this.state;
       if (!st.serviceId || !st.slot) return;
       const hm = st.slot.split(':').map(Number);
+      const moved = st.appts.find((x) => x.id === st.reschedId);
+      if (moved) {
+        const upd = Object.assign({}, moved, {
+          when: day.short, time: st.slot, dayId: day.id, ord: day.ord + (hm[0] * 60 + hm[1]) / 10000, inCal: false,
+          headline: 'Áthelyeztük!',
+          payNote: 'Az új időpontod érvényes. Ha korábban előleget fizettél, az az új időpontra is szól.'
+        });
+        this.setState({
+          appts: st.appts.map((x) => (x.id === moved.id ? upd : x)), step: 'done', lastBooked: upd, reschedId: null,
+          inbox: notify(st, 'Áthelyezted: ' + upd.service + ', új időpont: ' + upd.when + ' ' + upd.time + '.')
+        });
+        return;
+      }
       const appt = {
         id: 'a' + Date.now(), service: svc.name, when: day.short, time: st.slot,
         dayId: day.id, ord: day.ord + (hm[0] * 60 + hm[1]) / 10000,
@@ -2087,7 +2275,7 @@ class Component extends DCLogic {
           ? 'Előleg fizetve: [előleg összege]. A számlát e-mailben küldjük, a fennmaradó díjat a helyszínen fizeted.'
           : 'Fizetés a helyszínen: bankkártya, készpénz vagy egészségpénztári kártya.'
       };
-      this.setState({ appts: st.appts.concat([appt]), step: 'done', lastBooked: appt, payAccept: false });
+      this.setState({ appts: st.appts.concat([appt]), step: 'done', lastBooked: appt, payAccept: false, inbox: notify(st, 'Foglalás visszaigazolva: ' + appt.service + ', ' + appt.when + ' ' + appt.time + '.') });
     };
 
     // Regisztráció, belépés, páciens-azonosítás, Mappám-zár
@@ -2109,8 +2297,8 @@ class Component extends DCLogic {
       isOnboard: !!s.onboard, isObWelcome: s.onboard === 'welcome', isObForm: s.onboard === 'form', isObCode: s.onboard === 'code',
       ob: {
         isRegister: isReg,
-        title: isReg ? 'Fiók létrehozása' : 'Belépés',
-        lead: isReg ? 'Egy perc az egész. Ezzel már tudsz időpontot foglalni, olvasni és csatlakozni a közösséghez.' : 'Add meg a telefonszámodat, és küldünk egy belépőkódot.',
+        title: isReg ? (LANG[s.lang] || LANG.hu).regTitle : (LANG[s.lang] || LANG.hu).loginTitle,
+        lead: isReg ? (LANG[s.lang] || LANG.hu).regLead : (LANG[s.lang] || LANG.hu).loginLead,
         phone: s.regPhone.trim() || '[telefonszám]',
         send: btnOn(formOk), enter: btnOn(digits(s.regCode).length === 6),
         acceptPressed: s.regAccept ? 'true' : 'false', acceptBox: s.regAccept ? t.primary : 'transparent', acceptVis: s.regAccept ? 'visible' : 'hidden'
@@ -2148,7 +2336,41 @@ class Component extends DCLogic {
       isStepPay: s.step === 'pay',
       payMethods: [['apple', 'Apple Pay'], ['card', 'Bankkártya']].map((m) => Object.assign({ label: m[1] }, chip(s.payMethod === m[0]), { onPick: () => set({ payMethod: m[0] }) })),
       payDemo: confirmBooking,
-      backToConfirm: () => set({ step: 'confirm' })
+      backToConfirm: () => set({ step: 'confirm' }),
+      isResched: !!resched && s.step === 'slot',
+      reschedText: resched ? 'Áthelyezed: ' + resched.service + ' (' + resched.when + ' ' + resched.time + '). Válassz új napot és időpontot. Az előleged az új időpontra is érvényes.' : '',
+      cancelResched: () => set({ reschedId: null, step: 'service', serviceId: null, slot: null }),
+      hasApptNote: !!s.apptNote, apptNote: s.apptNote,
+      wait: { on: !!s.waitlist, pressed: s.waitlist ? 'true' : 'false', box: s.waitlist ? t.primary : 'transparent', vis: s.waitlist ? 'visible' : 'hidden' },
+      toggleWaitlist: () => this.setState({ waitlist: !this.state.waitlist }),
+      isStepPrep: s.step === 'prep',
+      prep: {
+        title: prepAppt ? prepAppt.service + ' · ' + prepAppt.when + ' ' + prepAppt.time : '',
+        reason: s.prepReason, lmp: s.prepLmp, q: s.prepQ,
+        cPressed: s.prepConsent ? 'true' : 'false', cBox: s.prepConsent ? t.primary : 'transparent', cVis: s.prepConsent ? 'visible' : 'hidden',
+        send: btnOn(!!prepAppt && s.prepConsent)
+      },
+      prepMeds: [['igen', 'Igen'], ['nem', 'Nem']].map((m) => Object.assign({ label: m[1] }, chip(s.prepMeds === m[0]), { onPick: () => set({ prepMeds: m[0] }) })),
+      onPrepReason: (e) => set({ prepReason: e.target.value }),
+      onPrepLmp: (e) => set({ prepLmp: e.target.value }),
+      onPrepQ: (e) => set({ prepQ: e.target.value }),
+      togglePrepConsent: () => this.setState({ prepConsent: !this.state.prepConsent }),
+      sendPrep: () => {
+        const st = this.state;
+        if (!st.prepConsent || !st.prepId) return;
+        this.setState({
+          appts: st.appts.map((x) => (x.id === st.prepId ? Object.assign({}, x, { prepDone: true }) : x)),
+          step: 'service', serviceId: null, slot: null, prepId: null,
+          apptNote: 'Köszönjük! A kérdőívet és a beleegyező nyilatkozatot az orvosod a vizsgálat előtt látni fogja.'
+        });
+      },
+      inbox: s.inbox.filter((x) => !x.needLinked || s.linked).slice(0, 4).map((x, i) => ({ text: x.text, time: x.time, divider: i === 0 ? 'transparent' : t.border })),
+      showFeedback: !!s.linked, fbOpen: !s.fbSent, fbDone: !!s.fbSent,
+      fbScores: [1, 2, 3, 4, 5].map((n) => Object.assign({ n: String(n), aria: n + ' az 5-ből' }, chip(s.fbScore === n), { onPick: () => set({ fbScore: n }) })),
+      fbSend: btnOn(s.fbScore > 0),
+      sendFeedback: () => { if (this.state.fbScore > 0) set({ fbSent: true }); },
+      langs: [['hu', 'Magyar'], ['en', 'English']].map((l) => Object.assign({ label: l[1] }, chip(s.lang === l[0]), { onPick: () => set({ lang: l[0] }) })),
+      L: LANG[s.lang] || LANG.hu
     };
 
     // Tudástár: útmutató
@@ -2338,10 +2560,20 @@ class Component extends DCLogic {
     const notifRows = [
       ['appt', 'Időpont-emlékeztető', '24 órával a vizsgálat előtt.'],
       ['stage', M.notif[0], M.notif[1]],
-      ['forum', 'Válasz a fórumon', 'Ha valaki válaszol a kérdésedre.']
+      ['forum', 'Válasz a fórumon', 'Ha valaki válaszol a kérdésedre.'],
+      ['change', 'Lemondás és időpont-változás', 'Ha a rendelő lemond vagy áthelyez egy időpontot.'],
+      ['msg', 'Új üzenet az orvostól', 'A tartalmát csak az appban, belépés után látod.'],
+      ['doc', 'Új lelet a Mappámban', 'Az értesítés nem írja ki, milyen leletről van szó.']
     ].map((n, i) => Object.assign({
       label: n[1], desc: n[2], divider: i === 0 ? 'transparent' : t.border, onToggle: toggleIn('notif', n[0])
     }, sw(!!s.notif[n[0]])));
+    const chanRows = [
+      ['push', 'Értesítés a telefonon', 'Az appból érkező értesítés.'],
+      ['sms', 'SMS', 'Időpont-emlékeztető és lemondás esetén.'],
+      ['email', 'E-mail', 'Visszaigazolás és számla.']
+    ].map((n, i) => Object.assign({
+      label: n[1], desc: n[2], divider: i === 0 ? 'transparent' : t.border, onToggle: toggleIn('chan', n[0])
+    }, sw(!!s.chan[n[0]])));
     const leaveForum = () => this.setState({ forumJoined: false, joinAge: false, joinRules: false });
     const consentRows = [
       { label: 'Egészségügyi adataid kezelése az ellátáshoz', desc: 'Időpontok, üzenetek és a megosztott dokumentumok. Enélkül az ellátás nem működik.', required: true },
@@ -2365,7 +2597,7 @@ class Component extends DCLogic {
       joinBg: canJoin ? t.primary : t.track, joinColor: canJoin ? '#FFFFFF' : t.muted,
       joinForum: () => { if (this.state.joinAge && this.state.joinRules) set({ forumJoined: true }); },
       stageSw: sw(!!s.showStage), toggleStage: () => set({ showStage: !this.state.showStage }),
-      notifRows: notifRows, consentRows: consentRows,
+      notifRows: notifRows, chanRows: chanRows, consentRows: consentRows,
       requestExport: () => set({ exportRequested: true }), exportRequested: !!s.exportRequested,
       askDelete: () => set({ deleteStep: 'confirm' }),
       cancelDelete: () => set({ deleteStep: null }),
@@ -2435,7 +2667,7 @@ class Component extends DCLogic {
       backToSlot: () => set({ step: 'slot' }),
       confirmBooking: confirmBooking,
       slotLabel: s.slot || '',
-      lb: Object.assign({ service: '', when: '', time: '', payNote: '' }, s.lastBooked || {}),
+      lb: Object.assign({ service: '', when: '', time: '', payNote: '', headline: 'Lefoglaltuk!' }, s.lastBooked || {}),
       newBooking: () => set({ step: 'service', serviceId: null, slot: null }),
 
       isKbGuide: s.kbView === 'guide', isKbVideos: s.kbView === 'videos',
@@ -2611,7 +2843,7 @@ class Component extends DCLogic {
     var view = [s.tab, s.kbView, s.videoId, s.articleId, s.forumView, s.threadId, s.liliView, s.step, s.onboard, s.mapUnlocked, s.linked].join('|');
     if (view !== lastView) {
       lastView = view;
-      var screen = mount.querySelector('main > div');
+      var screen = mount.querySelector("main > div");
       if (screen) screen.scrollTop = 0;
     }
   }
