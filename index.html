@@ -27,7 +27,62 @@ input, textarea { font-size: 16px !important; }
 <body>
 <div id="app"><p class="boot">Betöltés…</p></div>
 <template id="tpl">
-<div style="width: 100%; max-width: 480px; margin: 0 auto; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; position: relative; background: {{t.bg}}; color: {{t.text}}; font-family: {{t.bodyFont}}; font-size: 15px">
+<div style="width: 100%; max-width: 480px; margin: 0 auto; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; overflow: hidden; position: relative; background: {{t.bg}}; color: {{t.text}}; font-family: {{t.bodyFont}}; font-size: 15px; position: relative">
+
+  <sc-if value="{{isOnboard}}" hint-placeholder-val="{{false}}">
+    <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 20; box-sizing: border-box; overflow-y: auto; background: {{t.bg}}; padding: 64px 24px 32px; display: flex; flex-direction: column; gap: 18px">
+      <sc-if value="{{isObWelcome}}" hint-placeholder-val="{{true}}">
+        <div style="flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; gap: 14px">
+          <span style="font-family: {{t.headFont}}; font-weight: {{t.headWeight}}; font-size: 40px; line-height: 1.1; color: {{t.primary}}">Hanna Health</span>
+          <span style="font-size: 13px; letter-spacing: 0.2em; color: {{t.muted}}">FOR WOMEN</span>
+          <p style="margin: 8px 0 0; font-size: 16px; line-height: 1.5; color: {{t.text}}">Időpontfoglalás, tudástár, közösség és a saját egészségügyi mappád egy helyen.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <button type="button" onClick="{{obRegister}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{t.primary}}; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Regisztrálok</button>
+          <button type="button" onClick="{{obLogin}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Van már fiókom</button>
+          <p style="margin: 6px 0 0; font-size: 12px; line-height: 1.45; text-align: center; color: {{t.muted}}">Prototípus: ne adj meg valódi személyes vagy egészségügyi adatot.</p>
+        </div>
+      </sc-if>
+      <sc-if value="{{isObForm}}" hint-placeholder-val="{{false}}">
+        <h1 style="margin: 0; font-family: {{t.headFont}}; font-weight: {{t.headWeight}}; font-size: {{t.titleSize}}; letter-spacing: {{t.titleSpacing}}; line-height: 1.15; color: {{t.primary}}">{{ob.title}}</h1>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.muted}}">{{ob.lead}}</p>
+        <sc-if value="{{ob.isRegister}}" hint-placeholder-val="{{true}}">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="hh-reg-name" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Név</label>
+            <input id="hh-reg-name" type="text" autocomplete="name" value="{{regName}}" onChange="{{onRegName}}" placeholder="Vezetéknév Keresztnév" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <label for="hh-reg-email" style="font-size: 13px; font-weight: 600; color: {{t.text}}">E-mail-cím</label>
+            <input id="hh-reg-email" type="text" inputmode="email" autocomplete="email" value="{{regEmail}}" onChange="{{onRegEmail}}" placeholder="nev@pelda.hu" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px">
+          </div>
+        </sc-if>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="hh-reg-phone" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Mobiltelefonszám</label>
+          <input id="hh-reg-phone" type="text" inputmode="tel" autocomplete="tel" value="{{regPhone}}" onChange="{{onRegPhone}}" placeholder="+36 30 123 4567" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px">
+        </div>
+        <sc-if value="{{ob.isRegister}}" hint-placeholder-val="{{true}}">
+          <button type="button" onClick="{{toggleRegAccept}}" aria-pressed="{{ob.acceptPressed}}" style="width: 100%; min-height: 48px; border: none; background: transparent; padding: 4px 0; display: flex; align-items: center; gap: 12px; text-align: left; font-family: inherit; cursor: pointer">
+            <span style="width: 24px; height: 24px; flex-shrink: 0; box-sizing: border-box; border-radius: 7px; border: 2px solid {{t.primary}}; background: {{ob.acceptBox}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="visibility: {{ob.acceptVis}}"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span>
+            <span style="font-size: 14px; line-height: 1.35; color: {{t.text}}">Elfogadom az [adatkezelési tájékoztató]-t és az [ÁSZF]-et</span>
+          </button>
+          <p style="margin: 0; padding: 12px 14px; border-radius: {{t.radius}}; background: {{t.accentSoft}}; font-size: 13px; line-height: 1.5; color: {{t.text}}">Jelszót nem kérünk: a telefonodra küldött kóddal lépsz be. A TAJ-számodat itt nem kérjük, arra csak az első vizitnél lesz szükség.</p>
+        </sc-if>
+        <button type="button" onClick="{{obSend}}" disabled="{{ob.send.disabled}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{ob.send.bg}}; color: {{ob.send.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{ob.send.cursor}}; padding: 0 20px">Kódot kérek</button>
+        <button type="button" onClick="{{obBackWelcome}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Vissza</button>
+      </sc-if>
+      <sc-if value="{{isObCode}}" hint-placeholder-val="{{false}}">
+        <h1 style="margin: 0; font-family: {{t.headFont}}; font-weight: {{t.headWeight}}; font-size: {{t.titleSize}}; letter-spacing: {{t.titleSpacing}}; line-height: 1.15; color: {{t.primary}}">Írd be a kódot</h1>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.muted}}">6 jegyű kódot küldtünk SMS-ben erre a számra: {{ob.phone}}</p>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <label for="hh-reg-code" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Belépőkód</label>
+          <input id="hh-reg-code" type="text" inputmode="numeric" autocomplete="one-time-code" value="{{regCode}}" onChange="{{onRegCode}}" placeholder="6 számjegy" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px; letter-spacing: 0.3em">
+        </div>
+        <p style="margin: 0; font-size: 12px; line-height: 1.45; color: {{t.muted}}">Demó: nem megy ki SMS, bármilyen 6 számjegy megfelel.</p>
+        <button type="button" onClick="{{obFinish}}" disabled="{{ob.enter.disabled}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{ob.enter.bg}}; color: {{ob.enter.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{ob.enter.cursor}}; padding: 0 20px">Belépés</button>
+        <button type="button" onClick="{{obBackForm}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Vissza</button>
+      </sc-if>
+    </div>
+  </sc-if>
 
   <header style="position: relative; z-index: 5; height: calc(64px + env(safe-area-inset-top)); flex-shrink: 0; box-sizing: border-box; padding: env(safe-area-inset-top) 10px 0 20px; display: flex; align-items: center; justify-content: space-between; background: {{t.surface}}; border-bottom: 1px solid {{t.border}}">
     <button type="button" onClick="{{goHome}}" aria-label="Hanna Health – kezdőlap" style="min-height: 44px; border: none; background: none; padding: 0; display: flex; align-items: center; gap: 10px; cursor: pointer">
@@ -450,9 +505,60 @@ input, textarea { font-size: 16px !important; }
                   <span style="font-weight: 600; text-align: right; color: {{t.text}}">[ár]</span>
                 </div>
               </div>
+              <sc-if value="{{needsDeposit}}" hint-placeholder-val="{{false}}">
+                <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+                  <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">Foglalási előleg</span>
+                  <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.muted}}">{{depositWhy}}</p>
+                  <div style="display: flex; justify-content: space-between; gap: 16px; font-size: 14px">
+                    <span style="color: {{t.muted}}">Most fizetendő</span>
+                    <span style="font-weight: 600; text-align: right; color: {{t.text}}">[előleg összege]</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; gap: 16px; font-size: 14px">
+                    <span style="color: {{t.muted}}">A helyszínen fizetendő</span>
+                    <span style="font-weight: 600; text-align: right; color: {{t.text}}">[ár] – [előleg összege]</span>
+                  </div>
+                  <p style="margin: 0; font-size: 13px; line-height: 1.5; color: {{t.text}}">Lemondás: a vizsgálat előtt [X] óráig díjmentes, az előleget visszautaljuk. Későbbi lemondásnál vagy meg nem jelenésnél az előleg nem jár vissza. Ha a rendelő mondja le az időpontot, a teljes összeget visszakapod.</p>
+                  <button type="button" onClick="{{togglePayAccept}}" aria-pressed="{{payAcc.pressed}}" style="width: 100%; min-height: 48px; border: none; background: transparent; padding: 4px 0; display: flex; align-items: center; gap: 12px; text-align: left; font-family: inherit; cursor: pointer">
+                    <span style="width: 24px; height: 24px; flex-shrink: 0; box-sizing: border-box; border-radius: 7px; border: 2px solid {{t.primary}}; background: {{payAcc.box}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="visibility: {{payAcc.vis}}"><path d="M5 12.5l4.5 4.5L19 7"></path></svg></span>
+                    <span style="font-size: 14px; line-height: 1.35; color: {{t.text}}">Elfogadom a lemondási feltételeket és az [ÁSZF]-et</span>
+                  </button>
+                </div>
+              </sc-if>
+              <sc-if value="{{noDeposit}}" hint-placeholder-val="{{true}}">
+                <p style="margin: 0; padding: 14px 16px; border-radius: {{t.radius}}; border: 1px solid {{t.border}}; background: {{t.surface}}; font-size: 14px; line-height: 1.5; color: {{t.text}}">Fizetés a helyszínen: bankkártya, készpénz vagy egészségpénztári kártya. Lemondás a vizsgálat előtt [X] óráig díjmentes.</p>
+              </sc-if>
               <p style="margin: 0; padding: 14px 16px; border-radius: {{t.radius}}; background: {{t.accentSoft}}; font-size: 14px; line-height: 1.5; color: {{t.text}}">Hozd magaddal a TAJ-kártyádat, a személyi igazolványodat és a korábbi leleteidet. A leleteket a Mappádba előre is feltöltheted.</p>
-              <button type="button" onClick="{{confirmBooking}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{t.primary}}; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Foglalás megerősítése</button>
+              <button type="button" onClick="{{confirmAction}}" disabled="{{confirmBtn.disabled}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{confirmBtn.bg}}; color: {{confirmBtn.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{confirmBtn.cursor}}; padding: 0 20px">{{confirmBtn.label}}</button>
               <button type="button" onClick="{{backToSlot}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Vissza</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{isStepPay}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; flex-direction: column; gap: 14px">
+              <div style="background: {{t.surface}}; border: 1px solid {{t.border}}; border-radius: {{t.radius}}; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+                <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: {{t.muted}}">BIZTONSÁGOS FIZETÉS · [fizetési szolgáltató]</span>
+                <div style="display: flex; justify-content: space-between; gap: 16px; font-size: 14px">
+                  <span style="color: {{t.muted}}">Kedvezményezett</span>
+                  <span style="font-weight: 600; text-align: right; color: {{t.text}}">Hanna Health</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; gap: 16px; font-size: 14px">
+                  <span style="color: {{t.muted}}">Közlemény</span>
+                  <span style="font-weight: 600; text-align: right; color: {{t.text}}">Hanna Health – foglalás</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; gap: 16px; font-size: 14px">
+                  <span style="color: {{t.muted}}">Összeg</span>
+                  <span style="font-weight: 600; text-align: right; color: {{t.text}}">[előleg összege]</span>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px">
+                <sc-for list="{{payMethods}}" as="pm" hint-placeholder-count="2">
+                  <button type="button" onClick="{{pm.onPick}}" aria-pressed="{{pm.pressed}}" style="flex: 1 1 0; min-height: 48px; border-radius: 12px; border: 1px solid {{pm.border}}; background: {{pm.bg}}; color: {{pm.color}}; font-family: inherit; font-size: 15px; font-weight: {{pm.weight}}; cursor: pointer; padding: 0 8px">{{pm.label}}</button>
+                </sc-for>
+              </div>
+              <p style="margin: 0; padding: 14px 16px; border-radius: {{t.radius}}; background: {{t.accentSoft}}; font-size: 13px; line-height: 1.5; color: {{t.text}}">A bankszámlakivonatodon csak „Hanna Health – foglalás” szerepel, a vizsgálat neve nem. A kártyaadatokat a fizetési szolgáltató kezeli, az app nem tárolja.</p>
+              <button type="button" onClick="{{payDemo}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{t.primary}}; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Fizetés (demó)</button>
+              <p style="margin: 0; font-size: 12px; text-align: center; color: {{t.muted}}">Prototípus: nem történik valódi fizetés.</p>
+              <button type="button" onClick="{{backToConfirm}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px">Vissza</button>
             </div>
           </sc-if>
 
@@ -464,6 +570,7 @@ input, textarea { font-size: 16px !important; }
               <span style="font-family: {{t.headFont}}; font-size: 26px; line-height: 1.2; color: {{t.primary}}">Lefoglaltuk!</span>
               <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">{{lb.service}}</span>
               <span style="font-size: 14px; color: {{t.muted}}">{{lb.when}} · {{lb.time}}</span>
+              <span style="font-size: 13px; line-height: 1.5; color: {{t.text}}">{{lb.payNote}}</span>
               <p style="margin: 0; font-size: 13px; line-height: 1.5; color: {{t.muted}}">Az időpontod megjelent a közelgő időpontjaid között.</p>
               <button type="button" onClick="{{newBooking}}" style="margin-top: 6px; min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 24px">Új foglalás</button>
             </div>
@@ -837,6 +944,27 @@ input, textarea { font-size: 16px !important; }
       </div>
     </sc-if>
 
+    <sc-if value="{{mapLocked}}" hint-placeholder-val="{{false}}">
+      <div style="height: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 0 32px; text-align: center">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: {{t.accentSoft}}; color: {{t.primary}}; display: flex; align-items: center; justify-content: center">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+        </div>
+        <span style="font-family: {{t.headFont}}; font-size: 24px; line-height: 1.2; color: {{t.primary}}">A Mappád zárolva van</span>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.muted}}">Az egészségügyi dokumentumaidat külön zár védi. Az app bezárásakor és 5 perc tétlenség után újra zárol.</p>
+        <button type="button" onClick="{{unlockMap}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{t.primary}}; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px; align-self: stretch">Feloldás Face ID-val</button>
+        <button type="button" onClick="{{unlockMap}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px; align-self: stretch">PIN-kóddal nyitom</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{msgsGate}}" hint-placeholder-val="{{false}}">
+      <div style="height: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 0 32px; text-align: center">
+        <span style="font-family: {{t.headFont}}; font-size: 24px; line-height: 1.2; color: {{t.primary}}">Üzenet az orvosnak azonosítás után</span>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.muted}}">Orvosi kérdést csak azonosított páciens fiókjából fogadunk, hogy a válasz biztosan hozzád kerüljön. Az első viziten összekötjük a fiókodat.</p>
+        <button type="button" onClick="{{goLiliDocs}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{t.primary}}; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px; align-self: stretch">Összekötő kódom van</button>
+        <button type="button" onClick="{{goBookingNew}}" style="min-height: 48px; border: 1px solid {{t.primary}}; border-radius: {{t.btnRadius}}; background: transparent; color: {{t.primary}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; padding: 0 20px; align-self: stretch">Időpontot foglalok</button>
+      </div>
+    </sc-if>
+
     <sc-if value="{{isLili}}" hint-placeholder-val="{{false}}">
       <div style="height: 100%; overflow-y: auto; box-sizing: border-box; padding: 22px 20px 28px; display: flex; flex-direction: column; gap: 18px">
         <div style="display: flex; flex-direction: column; gap: 6px">
@@ -851,6 +979,22 @@ input, textarea { font-size: 16px !important; }
 
         <sc-if value="{{isLiliDocs}}" hint-placeholder-val="{{true}}">
           <div style="display: flex; flex-direction: column; gap: 16px">
+            <sc-if value="{{notLinked}}" hint-placeholder-val="{{false}}">
+              <section style="border: 1px solid {{t.border}}; border-radius: {{t.radius}}; background: {{t.accentSoft}}; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+                <span style="font-size: 15px; font-weight: 600; color: {{t.text}}">Még nem azonosítottunk</span>
+                <p style="margin: 0; font-size: 14px; line-height: 1.5; color: {{t.text}}">Saját dokumentumot már most is feltölthetsz. A rendelőtől kapott leleteket és az orvosi üzeneteket az első vizit után látod: a recepción megnézzük a személyi igazolványodat és a TAJ-kártyádat, és adunk egy egyszeri összekötő kódot.</p>
+                <label for="hh-link" style="font-size: 13px; font-weight: 600; color: {{t.text}}">Összekötő kód</label>
+                <input id="hh-link" type="text" inputmode="numeric" value="{{linkCode}}" onChange="{{onLinkCode}}" placeholder="6 számjegy" style="height: 46px; box-sizing: border-box; padding: 0 14px; border: 1px solid {{t.border}}; border-radius: 12px; background: {{t.surface}}; color: {{t.text}}; font-family: inherit; font-size: 15px; letter-spacing: 0.3em">
+                <button type="button" onClick="{{doLink}}" disabled="{{link.disabled}}" style="min-height: 50px; border: none; border-radius: {{t.btnRadius}}; background: {{link.bg}}; color: {{link.color}}; font-family: inherit; font-size: 15px; font-weight: 600; cursor: {{link.cursor}}; padding: 0 20px">Fiók összekötése</button>
+                <span style="font-size: 12px; color: {{t.muted}}">Demó: bármilyen 6 számjegy megfelel.</span>
+              </section>
+            </sc-if>
+            <sc-if value="{{isLinked}}" hint-placeholder-val="{{true}}">
+              <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; line-height: 1.4; color: {{t.muted}}">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0; color: {{t.primary}}"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>
+                <span>Azonosított páciens. A rendelő dokumentumai és az orvosi üzenetek elérhetők.</span>
+              </div>
+            </sc-if>
             <section style="position: relative; border: 1.5px dashed {{t.primary}}; border-radius: {{t.radius}}; background: {{t.surface}}; padding: 16px; display: flex; flex-direction: column; gap: 12px">
               <div style="display: flex; align-items: center; gap: 12px">
                 <div style="width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: {{t.accentSoft}}; color: {{t.primary}}; display: flex; align-items: center; justify-content: center">
@@ -1211,7 +1355,7 @@ const MODE_ORDER = ['gyn', 'ttc', 'preg', 'post', 'meno'];
 
 const SERVICES = [
   { id: 's1', name: 'Terhesgondozási vizsgálat', desc: 'Rendszeres várandósgondozás' },
-  { id: 's2', name: 'Genetikai ultrahang', desc: 'Első és második trimeszteri szűrő ultrahang' },
+  { id: 's2', name: 'Genetikai ultrahang', desc: 'Első és második trimeszteri szűrő ultrahang', long: true },
   { id: 's3', name: 'Nőgyógyászati vizsgálat', desc: 'Általános szakorvosi vizsgálat' },
   { id: 's4', name: 'Méhnyakszűrés (citológia)', desc: 'Szűrővizsgálat a méhnyak elváltozásaira' },
   { id: 's5', name: 'Fogamzásgátlási tanácsadás', desc: 'A számodra megfelelő módszer kiválasztása' },
@@ -1687,6 +1831,8 @@ class Component extends DCLogic {
     this.state = {
       variant: null,
       themeOpen: false,
+      onboard: 'welcome', obMode: 'register', regName: '', regEmail: '', regPhone: '', regAccept: false, regCode: '',
+      linked: false, linkCode: '', mapUnlocked: false, payAccept: false, payMethod: 'apple',
       mode: 'preg',
       modeOpen: false,
       modeChanged: false,
@@ -1921,22 +2067,88 @@ class Component extends DCLogic {
       .filter((tm) => !booked[day.id + '|' + tm])
       .map((tm) => Object.assign({ time: tm }, chip(tm === s.slot), { onPick: () => set({ slot: tm }) }));
     const steps = [['service', 'Vizsgálat'], ['slot', 'Időpont'], ['confirm', 'Megerősítés']].map((st, i) => {
-      const on = s.step === st[0];
+      const on = s.step === st[0] || (st[0] === 'confirm' && s.step === 'pay');
       return {
         n: String(i + 1), label: st[1],
         numBg: on ? t.primary : t.track, numColor: on ? '#FFFFFF' : t.muted,
         labelColor: on ? t.primary : t.muted, weight: on ? '600' : '500'
       };
     });
+    // Előleg: új (még nem azonosított) páciensnél és a hosszú vizsgálatoknál; minden másnál helyszíni fizetés.
+    const needsDeposit = !!s.serviceId && (!s.linked || !!svc.long);
     const confirmBooking = () => {
       const st = this.state;
       if (!st.serviceId || !st.slot) return;
       const hm = st.slot.split(':').map(Number);
       const appt = {
         id: 'a' + Date.now(), service: svc.name, when: day.short, time: st.slot,
-        dayId: day.id, ord: day.ord + (hm[0] * 60 + hm[1]) / 10000
+        dayId: day.id, ord: day.ord + (hm[0] * 60 + hm[1]) / 10000,
+        payNote: needsDeposit
+          ? 'Előleg fizetve: [előleg összege]. A számlát e-mailben küldjük, a fennmaradó díjat a helyszínen fizeted.'
+          : 'Fizetés a helyszínen: bankkártya, készpénz vagy egészségpénztári kártya.'
       };
-      this.setState({ appts: st.appts.concat([appt]), step: 'done', lastBooked: appt });
+      this.setState({ appts: st.appts.concat([appt]), step: 'done', lastBooked: appt, payAccept: false });
+    };
+
+    // Regisztráció, belépés, páciens-azonosítás, Mappám-zár
+    const digits = (x) => String(x || '').replace(/\D/g, '');
+    const btnOn = (ok) => ({ disabled: !ok, bg: ok ? t.primary : t.track, color: ok ? '#FFFFFF' : t.muted, cursor: ok ? 'pointer' : 'default' });
+    const isReg = s.obMode !== 'login';
+    const phoneOk = digits(s.regPhone).length >= 9;
+    const formOk = isReg ? !!(s.regName.trim() && /.+@.+\..+/.test(s.regEmail) && phoneOk && s.regAccept) : phoneOk;
+    const finishOnboard = () => {
+      const st = this.state;
+      if (digits(st.regCode).length !== 6) return;
+      const reg = st.obMode !== 'login';
+      this.setState({
+        onboard: null, linked: !reg, regCode: '', tab: 'home',
+        profile: reg ? Object.assign({}, st.profile, { name: st.regName.trim(), phone: st.regPhone.trim() }) : st.profile
+      });
+    };
+    const authVals = {
+      isOnboard: !!s.onboard, isObWelcome: s.onboard === 'welcome', isObForm: s.onboard === 'form', isObCode: s.onboard === 'code',
+      ob: {
+        isRegister: isReg,
+        title: isReg ? 'Fiók létrehozása' : 'Belépés',
+        lead: isReg ? 'Egy perc az egész. Ezzel már tudsz időpontot foglalni, olvasni és csatlakozni a közösséghez.' : 'Add meg a telefonszámodat, és küldünk egy belépőkódot.',
+        phone: s.regPhone.trim() || '[telefonszám]',
+        send: btnOn(formOk), enter: btnOn(digits(s.regCode).length === 6),
+        acceptPressed: s.regAccept ? 'true' : 'false', acceptBox: s.regAccept ? t.primary : 'transparent', acceptVis: s.regAccept ? 'visible' : 'hidden'
+      },
+      regName: s.regName, regEmail: s.regEmail, regPhone: s.regPhone, regCode: s.regCode,
+      onRegName: (e) => set({ regName: e.target.value }),
+      onRegEmail: (e) => set({ regEmail: e.target.value }),
+      onRegPhone: (e) => set({ regPhone: e.target.value }),
+      onRegCode: (e) => set({ regCode: digits(e.target.value).slice(0, 6) }),
+      toggleRegAccept: () => this.setState({ regAccept: !this.state.regAccept }),
+      obRegister: () => set({ onboard: 'form', obMode: 'register' }),
+      obLogin: () => set({ onboard: 'form', obMode: 'login' }),
+      obSend: () => { if (formOk) set({ onboard: 'code', regCode: '' }); },
+      obBackWelcome: () => set({ onboard: 'welcome' }),
+      obBackForm: () => set({ onboard: 'form' }),
+      obFinish: finishOnboard,
+      notLinked: !s.linked, isLinked: !!s.linked,
+      linkCode: s.linkCode,
+      onLinkCode: (e) => set({ linkCode: digits(e.target.value).slice(0, 6) }),
+      link: btnOn(digits(s.linkCode).length === 6),
+      doLink: () => {
+        const st = this.state;
+        if (digits(st.linkCode).length !== 6) return;
+        this.setState({ linked: true, linkCode: '', accessLog: addLog(st, 'A rendelő azonosított, a fiókodat összekötöttük') });
+      },
+      mapLocked: s.tab === 'lili' && !s.mapUnlocked,
+      unlockMap: () => set({ mapUnlocked: true }),
+      msgsGate: s.tab === 'msgs' && !s.linked,
+      needsDeposit: needsDeposit, noDeposit: !needsDeposit,
+      depositWhy: !s.linked ? 'Első foglalásnál előleget kérünk, hogy az időpontot biztosan neked tartsuk fenn.' : 'Ennél a hosszabb vizsgálatnál előleget kérünk, hogy az időpontot biztosan neked tartsuk fenn.',
+      payAcc: { pressed: s.payAccept ? 'true' : 'false', box: s.payAccept ? t.primary : 'transparent', vis: s.payAccept ? 'visible' : 'hidden' },
+      togglePayAccept: () => this.setState({ payAccept: !this.state.payAccept }),
+      confirmBtn: Object.assign({ label: needsDeposit ? 'Tovább a fizetéshez' : 'Foglalás megerősítése' }, btnOn(!needsDeposit || s.payAccept)),
+      confirmAction: needsDeposit ? () => { if (this.state.payAccept) set({ step: 'pay' }); } : confirmBooking,
+      isStepPay: s.step === 'pay',
+      payMethods: [['apple', 'Apple Pay'], ['card', 'Bankkártya']].map((m) => Object.assign({ label: m[1] }, chip(s.payMethod === m[0]), { onPick: () => set({ payMethod: m[0] }) })),
+      payDemo: confirmBooking,
+      backToConfirm: () => set({ step: 'confirm' })
     };
 
     // Tudástár: útmutató
@@ -2143,6 +2355,7 @@ class Component extends DCLogic {
     }, sw(!!c.on)));
 
     return {
+      ...authVals,
       switchFromPreg: !!s.switchFromPreg,
       switchNote: s.switchFromPreg
         ? 'Átállítottuk. A terhességhez kötött tartalmakat és emlékeztetőket leállítottuk. Ha bármiben segíthetünk, írj az orvosodnak.'
@@ -2189,7 +2402,7 @@ class Component extends DCLogic {
       msgBtnBg: s.tab === 'msgs' ? t.accentSoft : 'transparent',
 
       isHome: s.tab === 'home', isBooking: s.tab === 'booking', isKb: s.tab === 'kb',
-      isForum: s.tab === 'forum', isLili: s.tab === 'lili', isMsgs: s.tab === 'msgs',
+      isForum: s.tab === 'forum', isLili: s.tab === 'lili' && !!s.mapUnlocked, isMsgs: s.tab === 'msgs' && !!s.linked,
       nav: { home: tabStyle('home'), booking: tabStyle('booking'), kb: tabStyle('kb'), forum: tabStyle('forum'), lili: tabStyle('lili') },
       goHome: go('home'),
       goBooking: go('booking'),
@@ -2222,7 +2435,7 @@ class Component extends DCLogic {
       backToSlot: () => set({ step: 'slot' }),
       confirmBooking: confirmBooking,
       slotLabel: s.slot || '',
-      lb: s.lastBooked || { service: '', when: '', time: '' },
+      lb: Object.assign({ service: '', when: '', time: '', payNote: '' }, s.lastBooked || {}),
       newBooking: () => set({ step: 'service', serviceId: null, slot: null }),
 
       isKbGuide: s.kbView === 'guide', isKbVideos: s.kbView === 'videos',
@@ -2395,7 +2608,7 @@ class Component extends DCLogic {
     build(root, {}, vals, out, null);
     preact.render(out[0], mount);
     var s = comp.state;
-    var view = [s.tab, s.kbView, s.videoId, s.articleId, s.forumView, s.threadId, s.liliView, s.step].join('|');
+    var view = [s.tab, s.kbView, s.videoId, s.articleId, s.forumView, s.threadId, s.liliView, s.step, s.onboard, s.mapUnlocked, s.linked].join('|');
     if (view !== lastView) {
       lastView = view;
       var screen = mount.querySelector('main > div');
